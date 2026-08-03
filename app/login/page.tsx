@@ -4,11 +4,12 @@ import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
-
+import { useRouter } from "next/navigation";
 export default function LoginPage() {
 
   const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
+const router = useRouter();
 const handleLogin = async () => {
   try {
     const userCredential = await signInWithEmailAndPassword(
@@ -24,9 +25,13 @@ const handleLogin = async () => {
     if (userDoc.exists()) {
       const userData = userDoc.data();
 
-      alert(`Welcome back, ${userData.fullName}!`);
-
-      console.log(userData);
+      if (userData.accountType === "Healthcare Professional") {
+  router.push("/professional");
+} else if (userData.accountType === "Healthcare Facility") {
+  router.push("/facility");
+} else {
+  alert("Unknown account type.");
+}
     } else {
       alert("User profile not found.");
     }
