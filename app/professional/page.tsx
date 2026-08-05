@@ -1,27 +1,45 @@
 "use client";
 
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import JobCard from "@/components/dashboard/JobCard";
 import { useEffect, useState } from "react";
 import { auth, db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  getDocs,
+} from "firebase/firestore";
 
 export default function ProfessionalDashboard() {
   const [fullName, setFullName] = useState("");
+  const [jobs, setJobs] = useState<any[]>([]);
 
   useEffect(() => {
-    const loadUser = async () => {
+    const loadData = async () => {
+      // Load logged-in user
       const user = auth.currentUser;
 
-      if (!user) return;
+      if (user) {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
 
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-
-      if (userDoc.exists()) {
-        setFullName(userDoc.data().fullName);
+        if (userDoc.exists()) {
+          setFullName(userDoc.data().fullName);
+        }
       }
+
+      // Load jobs
+      const jobsSnapshot = await getDocs(collection(db, "jobs"));
+
+      const jobsData = jobsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setJobs(jobsData);
     };
 
-    loadUser();
+    loadData();
   }, []);
 
   return (
@@ -36,15 +54,23 @@ export default function ProfessionalDashboard() {
         </p>
       </header>
 
-      <section className="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <section className="mt-8 grid md:grid-cols-2 gap-6">
         <div className="bg-white rounded-2xl shadow p-6">
-          <h2 className="text-xl font-bold mb-2">
+          <h2 className="text-xl font-bold mb-4">
             📋 Available Jobs
           </h2>
 
-          <p className="text-gray-600">
-            Browse healthcare jobs near you.
-          </p>
+          {jobs.length === 0 ? (
+            <p className="text-gray-600">
+              No jobs available.
+            </p>
+          ) : (
+            <div className="space-y-6">
+              {jobs.map((job: any) => (
+                <JobCard key={job.id} job={job} />
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="bg-white rounded-2xl shadow p-6">
