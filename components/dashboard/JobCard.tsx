@@ -1,5 +1,9 @@
+import Link from "next/link";
+import { auth, db } from "@/lib/firebase";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 type JobCardProps = {
   job: {
+    id: string;
     jobTitle: string;
     facilityName: string;
     location: string;
@@ -10,6 +14,30 @@ type JobCardProps = {
 };
 
 export default function JobCard({ job }: JobCardProps) {
+  const handleApply = async () => {
+  const user = auth.currentUser;
+
+  if (!user) {
+    alert("Please log in first.");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "applications"), {
+      jobId: job.id,
+      professionalId: user.uid,
+      facilityName: job.facilityName,
+      jobTitle: job.jobTitle,
+      status: "Pending",
+      appliedAt: serverTimestamp(),
+    });
+
+    alert("Application submitted successfully!");
+  } catch (error) {
+    console.error(error);
+    alert("Something went wrong.");
+  }
+};
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 border hover:shadow-xl transition">
 
@@ -39,13 +67,19 @@ export default function JobCard({ job }: JobCardProps) {
 
       <div className="mt-6 flex gap-3">
 
-        <button className="bg-[#0D2B4D] text-white px-4 py-2 rounded-lg hover:bg-[#133b68]">
-          View Details
-        </button>
+        <Link
+  href={`/jobs/${job.id}`}
+  className="bg-[#0D2B4D] text-white px-4 py-2 rounded-lg hover:bg-[#133b68]"
+>
+  View Details
+</Link>
 
-        <button className="bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600">
-          Apply
-        </button>
+        <button
+  onClick={handleApply}
+  className="bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600"
+>
+  Apply
+</button>
 
       </div>
 

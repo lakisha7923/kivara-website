@@ -44,17 +44,52 @@ export default function ProfessionalDashboard() {
 
   return (
     <DashboardLayout>
-      <header className="bg-[#0D2B4D] text-white p-6 rounded-2xl shadow">
-        <h1 className="text-3xl font-bold">
-          Welcome back, {fullName || "Professional"} 👋
-        </h1>
+      <header className="bg-[#0D2B4D] text-white rounded-3xl shadow-lg p-8">
 
-        <p className="text-slate-300 mt-1">
-          Professional Dashboard
-        </p>
-      </header>
+  <p className="text-teal-300 text-lg">
+    Good Afternoon 👋
+  </p>
 
-      <section className="mt-8 grid md:grid-cols-2 gap-6">
+  <h1 className="text-4xl font-bold mt-2">
+    Welcome back, {fullName || "Professional"}
+  </h1>
+
+  <p className="text-slate-300 mt-3">
+    Ready to find your next healthcare opportunity?
+  </p>
+
+</header>
+       
+
+      <section className="mt-8 space-y-6">
+
+  <div className="bg-white rounded-2xl shadow p-6 border-l-8 border-green-500">
+
+    <h2 className="text-2xl font-bold text-green-700">
+      🟢 Work Ready
+    </h2>
+
+    <p className="text-gray-600 mt-2">
+      Your profile is ready for healthcare opportunities.
+    </p>
+
+    <div className="mt-6 space-y-2">
+
+      <p>✅ Profile Complete</p>
+
+      <p>✅ Resume Uploaded</p>
+
+      <p>✅ License Verified</p>
+
+      <p>✅ Background Check</p>
+
+      <p>⚠ BLS Renewal Due in 30 Days</p>
+
+    </div>
+
+  </div>
+
+  <div className="grid md:grid-cols-2 gap-6"></div>
         <div className="bg-white rounded-2xl shadow p-6">
           <h2 className="text-xl font-bold mb-4">
             📋 Available Jobs
@@ -112,6 +147,7 @@ export default function ProfessionalDashboard() {
             Update your profile and credentials.
           </p>
         </div>
+      
       </section>
     </DashboardLayout>
   );
