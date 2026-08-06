@@ -1,16 +1,15 @@
 import Link from "next/link";
+import { Job } from "@/types/job";
 import { auth, db } from "@/lib/firebase";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  serverTimestamp,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 type JobCardProps = {
-  job: {
-    id: string;
-    jobTitle: string;
-    facilityName: string;
-    location: string;
-    specialty: string;
-    shift: string;
-    hourlyRate: string;
-  };
+  job: Job;
 };
 
 export default function JobCard({ job }: JobCardProps) {
@@ -23,14 +22,26 @@ export default function JobCard({ job }: JobCardProps) {
   }
 
   try {
-    await addDoc(collection(db, "applications"), {
-      jobId: job.id,
-      professionalId: user.uid,
-      facilityName: job.facilityName,
-      jobTitle: job.jobTitle,
-      status: "Pending",
-      appliedAt: serverTimestamp(),
-    });
+const userProfile = await getDoc(doc(db, "users", user.uid));
+const userData = userProfile.data();
+
+
+await addDoc(collection(db, "applications"), {
+  jobId: job.id,
+  professionalId: user.uid,
+
+  professionalName: userData?.fullName || "",
+
+  professionalEmail: user.email,
+
+  facilityName: job.facilityName,
+
+  jobTitle: job.jobTitle,
+
+  status: "Pending",
+
+  appliedAt: serverTimestamp(),
+});
 
     alert("Application submitted successfully!");
   } catch (error) {

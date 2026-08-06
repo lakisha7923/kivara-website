@@ -1,23 +1,24 @@
 "use client";
-
+import Link from "next/link";
+import ProtectedRoute from "../../components/auth/ProtectedRoute";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import JobCard from "@/components/dashboard/JobCard";
 import { useEffect, useState } from "react";
 import { auth, db } from "@/lib/firebase";
+import { getJobs } from "@/lib/jobService";
+import { Job } from "@/types/job";
 import {
   doc,
   getDoc,
-  collection,
-  getDocs,
 } from "firebase/firestore";
+
+ 
 
 export default function ProfessionalDashboard() {
   const [fullName, setFullName] = useState("");
-  const [jobs, setJobs] = useState<any[]>([]);
-
+  const [jobs, setJobs] = useState<Job[]>([]);
   useEffect(() => {
     const loadData = async () => {
-      // Load logged-in user
       const user = auth.currentUser;
 
       if (user) {
@@ -28,127 +29,159 @@ export default function ProfessionalDashboard() {
         }
       }
 
-      // Load jobs
-      const jobsSnapshot = await getDocs(collection(db, "jobs"));
-
-      const jobsData = jobsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setJobs(jobsData);
+      const jobsData = await getJobs();
+setJobs(jobsData);
     };
 
     loadData();
   }, []);
 
   return (
-    <DashboardLayout>
-      <header className="bg-[#0D2B4D] text-white rounded-3xl shadow-lg p-8">
+    <ProtectedRoute>
+      <DashboardLayout>
 
-  <p className="text-teal-300 text-lg">
-    Good Afternoon 👋
-  </p>
+        {/* Welcome Banner */}
 
-  <h1 className="text-4xl font-bold mt-2">
-    Welcome back, {fullName || "Professional"}
-  </h1>
+        <header className="bg-[#0D2B4D] text-white rounded-3xl shadow-lg p-8">
 
-  <p className="text-slate-300 mt-3">
-    Ready to find your next healthcare opportunity?
-  </p>
+          <p className="text-teal-300 text-lg">
+            👋 Good Afternoon
+          </p>
 
-</header>
-       
+          <h1 className="text-4xl font-bold mt-2">
+            Welcome back, {fullName || "Professional"}
+          </h1>
 
-      <section className="mt-8 space-y-6">
+          <p className="text-slate-300 mt-3">
+            Ready to find your next healthcare opportunity?
+          </p>
 
-  <div className="bg-white rounded-2xl shadow p-6 border-l-8 border-green-500">
+        </header>
 
-    <h2 className="text-2xl font-bold text-green-700">
-      🟢 Work Ready
+        {/* Work Ready Card */}
+
+        <section className="mt-8 space-y-6">
+
+          <div className="bg-white rounded-2xl shadow p-6 border-l-8 border-green-500">
+
+            <h2 className="text-2xl font-bold text-green-700">
+              🟢 Work Ready
+            </h2>
+
+            <p className="text-gray-600 mt-2">
+              Your profile is ready for healthcare opportunities.
+            </p>
+
+            <div className="mt-6 space-y-2">
+
+              <p>✅ Profile Complete</p>
+
+              <p>✅ Resume Uploaded</p>
+
+              <p>✅ License Verified</p>
+
+              <p>✅ Background Check</p>
+
+              <p>⚠ BLS Renewal Due in 30 Days</p>
+
+            </div>
+
+          </div>
+
+         {/* Dashboard Cards */}
+
+<div className="grid md:grid-cols-2 gap-6">
+
+  {/* Available Jobs */}
+
+  <div className="bg-white rounded-2xl shadow p-6">
+
+    <h2 className="text-xl font-bold mb-4">
+      📋 Available Jobs
     </h2>
 
-    <p className="text-gray-600 mt-2">
-      Your profile is ready for healthcare opportunities.
-    </p>
-
-    <div className="mt-6 space-y-2">
-
-      <p>✅ Profile Complete</p>
-
-      <p>✅ Resume Uploaded</p>
-
-      <p>✅ License Verified</p>
-
-      <p>✅ Background Check</p>
-
-      <p>⚠ BLS Renewal Due in 30 Days</p>
-
-    </div>
+    {jobs.length === 0 ? (
+      <p className="text-gray-600">
+        No jobs available.
+      </p>
+    ) : (
+      <div className="space-y-6">
+  {jobs.map((job) => (
+    <JobCard
+      key={job.id}
+      job={job}
+    />
+  ))}
+</div>
+    )}
 
   </div>
 
-  <div className="grid md:grid-cols-2 gap-6"></div>
-        <div className="bg-white rounded-2xl shadow p-6">
-          <h2 className="text-xl font-bold mb-4">
-            📋 Available Jobs
-          </h2>
+  {/* Upcoming Shifts */}
 
-          {jobs.length === 0 ? (
-            <p className="text-gray-600">
-              No jobs available.
-            </p>
-          ) : (
-            <div className="space-y-6">
-              {jobs.map((job: any) => (
-                <JobCard key={job.id} job={job} />
-              ))}
-            </div>
-          )}
-        </div>
+  <div className="bg-white rounded-2xl shadow p-6">
 
-        <div className="bg-white rounded-2xl shadow p-6">
-          <h2 className="text-xl font-bold mb-2">
-            📅 Upcoming Shifts
-          </h2>
+    <h2 className="text-xl font-bold mb-2">
+      📅 Upcoming Shifts
+    </h2>
 
-          <p className="text-gray-600">
-            View your scheduled shifts.
-          </p>
-        </div>
+    <p className="text-gray-600">
+      View your scheduled shifts.
+    </p>
 
-        <div className="bg-white rounded-2xl shadow p-6">
-          <h2 className="text-xl font-bold mb-2">
-            💬 Messages
-          </h2>
+  </div>
 
-          <p className="text-gray-600">
-            Communicate with healthcare facilities.
-          </p>
-        </div>
+  {/* Messages */}
 
-        <div className="bg-white rounded-2xl shadow p-6">
-          <h2 className="text-xl font-bold mb-2">
-            📄 Applications
-          </h2>
+  <div className="bg-white rounded-2xl shadow p-6">
 
-          <p className="text-gray-600">
-            Track your submitted applications.
-          </p>
-        </div>
+    <h2 className="text-xl font-bold mb-2">
+      💬 Messages
+    </h2>
 
-        <div className="bg-white rounded-2xl shadow p-6">
-          <h2 className="text-xl font-bold mb-2">
-            👤 My Profile
-          </h2>
+    <p className="text-gray-600">
+      Communicate with healthcare facilities.
+    </p>
 
-          <p className="text-gray-600">
-            Update your profile and credentials.
-          </p>
-        </div>
-      
-      </section>
-    </DashboardLayout>
+  </div>
+
+  {/* Applications */}
+
+  <Link href="/professional/applications">
+    <div className="bg-white rounded-2xl shadow p-6 hover:shadow-xl transition cursor-pointer">
+
+      <h2 className="text-xl font-bold mb-2">
+        📄 Applications
+      </h2>
+
+      <p className="text-gray-600">
+        Track your submitted applications.
+      </p>
+
+    </div>
+  </Link>
+
+  {/* My Profile */}
+
+  <Link href="/professional/profile">
+    <div className="bg-white rounded-2xl shadow p-6 hover:shadow-xl transition cursor-pointer">
+
+      <h2 className="text-xl font-bold mb-2">
+        👤 My Profile
+      </h2>
+
+      <p className="text-gray-600">
+        Update your profile and credentials.
+      </p>
+
+    </div>
+  </Link>
+
+</div>
+
+                </section>
+
+      </DashboardLayout>
+    </ProtectedRoute>
   );
 }
