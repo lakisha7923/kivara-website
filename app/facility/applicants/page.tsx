@@ -145,12 +145,14 @@ const router = useRouter();
                     >
                       Accept
                     </button>
-<button
-  onClick={() => startConversation(application)}
-  className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700"
->
-  💬 Message
-</button>
+{application.status === "Accepted" && (
+  <button
+    onClick={() => startConversation(application)}
+    className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700"
+  >
+    💬 Message
+  </button>
+)}
                     <button
                       onClick={() =>
                         updateStatus(application.id, "Declined")

@@ -3,9 +3,13 @@ import {
   addDoc,
   collection,
   getDocs,
+  onSnapshot,
   query,
+  serverTimestamp,
   where,
 } from "firebase/firestore";
+
+import { auth } from "@/lib/firebase";
 
 export async function createOrGetConversation(
   facilityId: string,
@@ -25,13 +29,43 @@ export async function createOrGetConversation(
     return snapshot.docs[0].id;
   }
 
-  const docRef = await addDoc(collection(db, "conversations"), {
-    facilityId,
-    professionalId,
-    facilityName,
-    professionalName,
-    createdAt: new Date(),
-  });
+  const conversation = await addDoc(
+    collection(db, "conversations"),
+    {
+      facilityId,
+      professionalId,
+      facilityName,
+      professionalName,
+      lastMessage: "",
+      updatedAt: serverTimestamp(),
+    }
+  );
 
-  return docRef.id;
+  return conversation.id;
+}
+
+export function subscribeToConversations(
+  callback: (conversations: any[]) => void
+) {
+  const user = auth.currentUser;
+
+  if (!user) return () => {};
+
+  return onSnapshot(
+    collection(db, "conversations"),
+    (snapshot) => {
+      const conversations = snapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        .filter(
+          (conversation: any) =>
+            conversation.facilityId === user.uid ||
+            conversation.professionalId === user.uid
+        );
+
+      callback(conversations);
+    }
+  );
 }
