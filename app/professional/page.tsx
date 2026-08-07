@@ -119,7 +119,8 @@ setJobs(jobsData);
 
   {/* Upcoming Shifts */}
 
-  <div className="bg-white rounded-2xl shadow p-6">
+<Link href="/professional/shifts">
+  <div className="bg-white rounded-2xl shadow p-6 hover:shadow-xl transition cursor-pointer">
 
     <h2 className="text-xl font-bold mb-2">
       📅 Upcoming Shifts
@@ -130,6 +131,7 @@ setJobs(jobsData);
     </p>
 
   </div>
+</Link>
 
   {/* Messages */}
 

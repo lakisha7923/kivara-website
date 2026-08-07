@@ -4,7 +4,7 @@ import { createOrGetConversation } from "@/lib/conversationService";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
+import { createNotification } from "@/lib/notificationService";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { getApplications } from "@/lib/applicationService";
 import { Application } from "@/types/application";
@@ -51,9 +51,31 @@ const router = useRouter();
   ) => {
     try {
       await updateDoc(doc(db, "applications", applicationId), {
-        status,
-      });
+  status,
+});
+const application = applications.find(
+  (a) => a.id === applicationId
+);
 
+if (application) {
+  await createNotification({
+    userId: application.professionalId,
+
+    title:
+      status === "Accepted"
+        ? "Application Accepted"
+        : "Application Declined",
+
+    message:
+      status === "Accepted"
+        ? `${application.facilityName} accepted your application for ${application.jobTitle}.`
+        : `${application.facilityName} declined your application for ${application.jobTitle}.`,
+
+    type: "Application",
+
+    read: false,
+  });
+}
       alert(`Application ${status}!`);
 
       // Refresh the list
@@ -146,12 +168,21 @@ const router = useRouter();
                       Accept
                     </button>
 {application.status === "Accepted" && (
-  <button
-    onClick={() => startConversation(application)}
-    className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700"
-  >
-    💬 Message
-  </button>
+  <>
+    <button
+      onClick={() => startConversation(application)}
+      className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700"
+    >
+      💬 Message
+    </button>
+
+    <Link
+      href={`/facility/shifts/${application.professionalId}`}
+      className="bg-purple-600 text-white px-5 py-2 rounded-lg hover:bg-purple-700"
+    >
+      📅 Assign Shift
+    </Link>
+  </>
 )}
                     <button
                       onClick={() =>
