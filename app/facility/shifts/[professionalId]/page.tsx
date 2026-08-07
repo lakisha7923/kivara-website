@@ -1,5 +1,5 @@
 "use client";
-
+import { createNotification } from "@/lib/notificationService";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
@@ -64,25 +64,34 @@ export default function AssignShiftPage() {
       }
 
       await createShift({
-        facilityId: user.uid,
-        facilityName,
+  facilityId: user.uid,
+  facilityName,
 
-        professionalId,
-        professionalName,
+  professionalId,
+  professionalName,
 
-        date,
-        startTime,
-        endTime,
+  date,
+  startTime,
+  endTime,
 
-        department,
-        notes,
+  department,
+  notes,
 
-        status: "Scheduled",
-      });
+  status: "Scheduled",
+});
 
-      alert("Shift assigned successfully!");
+// Create notification for the professional
+await createNotification({
+  userId: professionalId,
+  title: "Shift Assigned",
+  message: `${facilityName} assigned you a shift on ${date} from ${startTime} to ${endTime}.`,
+  type: "Shift",
+  read: false,
+});
 
-      router.push("/facility/applicants");
+alert("Shift assigned successfully!");
+
+router.push("/facility/applicants");
     } catch (error) {
       console.error(error);
       alert("Unable to assign shift.");

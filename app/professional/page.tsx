@@ -1,4 +1,6 @@
 "use client";
+import { getNotifications } from "@/lib/notificationService";
+import { Notification } from "@/types/notification";
 import Link from "next/link";
 import ProtectedRoute from "../../components/auth/ProtectedRoute";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
@@ -17,6 +19,7 @@ import {
 export default function ProfessionalDashboard() {
   const [fullName, setFullName] = useState("");
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   useEffect(() => {
     const loadData = async () => {
       const user = auth.currentUser;
