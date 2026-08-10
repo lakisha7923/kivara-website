@@ -1,15 +1,16 @@
-import { db } from "@/lib/firebase";
+import { db, auth } from "@/lib/firebase";
+
 import {
   addDoc,
   collection,
   getDocs,
   onSnapshot,
-  query,
   serverTimestamp,
+  query,
   where,
 } from "firebase/firestore";
 
-import { auth } from "@/lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 export async function createOrGetConversation(
   facilityId: string,
@@ -47,25 +48,54 @@ export async function createOrGetConversation(
 export function subscribeToConversations(
   callback: (conversations: any[]) => void
 ) {
-  const user = auth.currentUser;
+  let unsubscribeSnapshot: (() => void) | null = null;
 
-  if (!user) return () => {};
+  const unsubscribeAuth = onAuthStateChanged(
+    auth,
+    (user) => {
+      if (unsubscribeSnapshot) {
+        unsubscribeSnapshot();
+        unsubscribeSnapshot = null;
+      }
 
-  return onSnapshot(
-    collection(db, "conversations"),
-    (snapshot) => {
-      const conversations = snapshot.docs
-        .map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }))
-        .filter(
-          (conversation: any) =>
-            conversation.facilityId === user.uid ||
-            conversation.professionalId === user.uid
-        );
+      if (!user) {
+        callback([]);
+        return;
+      }
 
-      callback(conversations);
+      unsubscribeSnapshot = onSnapshot(
+        collection(db, "conversations"),
+        (snapshot) => {
+          const conversations = snapshot.docs
+            .map((conversationDoc) => ({
+              id: conversationDoc.id,
+              ...conversationDoc.data(),
+            }))
+            .filter(
+              (conversation: any) =>
+                conversation.facilityId === user.uid ||
+                conversation.professionalId === user.uid
+            );
+
+          callback(conversations);
+        },
+        (error) => {
+          console.error(
+            "Unable to load conversations:",
+            error
+          );
+
+          callback([]);
+        }
+      );
     }
   );
+
+  return () => {
+    unsubscribeAuth();
+
+    if (unsubscribeSnapshot) {
+      unsubscribeSnapshot();
+    }
+  };
 }
