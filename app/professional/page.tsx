@@ -12,14 +12,17 @@ import JobCard from "@/components/dashboard/JobCard";
 import { auth, db } from "@/lib/firebase";
 import { getJobs } from "@/lib/jobService";
 import { getNotifications } from "@/lib/notificationService";
+import { getProfessionalShifts } from "@/lib/shiftService";
 
 import { Job } from "@/types/job";
 import { Notification } from "@/types/notification";
+import { Shift } from "@/types/shift";
 
 export default function ProfessionalDashboard() {
   const [fullName, setFullName] = useState("");
   const [jobs, setJobs] = useState<Job[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [shifts, setShifts] = useState<Shift[]>([]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -27,6 +30,7 @@ export default function ProfessionalDashboard() {
         setFullName("");
         setJobs([]);
         setNotifications([]);
+        setShifts([]);
         return;
       }
 
@@ -46,6 +50,10 @@ export default function ProfessionalDashboard() {
         // Load notifications
         const notificationData = await getNotifications(user.uid);
         setNotifications(notificationData);
+
+        // Load professional shifts
+        const shiftData = await getProfessionalShifts(user.uid);
+        setShifts(shiftData);
       } catch (error) {
         console.error(
           "Unable to load professional dashboard:",
@@ -60,6 +68,21 @@ export default function ProfessionalDashboard() {
   const unreadNotifications = notifications.filter(
     (notification) => !notification.read
   ).length;
+
+  // Get today's date in YYYY-MM-DD format
+  const today = new Date().toISOString().split("T")[0];
+
+  // Find future/upcoming shifts and sort them by date/time
+  const upcomingShifts = shifts
+    .filter((shift) => shift.date >= today)
+    .sort((a, b) => {
+      const dateA = `${a.date} ${a.startTime || ""}`;
+      const dateB = `${b.date} ${b.startTime || ""}`;
+
+      return dateA.localeCompare(dateB);
+    });
+
+  const upcomingShift = upcomingShifts[0];
 
   return (
     <ProtectedRoute>
@@ -206,31 +229,72 @@ export default function ProfessionalDashboard() {
                 Upcoming Shift
               </p>
 
-              <h2 className="text-2xl font-bold text-[#0D2B4D] mt-2">
-                📅 Scheduled Shifts
-              </h2>
+              {upcomingShift ? (
+                <>
+                  <h2 className="text-2xl font-bold text-[#0D2B4D] mt-2">
+                    📅 {upcomingShift.date}
+                  </h2>
 
-              <p className="text-gray-600 mt-3">
-                View your upcoming healthcare shifts and schedule.
-              </p>
+                  <div className="mt-4 rounded-xl bg-[#D6F1F1] p-5">
+                    <p className="text-lg font-bold text-[#0D2B4D]">
+                      🏥 {upcomingShift.facilityName}
+                    </p>
 
-              <div className="mt-6 rounded-xl bg-[#D6F1F1] p-5">
-                <p className="font-semibold text-[#0D2B4D]">
-                  View your schedule
-                </p>
+                    <p className="text-gray-700 mt-2">
+                      🕒 {upcomingShift.startTime} –{" "}
+                      {upcomingShift.endTime}
+                    </p>
 
-                <p className="text-gray-600 mt-1">
-                  Check dates, times, departments, and shift details.
-                </p>
-              </div>
+                    <p className="text-gray-700 mt-1">
+                      🏥 Department: {upcomingShift.department}
+                    </p>
 
-              <p className="mt-5 text-[#0FA3A3] font-bold">
-                View Shifts →
-              </p>
+                    {upcomingShift.notes && (
+                      <p className="text-gray-600 mt-3">
+                        📝 {upcomingShift.notes}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="mt-4">
+                    <span className="inline-flex bg-green-100 text-green-700 px-4 py-2 rounded-full font-semibold">
+                      {upcomingShift.status}
+                    </span>
+                  </div>
+
+                  <p className="mt-5 text-[#0FA3A3] font-bold">
+                    View Shift →
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h2 className="text-2xl font-bold text-[#0D2B4D] mt-2">
+                    No Upcoming Shifts
+                  </h2>
+
+                  <p className="text-gray-600 mt-3">
+                    You don't have a scheduled shift coming up.
+                  </p>
+
+                  <div className="mt-6 rounded-xl bg-[#D6F1F1] p-5">
+                    <p className="font-semibold text-[#0D2B4D]">
+                      Find your next opportunity
+                    </p>
+
+                    <p className="text-gray-600 mt-1">
+                      Browse available healthcare opportunities.
+                    </p>
+                  </div>
+
+                  <p className="mt-5 text-[#0FA3A3] font-bold">
+                    View Available Shifts →
+                  </p>
+                </>
+              )}
             </div>
           </Link>
 
-          {/* Available Shifts / Jobs */}
+          {/* Available Shifts */}
 
           <div className="bg-white rounded-2xl shadow-md border border-slate-100 p-6">
             <p className="text-sm font-semibold uppercase tracking-wide text-[#0FA3A3]">
