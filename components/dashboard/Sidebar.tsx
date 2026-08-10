@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import {
@@ -14,13 +15,15 @@ import {
 import { auth, db } from "@/lib/firebase";
 
 export default function Sidebar() {
+  const pathname = usePathname();
   const [unreadCount, setUnreadCount] = useState(0);
+
+  const isFacility = pathname.startsWith("/facility");
 
   useEffect(() => {
     let unsubscribeNotifications = () => {};
 
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-      // Remove any previous notification listener
       unsubscribeNotifications();
 
       if (!user) {
@@ -66,34 +69,45 @@ export default function Sidebar() {
       </h1>
 
       <nav className="space-y-4">
+        {/* Dashboard */}
         <Link
-          href="/professional"
+          href={isFacility ? "/facility" : "/professional"}
           className="block hover:text-teal-300"
         >
           🏠 Dashboard
         </Link>
 
+        {/* Jobs */}
+        {!isFacility && (
+          <Link
+            href="/post-job"
+            className="block hover:text-teal-300"
+          >
+            💼 Jobs
+          </Link>
+        )}
+
+        {/* Applications / Applicants */}
         <Link
-          href="/post-job"
+          href={
+            isFacility
+              ? "/facility/applicants"
+              : "/professional/applications"
+          }
           className="block hover:text-teal-300"
         >
-          💼 Jobs
+          📄 {isFacility ? "Applicants" : "Applications"}
         </Link>
 
+        {/* Messages */}
         <Link
-          href="#"
-          className="block hover:text-teal-300"
-        >
-          📄 Applications
-        </Link>
-
-        <Link
-          href="#"
+          href="/messages"
           className="block hover:text-teal-300"
         >
           💬 Messages
         </Link>
 
+        {/* Notifications */}
         <Link
           href="/notifications"
           className="flex items-center justify-between hover:text-teal-300"
@@ -107,13 +121,17 @@ export default function Sidebar() {
           )}
         </Link>
 
-        <Link
-          href="#"
-          className="block hover:text-teal-300"
-        >
-          👤 Profile
-        </Link>
+        {/* Professional Profile */}
+        {!isFacility && (
+          <Link
+            href="/professional/profile"
+            className="block hover:text-teal-300"
+          >
+            👤 Profile
+          </Link>
+        )}
 
+        {/* Settings remains a placeholder until the page exists */}
         <Link
           href="#"
           className="block hover:text-teal-300"
