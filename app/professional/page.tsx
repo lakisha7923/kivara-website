@@ -25,6 +25,7 @@ export default function ProfessionalDashboard() {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
         setFullName("");
+        setJobs([]);
         setNotifications([]);
         return;
       }
@@ -46,7 +47,10 @@ export default function ProfessionalDashboard() {
         const notificationData = await getNotifications(user.uid);
         setNotifications(notificationData);
       } catch (error) {
-        console.error("Unable to load professional dashboard:", error);
+        console.error(
+          "Unable to load professional dashboard:",
+          error
+        );
       }
     });
 
@@ -60,184 +64,326 @@ export default function ProfessionalDashboard() {
   return (
     <ProtectedRoute>
       <DashboardLayout>
-        {/* Welcome Banner */}
+        {/* ------------------------------------------------ */}
+        {/* Welcome Header */}
+        {/* ------------------------------------------------ */}
+
         <header className="bg-[#0D2B4D] text-white rounded-3xl shadow-lg p-8">
-          <p className="text-teal-300 text-lg">
-            👋 Good Afternoon
+          <p className="text-[#D6F1F1] text-sm font-semibold uppercase tracking-wide">
+            Professional Dashboard
           </p>
 
           <h1 className="text-4xl font-bold mt-2">
             Welcome back, {fullName || "Professional"}
           </h1>
 
-          <p className="text-slate-300 mt-3">
-            Ready to find your next healthcare opportunity?
+          <p className="text-slate-300 mt-3 text-lg">
+            Stay ready for your next healthcare opportunity.
           </p>
         </header>
 
+        {/* ------------------------------------------------ */}
         {/* Work Ready */}
-        <section className="mt-8 space-y-6">
-          <div className="bg-white rounded-2xl shadow p-6 border-l-8 border-green-500">
-            <h2 className="text-2xl font-bold text-green-700">
-              🟢 Work Ready
+        {/* ------------------------------------------------ */}
+
+        <section className="mt-8">
+          <div className="bg-white rounded-2xl shadow-md border border-slate-100 p-6">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-700">
+                    ✓
+                  </span>
+
+                  <div>
+                    <h2 className="text-2xl font-bold text-[#0D2B4D]">
+                      Work Ready
+                    </h2>
+
+                    <p className="text-gray-600 mt-1">
+                      Your profile is ready for healthcare opportunities.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Link
+                href="/professional/profile"
+                className="inline-flex items-center justify-center rounded-lg bg-[#0FA3A3] px-5 py-3 font-semibold text-white hover:bg-[#0c8f8f] transition"
+              >
+                View Profile
+              </Link>
+            </div>
+
+            <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div className="rounded-xl bg-[#D6F1F1] p-4">
+                <p className="font-semibold text-[#0D2B4D]">
+                  ✓ Profile Complete
+                </p>
+              </div>
+
+              <div className="rounded-xl bg-[#D6F1F1] p-4">
+                <p className="font-semibold text-[#0D2B4D]">
+                  ✓ Resume Uploaded
+                </p>
+              </div>
+
+              <div className="rounded-xl bg-[#D6F1F1] p-4">
+                <p className="font-semibold text-[#0D2B4D]">
+                  ✓ License Verified
+                </p>
+              </div>
+
+              <div className="rounded-xl bg-[#D6F1F1] p-4">
+                <p className="font-semibold text-[#0D2B4D]">
+                  ✓ Background Check
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-xl bg-amber-50 border border-amber-200 p-4">
+              <p className="font-semibold text-amber-800">
+                ⚠ BLS Renewal Due in 30 Days
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ------------------------------------------------ */}
+        {/* Action Needed */}
+        {/* ------------------------------------------------ */}
+
+        <section className="mt-6">
+          <Link href="/notifications">
+            <div
+              className={`rounded-2xl shadow-md p-6 border transition hover:shadow-lg ${
+                unreadNotifications > 0
+                  ? "bg-[#D6F1F1] border-[#0FA3A3]"
+                  : "bg-white border-slate-100"
+              }`}
+            >
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-wide text-[#0FA3A3]">
+                    Action Needed
+                  </p>
+
+                  <h2 className="text-2xl font-bold text-[#0D2B4D] mt-1">
+                    {unreadNotifications > 0
+                      ? `You have ${unreadNotifications} unread ${
+                          unreadNotifications === 1
+                            ? "notification"
+                            : "notifications"
+                        }`
+                      : "You're all caught up"}
+                  </h2>
+
+                  <p className="text-gray-600 mt-2">
+                    {unreadNotifications > 0
+                      ? "Review your latest application, message, or shift updates."
+                      : "There are no new notifications requiring your attention."}
+                  </p>
+                </div>
+
+                <span className="inline-flex items-center justify-center rounded-lg bg-[#0D2B4D] text-white px-5 py-3 font-semibold">
+                  View Notifications →
+                </span>
+              </div>
+            </div>
+          </Link>
+        </section>
+
+        {/* ------------------------------------------------ */}
+        {/* Upcoming Shift + Available Shifts */}
+        {/* ------------------------------------------------ */}
+
+        <section className="mt-6 grid lg:grid-cols-2 gap-6">
+          {/* Upcoming Shift */}
+
+          <Link href="/professional/shifts">
+            <div className="bg-white rounded-2xl shadow-md border border-slate-100 p-6 h-full hover:shadow-lg transition">
+              <p className="text-sm font-semibold uppercase tracking-wide text-[#0FA3A3]">
+                Upcoming Shift
+              </p>
+
+              <h2 className="text-2xl font-bold text-[#0D2B4D] mt-2">
+                📅 Scheduled Shifts
+              </h2>
+
+              <p className="text-gray-600 mt-3">
+                View your upcoming healthcare shifts and schedule.
+              </p>
+
+              <div className="mt-6 rounded-xl bg-[#D6F1F1] p-5">
+                <p className="font-semibold text-[#0D2B4D]">
+                  View your schedule
+                </p>
+
+                <p className="text-gray-600 mt-1">
+                  Check dates, times, departments, and shift details.
+                </p>
+              </div>
+
+              <p className="mt-5 text-[#0FA3A3] font-bold">
+                View Shifts →
+              </p>
+            </div>
+          </Link>
+
+          {/* Available Shifts / Jobs */}
+
+          <div className="bg-white rounded-2xl shadow-md border border-slate-100 p-6">
+            <p className="text-sm font-semibold uppercase tracking-wide text-[#0FA3A3]">
+              Available Shifts
+            </p>
+
+            <h2 className="text-2xl font-bold text-[#0D2B4D] mt-2">
+              📋 Available Opportunities
+            </h2>
+
+            <p className="text-gray-600 mt-2 mb-6">
+              Find healthcare opportunities that match your availability.
+            </p>
+
+            {jobs.length === 0 ? (
+              <div className="rounded-xl bg-[#F2F4F7] p-5">
+                <p className="font-semibold text-[#0D2B4D]">
+                  No jobs available right now.
+                </p>
+
+                <p className="text-gray-600 mt-1">
+                  Check back soon for new opportunities.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {jobs.slice(0, 3).map((job) => (
+                  <JobCard
+                    key={job.id}
+                    job={job}
+                  />
+                ))}
+
+                {jobs.length > 3 && (
+                  <p className="text-sm text-gray-500 pt-2">
+                    Showing the latest 3 opportunities.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* ------------------------------------------------ */}
+        {/* Hours & Pay */}
+        {/* ------------------------------------------------ */}
+
+        <section className="mt-6">
+          <div className="bg-white rounded-2xl shadow-md border border-slate-100 p-6">
+            <p className="text-sm font-semibold uppercase tracking-wide text-[#0FA3A3]">
+              Hours & Pay
+            </p>
+
+            <h2 className="text-2xl font-bold text-[#0D2B4D] mt-2">
+              💰 Track Your Work
             </h2>
 
             <p className="text-gray-600 mt-2">
-              Your profile is ready for healthcare opportunities.
+              Your hours and earnings summary will appear here as shift
+              and pay tracking is added to your account.
             </p>
 
-            <div className="mt-6 space-y-2">
-              <p>✅ Profile Complete</p>
-              <p>✅ Resume Uploaded</p>
-              <p>✅ License Verified</p>
-              <p>✅ Background Check</p>
-              <p>⚠️ BLS Renewal Due in 30 Days</p>
+            <div className="mt-5 rounded-xl bg-[#F2F4F7] p-5">
+              <p className="font-semibold text-[#0D2B4D]">
+                Hours & earnings tracking
+              </p>
+
+              <p className="text-gray-600 mt-1">
+                No earnings data is available yet.
+              </p>
             </div>
           </div>
+        </section>
 
-          {/* Unread Notifications */}
-          {unreadNotifications > 0 && (
-            <Link href="/notifications">
-              <div className="bg-yellow-50 border-l-8 border-yellow-500 rounded-2xl shadow p-6 hover:shadow-xl transition cursor-pointer">
-                <h2 className="text-2xl font-bold text-yellow-700">
-                  🔔 Notifications
-                </h2>
+        {/* ------------------------------------------------ */}
+        {/* Quick Actions */}
+        {/* ------------------------------------------------ */}
 
-                <p className="text-gray-700 mt-3">
-                  You have{" "}
-                  <span className="font-bold">
-                    {unreadNotifications}
-                  </span>{" "}
-                  unread notification
-                  {unreadNotifications > 1 ? "s" : ""}.
-                </p>
+        <section className="mt-6 pb-8">
+          <div className="bg-white rounded-2xl shadow-md border border-slate-100 p-6">
+            <p className="text-sm font-semibold uppercase tracking-wide text-[#0FA3A3]">
+              Quick Actions
+            </p>
 
-                <p className="mt-4 text-[#0D2B4D] font-semibold">
-                  View Notifications →
-                </p>
-              </div>
-            </Link>
-          )}
+            <h2 className="text-2xl font-bold text-[#0D2B4D] mt-2 mb-6">
+              Get Where You Need to Go
+            </h2>
 
-          {/* Dashboard Cards */}
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Available Jobs */}
-            <div className="bg-white rounded-2xl shadow p-6">
-              <h2 className="text-xl font-bold mb-4">
-                📋 Available Jobs
-              </h2>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Link
+                href="/professional/applications"
+                className="rounded-xl border border-slate-200 p-5 hover:border-[#0FA3A3] hover:bg-[#D6F1F1] transition"
+              >
+                <div className="text-2xl">📄</div>
 
-              {jobs.length === 0 ? (
-                <p className="text-gray-600">
-                  No jobs available.
-                </p>
-              ) : (
-                <div className="space-y-6">
-                  {jobs.map((job) => (
-                    <JobCard
-                      key={job.id}
-                      job={job}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
+                <h3 className="font-bold text-[#0D2B4D] mt-3">
+                  Applications
+                </h3>
 
-            {/* Upcoming Shifts */}
-            <Link href="/professional/shifts">
-              <div className="bg-white rounded-2xl shadow p-6 hover:shadow-xl transition cursor-pointer h-full">
-                <h2 className="text-xl font-bold mb-2">
-                  📅 Upcoming Shifts
-                </h2>
-
-                <p className="text-gray-600">
-                  View your scheduled shifts.
-                </p>
-
-                <p className="text-[#0D2B4D] font-semibold mt-4">
-                  View Shifts →
-                </p>
-              </div>
-            </Link>
-
-            {/* Messages */}
-            <Link href="/messages">
-              <div className="bg-white rounded-2xl shadow p-6 hover:shadow-xl transition cursor-pointer h-full">
-                <h2 className="text-xl font-bold mb-2">
-                  💬 Messages
-                </h2>
-
-                <p className="text-gray-600">
-                  Communicate with healthcare facilities.
-                </p>
-
-                <p className="text-[#0D2B4D] font-semibold mt-4">
-                  Open Messages →
-                </p>
-              </div>
-            </Link>
-
-            {/* Applications */}
-            <Link href="/professional/applications">
-              <div className="bg-white rounded-2xl shadow p-6 hover:shadow-xl transition cursor-pointer h-full">
-                <h2 className="text-xl font-bold mb-2">
-                  📄 Applications
-                </h2>
-
-                <p className="text-gray-600">
+                <p className="text-sm text-gray-600 mt-1">
                   Track your submitted applications.
                 </p>
+              </Link>
 
-                <p className="text-[#0D2B4D] font-semibold mt-4">
-                  View Applications →
+              <Link
+                href="/messages"
+                className="rounded-xl border border-slate-200 p-5 hover:border-[#0FA3A3] hover:bg-[#D6F1F1] transition"
+              >
+                <div className="text-2xl">💬</div>
+
+                <h3 className="font-bold text-[#0D2B4D] mt-3">
+                  Messages
+                </h3>
+
+                <p className="text-sm text-gray-600 mt-1">
+                  Communicate with healthcare facilities.
                 </p>
-              </div>
-            </Link>
+              </Link>
 
-            {/* My Profile */}
-            <Link href="/professional/profile">
-              <div className="bg-white rounded-2xl shadow p-6 hover:shadow-xl transition cursor-pointer h-full">
-                <h2 className="text-xl font-bold mb-2">
-                  👤 My Profile
-                </h2>
+              <Link
+                href="/professional/profile"
+                className="rounded-xl border border-slate-200 p-5 hover:border-[#0FA3A3] hover:bg-[#D6F1F1] transition"
+              >
+                <div className="text-2xl">👤</div>
 
-                <p className="text-gray-600">
+                <h3 className="font-bold text-[#0D2B4D] mt-3">
+                  My Profile
+                </h3>
+
+                <p className="text-sm text-gray-600 mt-1">
                   Update your profile and credentials.
                 </p>
+              </Link>
 
-                <p className="text-[#0D2B4D] font-semibold mt-4">
-                  View Profile →
+              <Link
+                href="/notifications"
+                className="rounded-xl border border-slate-200 p-5 hover:border-[#0FA3A3] hover:bg-[#D6F1F1] transition"
+              >
+                <div className="text-2xl">🔔</div>
+
+                <h3 className="font-bold text-[#0D2B4D] mt-3">
+                  Notifications
+                </h3>
+
+                <p className="text-sm text-gray-600 mt-1">
+                  {unreadNotifications > 0
+                    ? `${unreadNotifications} unread notification${
+                        unreadNotifications > 1 ? "s" : ""
+                      }`
+                    : "You're all caught up."}
                 </p>
-              </div>
-            </Link>
-
-            {/* Notifications */}
-            <Link href="/notifications">
-              <div className="bg-white rounded-2xl shadow p-6 hover:shadow-xl transition cursor-pointer h-full">
-                <h2 className="text-xl font-bold mb-2">
-                  🔔 Notifications
-                </h2>
-
-                {unreadNotifications > 0 ? (
-                  <p className="text-gray-600">
-                    You have{" "}
-                    <span className="font-bold text-teal-700">
-                      {unreadNotifications}
-                    </span>{" "}
-                    unread notification
-                    {unreadNotifications > 1 ? "s" : ""}.
-                  </p>
-                ) : (
-                  <p className="text-gray-600">
-                    You're all caught up.
-                  </p>
-                )}
-
-                <p className="text-[#0D2B4D] font-semibold mt-4">
-                  View Notifications →
-                </p>
-              </div>
-            </Link>
+              </Link>
+            </div>
           </div>
         </section>
       </DashboardLayout>
