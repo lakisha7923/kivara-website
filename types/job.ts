@@ -1,11 +1,11 @@
-export interface Job {
+export type Job = {
   id: string;
-  jobTitle: string;
+  facilityId: string;
   facilityName: string;
+  jobTitle: string;
   location: string;
   specialty: string;
   shift: string;
   hourlyRate: string;
-  description?: string;
-  createdAt?: any;
-}
+  description: string;
+};
