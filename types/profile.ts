@@ -1,3 +1,8 @@
+export type CredentialStatus =
+  | "Not Submitted"
+  | "Pending"
+  | "Verified";
+
 export interface ProfessionalProfile {
   fullName: string;
   title: string;
@@ -10,4 +15,8 @@ export interface ProfessionalProfile {
   summary: string;
   resumeUrl?: string;
   photoUrl?: string;
+
+  licenseStatus?: CredentialStatus;
+  backgroundCheckStatus?: CredentialStatus;
+  cprStatus?: CredentialStatus;
 }
