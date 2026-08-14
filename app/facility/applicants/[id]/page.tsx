@@ -3,9 +3,16 @@
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
-import { ProfessionalProfile } from "@/types/profile";
+import { auth, db } from "@/lib/firebase";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
+import {
+  CredentialStatus,
+  ProfessionalProfile,
+} from "@/types/profile";
 
 type ApplicantProfileProps = {
   params: Promise<{
@@ -22,6 +29,8 @@ export default function ApplicantProfile({
     useState<ProfessionalProfile | null>(null);
 
   const [loading, setLoading] = useState(true);
+  const [savingCredential, setSavingCredential] =
+    useState<string | null>(null);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -47,6 +56,53 @@ export default function ApplicantProfile({
 
     loadProfile();
   }, [id]);
+
+  const updateCredentialStatus = async (
+    field:
+      | "licenseStatus"
+      | "backgroundCheckStatus"
+      | "cprStatus",
+    status: CredentialStatus
+  ) => {
+    if (!profile) return;
+
+    const user = auth.currentUser;
+
+    if (!user) {
+      alert("Please log in first.");
+      return;
+    }
+
+    try {
+      setSavingCredential(field);
+
+      await updateDoc(doc(db, "users", id), {
+        [field]: status,
+      });
+
+      setProfile({
+        ...profile,
+        [field]: status,
+      });
+
+      alert(
+        status === "Verified"
+          ? "Credential marked as verified."
+          : "Credential returned to pending."
+      );
+    } catch (error) {
+      console.error(
+        "Unable to update credential status:",
+        error
+      );
+
+      alert(
+        "Unable to update credential status."
+      );
+    } finally {
+      setSavingCredential(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -106,20 +162,64 @@ export default function ApplicantProfile({
   const hasResume =
     profile.resumeUrl?.trim() !== "";
 
-  const credentialItems = [
-    hasLicense,
-    hasExperience,
-    hasSpecialty,
-    hasResume,
+  const licenseStatus =
+    profile.licenseStatus || "Not Submitted";
+
+  const backgroundCheckStatus =
+    profile.backgroundCheckStatus ||
+    "Not Submitted";
+
+  const cprStatus =
+    profile.cprStatus || "Not Submitted";
+
+  const credentialStatuses = [
+    licenseStatus,
+    backgroundCheckStatus,
+    cprStatus,
   ];
 
-  const completedCredentials =
-    credentialItems.filter(Boolean).length;
+  const verifiedCredentials =
+    credentialStatuses.filter(
+      (status) => status === "Verified"
+    ).length;
+
+  const pendingCredentials =
+    credentialStatuses.filter(
+      (status) => status === "Pending"
+    ).length;
 
   const workReady =
-    hasLicense &&
-    hasExperience &&
-    hasSpecialty;
+    licenseStatus === "Verified" &&
+    backgroundCheckStatus === "Verified" &&
+    cprStatus === "Verified";
+
+  const getStatusClasses = (
+    status: CredentialStatus
+  ) => {
+    if (status === "Verified") {
+      return "bg-green-100 text-green-700";
+    }
+
+    if (status === "Pending") {
+      return "bg-yellow-100 text-yellow-700";
+    }
+
+    return "bg-slate-100 text-slate-600";
+  };
+
+  const getStatusIcon = (
+    status: CredentialStatus
+  ) => {
+    if (status === "Verified") {
+      return "✅";
+    }
+
+    if (status === "Pending") {
+      return "⏳";
+    }
+
+    return "⚪";
+  };
 
   return (
     <DashboardLayout>
@@ -135,7 +235,7 @@ export default function ApplicantProfile({
 
         <p className="text-slate-300 mt-2 text-lg">
           Review this healthcare professional's
-          qualifications and experience.
+          qualifications and credentials.
         </p>
       </header>
 
@@ -159,7 +259,8 @@ export default function ApplicantProfile({
             </div>
 
             <h2 className="text-2xl font-bold text-[#0D2B4D] mt-5">
-              {profile.fullName || "Healthcare Professional"}
+              {profile.fullName ||
+                "Healthcare Professional"}
             </h2>
 
             <p className="text-gray-500 mt-1">
@@ -174,11 +275,13 @@ export default function ApplicantProfile({
             )}
 
             <p className="text-gray-500 mt-4">
-  📍 {profile.location || "Location not provided"}
-</p>
+              📍{" "}
+              {profile.location ||
+                "Location not provided"}
+            </p>
           </div>
 
-          {/* Work Ready */}
+          {/* Credential Status */}
           <div className="mt-8 border-t border-slate-200 pt-6">
             <p className="text-sm font-semibold uppercase tracking-wide text-[#0FA3A3]">
               Credential Status
@@ -188,12 +291,18 @@ export default function ApplicantProfile({
               className={`mt-3 rounded-xl p-5 ${
                 workReady
                   ? "bg-green-50"
-                  : "bg-yellow-50"
+                  : pendingCredentials > 0
+                  ? "bg-yellow-50"
+                  : "bg-slate-50"
               }`}
             >
               <div className="flex items-center gap-3">
                 <span className="text-2xl">
-                  {workReady ? "🟢" : "🟡"}
+                  {workReady
+                    ? "🟢"
+                    : pendingCredentials > 0
+                    ? "🟡"
+                    : "⚪"}
                 </span>
 
                 <div>
@@ -201,18 +310,21 @@ export default function ApplicantProfile({
                     className={`text-xl font-bold ${
                       workReady
                         ? "text-green-700"
-                        : "text-yellow-700"
+                        : pendingCredentials > 0
+                        ? "text-yellow-700"
+                        : "text-slate-600"
                     }`}
                   >
                     {workReady
                       ? "Work Ready"
-                      : "Profile Incomplete"}
+                      : pendingCredentials > 0
+                      ? "Verification Pending"
+                      : "Credentials Not Submitted"}
                   </h3>
 
                   <p className="text-sm text-gray-600 mt-1">
-                    {completedCredentials} of{" "}
-                    {credentialItems.length} credential
-                    items provided.
+                    {verifiedCredentials} of 3
+                    credentials verified.
                   </p>
                 </div>
               </div>
@@ -289,7 +401,7 @@ export default function ApplicantProfile({
 
               <div className="rounded-xl bg-slate-50 p-4">
                 <p className="text-sm text-gray-500">
-                  License
+                  License Number
                 </p>
 
                 <p className="font-semibold text-[#0D2B4D] mt-1">
@@ -297,6 +409,266 @@ export default function ApplicantProfile({
                     ? profile.licenseNumber
                     : "Not provided"}
                 </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Credential Verification */}
+          <div className="bg-white rounded-2xl shadow-md border border-slate-100 p-6">
+            <p className="text-sm font-semibold uppercase tracking-wide text-[#0FA3A3]">
+              Credential Review
+            </p>
+
+            <h2 className="text-2xl font-bold text-[#0D2B4D] mt-1">
+              Verify Credentials
+            </h2>
+
+            <p className="text-gray-600 mt-2">
+              Review the professional's submitted
+              credentials and update their verification
+              status.
+            </p>
+
+            <div className="space-y-4 mt-6">
+              {/* License */}
+              <div className="border rounded-xl p-5 bg-slate-50">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">
+                        🪪
+                      </span>
+
+                      <div>
+                        <h3 className="text-lg font-bold text-[#0D2B4D]">
+                          Professional License
+                        </h3>
+
+                        <p className="text-sm text-gray-500">
+                          License Number:{" "}
+                          {hasLicense
+                            ? profile.licenseNumber
+                            : "Not provided"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <span
+                      className={`inline-block mt-3 px-3 py-1 rounded-full text-sm font-semibold ${getStatusClasses(
+                        licenseStatus
+                      )}`}
+                    >
+                      {getStatusIcon(
+                        licenseStatus
+                      )}{" "}
+                      {licenseStatus}
+                    </span>
+                  </div>
+
+                  <div className="flex gap-2">
+                    {licenseStatus !==
+                      "Verified" && (
+                      <button
+                        onClick={() =>
+                          updateCredentialStatus(
+                            "licenseStatus",
+                            "Verified"
+                          )
+                        }
+                        disabled={
+                          savingCredential ===
+                          "licenseStatus"
+                        }
+                        className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-60"
+                      >
+                        {savingCredential ===
+                        "licenseStatus"
+                          ? "Saving..."
+                          : "✓ Verify"}
+                      </button>
+                    )}
+
+                    {licenseStatus ===
+                      "Verified" && (
+                      <button
+                        onClick={() =>
+                          updateCredentialStatus(
+                            "licenseStatus",
+                            "Pending"
+                          )
+                        }
+                        disabled={
+                          savingCredential ===
+                          "licenseStatus"
+                        }
+                        className="bg-yellow-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-600 disabled:opacity-60"
+                      >
+                        {savingCredential ===
+                        "licenseStatus"
+                          ? "Saving..."
+                          : "Return to Pending"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Background Check */}
+              <div className="border rounded-xl p-5 bg-slate-50">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">
+                        🛡️
+                      </span>
+
+                      <div>
+                        <h3 className="text-lg font-bold text-[#0D2B4D]">
+                          Background Check
+                        </h3>
+
+                        <p className="text-sm text-gray-500">
+                          Background screening
+                        </p>
+                      </div>
+                    </div>
+
+                    <span
+                      className={`inline-block mt-3 px-3 py-1 rounded-full text-sm font-semibold ${getStatusClasses(
+                        backgroundCheckStatus
+                      )}`}
+                    >
+                      {getStatusIcon(
+                        backgroundCheckStatus
+                      )}{" "}
+                      {backgroundCheckStatus}
+                    </span>
+                  </div>
+
+                  <div className="flex gap-2">
+                    {backgroundCheckStatus !==
+                      "Verified" && (
+                      <button
+                        onClick={() =>
+                          updateCredentialStatus(
+                            "backgroundCheckStatus",
+                            "Verified"
+                          )
+                        }
+                        disabled={
+                          savingCredential ===
+                          "backgroundCheckStatus"
+                        }
+                        className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-60"
+                      >
+                        {savingCredential ===
+                        "backgroundCheckStatus"
+                          ? "Saving..."
+                          : "✓ Verify"}
+                      </button>
+                    )}
+
+                    {backgroundCheckStatus ===
+                      "Verified" && (
+                      <button
+                        onClick={() =>
+                          updateCredentialStatus(
+                            "backgroundCheckStatus",
+                            "Pending"
+                          )
+                        }
+                        disabled={
+                          savingCredential ===
+                          "backgroundCheckStatus"
+                        }
+                        className="bg-yellow-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-600 disabled:opacity-60"
+                      >
+                        {savingCredential ===
+                        "backgroundCheckStatus"
+                          ? "Saving..."
+                          : "Return to Pending"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* CPR / BLS */}
+              <div className="border rounded-xl p-5 bg-slate-50">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">
+                        ❤️
+                      </span>
+
+                      <div>
+                        <h3 className="text-lg font-bold text-[#0D2B4D]">
+                          CPR / BLS
+                        </h3>
+
+                        <p className="text-sm text-gray-500">
+                          CPR or BLS certification
+                        </p>
+                      </div>
+                    </div>
+
+                    <span
+                      className={`inline-block mt-3 px-3 py-1 rounded-full text-sm font-semibold ${getStatusClasses(
+                        cprStatus
+                      )}`}
+                    >
+                      {getStatusIcon(cprStatus)}{" "}
+                      {cprStatus}
+                    </span>
+                  </div>
+
+                  <div className="flex gap-2">
+                    {cprStatus !==
+                      "Verified" && (
+                      <button
+                        onClick={() =>
+                          updateCredentialStatus(
+                            "cprStatus",
+                            "Verified"
+                          )
+                        }
+                        disabled={
+                          savingCredential ===
+                          "cprStatus"
+                        }
+                        className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-60"
+                      >
+                        {savingCredential ===
+                        "cprStatus"
+                          ? "Saving..."
+                          : "✓ Verify"}
+                      </button>
+                    )}
+
+                    {cprStatus ===
+                      "Verified" && (
+                      <button
+                        onClick={() =>
+                          updateCredentialStatus(
+                            "cprStatus",
+                            "Pending"
+                          )
+                        }
+                        disabled={
+                          savingCredential ===
+                          "cprStatus"
+                        }
+                        className="bg-yellow-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-600 disabled:opacity-60"
+                      >
+                        {savingCredential ===
+                        "cprStatus"
+                          ? "Saving..."
+                          : "Return to Pending"}
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
