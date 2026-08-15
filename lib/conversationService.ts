@@ -63,31 +63,79 @@ export function subscribeToConversations(
         return;
       }
 
-      unsubscribeSnapshot = onSnapshot(
+      const facilityQuery = query(
         collection(db, "conversations"),
-        (snapshot) => {
-          const conversations = snapshot.docs
-            .map((conversationDoc) => ({
-              id: conversationDoc.id,
-              ...conversationDoc.data(),
-            }))
-            .filter(
-              (conversation: any) =>
-                conversation.facilityId === user.uid ||
-                conversation.professionalId === user.uid
-            );
+        where("facilityId", "==", user.uid)
+      );
 
-          callback(conversations);
+      const professionalQuery = query(
+        collection(db, "conversations"),
+        where("professionalId", "==", user.uid)
+      );
+
+      let facilityConversations: any[] = [];
+      let professionalConversations: any[] = [];
+
+      const updateConversations = () => {
+        const combined = [
+          ...facilityConversations,
+          ...professionalConversations,
+        ];
+
+        const unique = Array.from(
+          new Map(
+            combined.map((conversation) => [
+              conversation.id,
+              conversation,
+            ])
+          ).values()
+        );
+
+        callback(unique);
+      };
+
+      const unsubscribeFacility = onSnapshot(
+        facilityQuery,
+        (snapshot) => {
+          facilityConversations = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+
+          updateConversations();
         },
         (error) => {
           console.error(
-            "Unable to load conversations:",
+            "Unable to load facility conversations:",
             error
           );
-
-          callback([]);
         }
       );
+
+      const unsubscribeProfessional = onSnapshot(
+        professionalQuery,
+        (snapshot) => {
+          professionalConversations = snapshot.docs.map(
+            (doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            })
+          );
+
+          updateConversations();
+        },
+        (error) => {
+          console.error(
+            "Unable to load professional conversations:",
+            error
+          );
+        }
+      );
+
+      unsubscribeSnapshot = () => {
+        unsubscribeFacility();
+        unsubscribeProfessional();
+      };
     }
   );
 

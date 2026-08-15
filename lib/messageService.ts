@@ -12,6 +12,7 @@ import {
   query,
   serverTimestamp,
   updateDoc,
+  where,
 } from "firebase/firestore";
 
 export async function sendMessage(
@@ -19,7 +20,29 @@ export async function sendMessage(
   senderId: string,
   text: string
 ) {
-  // Save the message
+  const conversationRef = doc(
+    db,
+    "conversations",
+    conversationId
+  );
+
+  const conversationSnap = await getDoc(conversationRef);
+
+  if (!conversationSnap.exists()) {
+    throw new Error("Conversation not found.");
+  }
+
+  const conversation = conversationSnap.data();
+
+  if (
+    senderId !== conversation.facilityId &&
+    senderId !== conversation.professionalId
+  ) {
+    throw new Error(
+      "You are not a participant in this conversation."
+    );
+  }
+
   await addDoc(collection(db, "messages"), {
     conversationId,
     senderId,
@@ -27,21 +50,11 @@ export async function sendMessage(
     createdAt: serverTimestamp(),
   });
 
-  // Update conversation preview
-  await updateDoc(doc(db, "conversations", conversationId), {
+  await updateDoc(conversationRef, {
     lastMessage: text,
     updatedAt: serverTimestamp(),
   });
 
-  // Load conversation to determine recipient
-  const conversationRef = doc(db, "conversations", conversationId);
-  const conversationSnap = await getDoc(conversationRef);
-
-  if (!conversationSnap.exists()) return;
-
-  const conversation = conversationSnap.data();
-
-  // Determine who should receive the notification
   const receiverId =
     senderId === conversation.facilityId
       ? conversation.professionalId
@@ -52,7 +65,6 @@ export async function sendMessage(
       ? conversation.facilityName
       : conversation.professionalName;
 
-  // Create notification
   await createNotification({
     userId: receiverId,
     title: "New Message",
@@ -68,19 +80,27 @@ export function subscribeToMessages(
 ) {
   const q = query(
     collection(db, "messages"),
+    where("conversationId", "==", conversationId),
     orderBy("createdAt", "asc")
   );
 
-  return onSnapshot(q, (snapshot) => {
-    const messages: Message[] = snapshot.docs
-      .map((doc) => ({
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const messages: Message[] = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...(doc.data() as Omit<Message, "id">),
-      }))
-      .filter(
-        (message) => message.conversationId === conversationId
+      }));
+
+      callback(messages);
+    },
+    (error) => {
+      console.error(
+        "Unable to load conversation messages:",
+        error
       );
 
-    callback(messages);
-  });
+      callback([]);
+    }
+  );
 }
