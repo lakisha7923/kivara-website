@@ -19,8 +19,7 @@ import { Job, JobStatus } from "@/types/job";
 export default function FacilityJobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
-  const [updatingJob, setUpdatingJob] =
-    useState<string | null>(null);
+  const [updatingJob, setUpdatingJob] = useState<string | null>(null);
 
   const loadJobs = async (userId: string) => {
     try {
@@ -38,11 +37,7 @@ export default function FacilityJobsPage() {
 
       setJobs(data);
     } catch (error) {
-      console.error(
-        "Unable to load facility jobs:",
-        error
-      );
-
+      console.error("Unable to load facility jobs:", error);
       alert("Unable to load your jobs.");
     } finally {
       setLoading(false);
@@ -50,18 +45,15 @@ export default function FacilityJobsPage() {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      async (user) => {
-        if (!user) {
-          setJobs([]);
-          setLoading(false);
-          return;
-        }
-
-        await loadJobs(user.uid);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        setJobs([]);
+        setLoading(false);
+        return;
       }
-    );
+
+      await loadJobs(user.uid);
+    });
 
     return () => unsubscribe();
   }, []);
@@ -104,11 +96,7 @@ export default function FacilityJobsPage() {
           : "Job posting reopened successfully."
       );
     } catch (error) {
-      console.error(
-        "Unable to update job status:",
-        error
-      );
-
+      console.error("Unable to update job status:", error);
       alert("Unable to update job posting.");
     } finally {
       setUpdatingJob(null);
@@ -178,8 +166,8 @@ export default function FacilityJobsPage() {
             </h2>
 
             <p className="text-gray-600 mt-2 max-w-md mx-auto">
-              Create your first healthcare position to
-              start building your staffing pipeline.
+              Create your first healthcare position to start
+              building your staffing pipeline.
             </p>
 
             <Link
@@ -192,8 +180,7 @@ export default function FacilityJobsPage() {
         ) : (
           <div className="space-y-5">
             {jobs.map((job) => {
-              const isClosed =
-                job.status === "Closed";
+              const isClosed = job.status === "Closed";
 
               return (
                 <div
@@ -211,9 +198,7 @@ export default function FacilityJobsPage() {
                               : "bg-green-100 text-green-700"
                           }`}
                         >
-                          {isClosed
-                            ? "Closed"
-                            : "Open Position"}
+                          {isClosed ? "Closed" : "Open Position"}
                         </span>
                       </div>
 
@@ -281,19 +266,22 @@ export default function FacilityJobsPage() {
                         View Details
                       </Link>
 
+                      <Link
+                        href={`/facility/jobs/${job.id}/edit`}
+                        className="flex-1 text-center border border-[#0D2B4D] text-[#0D2B4D] px-5 py-3 rounded-xl font-semibold hover:bg-slate-50 transition"
+                      >
+                        ✏️ Edit Job
+                      </Link>
+
                       <button
                         type="button"
                         onClick={() =>
                           updateJobStatus(
                             job.id,
-                            isClosed
-                              ? "Open"
-                              : "Closed"
+                            isClosed ? "Open" : "Closed"
                           )
                         }
-                        disabled={
-                          updatingJob === job.id
-                        }
+                        disabled={updatingJob === job.id}
                         className={`flex-1 text-center text-white px-5 py-3 rounded-xl font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed ${
                           isClosed
                             ? "bg-[#0FA3A3] hover:bg-[#0D9292]"

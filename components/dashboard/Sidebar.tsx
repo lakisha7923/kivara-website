@@ -78,14 +78,12 @@ export default function Sidebar() {
         </Link>
 
         {/* Jobs */}
-        {!isFacility && (
-          <Link
-            href="/post-job"
-            className="block hover:text-teal-300"
-          >
-            💼 Jobs
-          </Link>
-        )}
+        <Link
+          href={isFacility ? "/facility/jobs" : "/professional/jobs"}
+          className="block hover:text-teal-300"
+        >
+          💼 Jobs
+        </Link>
 
         {/* Applications / Applicants */}
         <Link
@@ -131,7 +129,7 @@ export default function Sidebar() {
           </Link>
         )}
 
-        {/* Settings remains a placeholder until the page exists */}
+        {/* Settings */}
         <Link
           href="#"
           className="block hover:text-teal-300"
