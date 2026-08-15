@@ -1,3 +1,5 @@
+export type JobStatus = "Open" | "Closed";
+
 export type Job = {
   id: string;
   facilityId: string;
@@ -8,4 +10,5 @@ export type Job = {
   shift: string;
   hourlyRate: string;
   description: string;
+  status?: JobStatus;
 };

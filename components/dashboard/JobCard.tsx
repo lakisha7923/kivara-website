@@ -17,11 +17,18 @@ type JobCardProps = {
 };
 
 export default function JobCard({ job }: JobCardProps) {
+  const isClosed = job.status === "Closed";
+
   const handleApply = async () => {
     const user = auth.currentUser;
 
     if (!user) {
       alert("Please log in first.");
+      return;
+    }
+
+    if (isClosed) {
+      alert("This job is no longer accepting applications.");
       return;
     }
 
@@ -55,22 +62,40 @@ export default function JobCard({ job }: JobCardProps) {
 
       alert("Application submitted successfully!");
     } catch (error) {
-      console.error("Unable to submit application:", error);
+      console.error(
+        "Unable to submit application:",
+        error
+      );
+
       alert("Something went wrong.");
     }
   };
 
   return (
-    <div>
-      <h2 className="text-xl font-bold text-[#0D2B4D]">
-        {job.jobTitle}
-      </h2>
+    <div className="border border-slate-100 rounded-2xl p-5 bg-white shadow-sm">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h2 className="text-xl font-bold text-[#0D2B4D]">
+            {job.jobTitle}
+          </h2>
 
-      <p className="mt-2">
-        🏥 {job.facilityName}
-      </p>
+          <p className="mt-2">
+            🏥 {job.facilityName}
+          </p>
+        </div>
 
-      <p>
+        <span
+          className={`px-3 py-1 rounded-full text-sm font-semibold ${
+            isClosed
+              ? "bg-red-100 text-red-700"
+              : "bg-green-100 text-green-700"
+          }`}
+        >
+          {isClosed ? "Closed" : "Open"}
+        </span>
+      </div>
+
+      <p className="mt-3">
         📍 {job.location}
       </p>
 
@@ -94,12 +119,23 @@ export default function JobCard({ job }: JobCardProps) {
           View Details
         </Link>
 
-        <button
-          onClick={handleApply}
-          className="bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600"
-        >
-          Apply
-        </button>
+        {isClosed ? (
+          <button
+            type="button"
+            disabled
+            className="bg-slate-300 text-slate-600 px-4 py-2 rounded-lg cursor-not-allowed"
+          >
+            Applications Closed
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={handleApply}
+            className="bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600"
+          >
+            Apply
+          </button>
+        )}
       </div>
     </div>
   );
