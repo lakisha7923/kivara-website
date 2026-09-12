@@ -23,7 +23,10 @@ export const mockCna: CnaProfile = {
   phone: "(404) 555-0142",
   status: "Work Ready",
   workReady: true,
-  actionItems: [],
+  actionItems: [
+    "Renew TB Screening before Sep 28",
+    "Confirm arrival notes for Saturday Memory Care shift",
+  ],
   workAreas: ["Long-term care", "Med-surg support", "Assisted living"],
   approvedHoursThisPeriod: 36,
   payStatus: "Approved hours ready for payroll provider",

@@ -148,10 +148,17 @@ export default function CnaShiftDetailPage() {
           ) : null}
 
           {requested && !confirmed ? (
-            <p className="mt-3 text-sm font-medium text-emerald-700">
-              Handoff 3 complete. A request is not a schedule until Admin
-              confirms.
-            </p>
+            <>
+              <p className="mt-3 text-sm font-medium text-emerald-700">
+                Request submitted. This is not a schedule until Admin confirms.
+              </p>
+              <Link
+                href={`/cna/shifts/${shift.id}/status`}
+                className="mt-3 inline-flex text-sm font-semibold text-teal-700"
+              >
+                View request status →
+              </Link>
+            </>
           ) : null}
         </ScreenCard>
       </div>

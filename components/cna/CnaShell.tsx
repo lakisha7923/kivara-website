@@ -45,7 +45,7 @@ export default function CnaShell({ children }: { children: ReactNode }) {
               Site
             </Link>
             <Link
-              href="/cna/more"
+              href="/cna/more/notifications"
               className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-sm hover:bg-white/20"
               aria-label="Notifications"
             >

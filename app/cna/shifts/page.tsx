@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo } from "react";
 
 import CnaShell from "@/components/cna/CnaShell";
 import {
@@ -15,76 +16,100 @@ export default function CnaShiftsPage() {
   const { record, hydrated } = useHandoffs();
   const showHandoff = hydrated && record.published;
 
+  const shifts = useMemo(() => {
+    if (!showHandoff) return mockAvailableShifts;
+    if (mockAvailableShifts.some((shift) => shift.id === record.shiftId)) {
+      return mockAvailableShifts;
+    }
+    return [
+      {
+        id: record.shiftId,
+        positionId: record.requestId,
+        requestId: record.requestId,
+        facilityName: record.facilityName,
+        locationName: record.locationName,
+        address: record.locationName,
+        unit: record.unit,
+        date: record.date,
+        startTime: record.startTime,
+        endTime: record.endTime,
+        payRate: record.payRate,
+        requirements: record.requirements,
+        instructions: record.instructions,
+        eligible: true,
+      },
+      ...mockAvailableShifts,
+    ];
+  }, [record, showHandoff]);
+
   return (
     <CnaShell>
       <HandoffRail portal="cna" />
       <HandoffNotifications portal="cna" />
       <PageHeader
         eyebrow="Shifts"
-        title="Eligible open shifts"
-        subtitle="Visibility is limited to shifts you are eligible to work."
+        title="Available shifts"
+        subtitle="Available Shifts → Shift Details → Request Shift → Request Status"
       />
 
-      {showHandoff ? (
-        <ScreenCard className="mb-4 border-[#0FA3A3]/40">
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-wide text-[#0FA3A3]">
-                Handoff shift
-              </p>
-              <h2 className="font-bold text-[#0D2B4D]">{record.facilityName}</h2>
-              <p className="text-sm text-slate-600">{record.locationName}</p>
+      <div className="space-y-4">
+        {mockShiftRequests.map((request) => (
+          <ScreenCard key={request.id}>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-sm font-semibold text-[#0D2B4D]">Your request</p>
+              <StatusBadge label={request.status} tone="info" />
             </div>
-            <StatusBadge
-              label={record.confirmed ? "Confirmed" : record.cnaRequested ? "Requested" : "Eligible"}
-              tone={record.confirmed ? "success" : "brand"}
-            />
-          </div>
-          <p className="mt-3 text-sm text-slate-700">
-            {record.date} · {record.startTime}–{record.endTime} · ${record.payRate}/hr
-          </p>
-          <Link
-            href={`/cna/shifts/${record.shiftId}`}
-            className="mt-4 inline-flex rounded-full bg-[#0D2B4D] px-4 py-2 text-sm font-semibold text-white"
-          >
-            Open shift
-          </Link>
-        </ScreenCard>
-      ) : null}
-
-      {mockShiftRequests.map((request) => (
-        <ScreenCard key={request.id} className="mb-4">
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-sm font-semibold text-[#0D2B4D]">Your request</p>
-            <StatusBadge label={request.status} tone="info" />
-          </div>
-          <p className="mt-2 text-sm text-slate-600">
-            A request is not a schedule. Kivara must confirm the assignment.
-          </p>
-        </ScreenCard>
-      ))}
-
-      <div className="space-y-3">
-        {mockAvailableShifts.map((shift) => (
-          <ScreenCard key={shift.id}>
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <h2 className="font-bold text-[#0D2B4D]">{shift.facilityName}</h2>
-                <p className="text-sm text-slate-600">{shift.locationName}</p>
-              </div>
-              <StatusBadge label="Eligible" tone="success" />
-            </div>
-            <p className="mt-3 text-sm text-slate-700">
-              {shift.date} · {shift.startTime}–{shift.endTime}
+            <p className="mt-2 text-sm text-slate-600">
+              Requested {request.requestedAt}. Not a schedule until confirmed.
             </p>
             <Link
-              href={`/cna/shifts/${shift.id}`}
-              className="mt-4 inline-flex rounded-full border px-4 py-2 text-sm font-semibold"
+              href={`/cna/shifts/${request.shiftId}/status`}
+              className="mt-3 inline-flex text-sm font-semibold text-teal-700"
             >
-              View details
+              View request status →
             </Link>
           </ScreenCard>
         ))}
+
+        {shifts.map((shift) => {
+          const isHandoff = showHandoff && shift.id === record.shiftId;
+          return (
+            <ScreenCard key={shift.id}>
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <h2 className="font-bold text-[#0D2B4D]">{shift.facilityName}</h2>
+                  <p className="text-sm text-slate-600">{shift.locationName}</p>
+                </div>
+                <StatusBadge
+                  label={
+                    isHandoff && record.confirmed
+                      ? "Confirmed"
+                      : isHandoff && record.cnaRequested
+                        ? "Requested"
+                        : "Eligible"
+                  }
+                  tone={
+                    isHandoff && record.confirmed
+                      ? "success"
+                      : isHandoff && record.cnaRequested
+                        ? "warning"
+                        : "brand"
+                  }
+                />
+              </div>
+              <p className="mt-3 text-sm text-slate-700">
+                {shift.date} · {shift.startTime}–{shift.endTime} · $
+                {shift.payRate}/hr
+              </p>
+              <Link
+                href={`/cna/shifts/${shift.id}`}
+                className="mt-4 inline-flex rounded-full bg-[#0D2B4D] px-4 py-2 text-sm font-semibold text-white"
+              >
+                Shift details
+              </Link>
+            </ScreenCard>
+          );
+        })}
       </div>
     </CnaShell>
   );
