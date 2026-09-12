@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Montserrat, Playfair_Display } from "next/font/google";
 
+import { HandoffProvider } from "@/components/handoffs/HandoffProvider";
+
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -44,7 +46,7 @@ export default function RootLayout({
       className={`${montserrat.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[var(--kivara-offwhite)] text-[var(--kivara-navy)] font-[family-name:var(--font-montserrat)]">
-        {children}
+        <HandoffProvider>{children}</HandoffProvider>
       </body>
     </html>
   );

@@ -41,8 +41,10 @@ function GeofenceMap({
 
 export default function GpsTimeClock({
   assignmentId,
+  onTimesheetSubmitted,
 }: {
   assignmentId?: string;
+  onTimesheetSubmitted?: () => void;
 }) {
   const shift = cnaActiveClockShift;
   const [phase, setPhase] = useState<Phase>("details");
@@ -299,7 +301,10 @@ export default function GpsTimeClock({
           </div>
           <button
             type="button"
-            onClick={() => setPhase("submitted")}
+            onClick={() => {
+              setPhase("submitted");
+              onTimesheetSubmitted?.();
+            }}
             className="w-full rounded-full bg-[#0FA3A3] py-3.5 text-sm font-semibold text-white"
           >
             Clock Out

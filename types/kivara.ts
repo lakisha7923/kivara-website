@@ -193,7 +193,8 @@ export interface AuditEvent {
   at: string;
 }
 
+/** Screen Map §3 — Confirmed Assignment Screen Rule */
 export const CONFIRMED_CNA_COPY =
   "CONFIRMED — YOU ARE SCHEDULED TO WORK" as const;
 export const CONFIRMED_FACILITY_COPY = "CONFIRMED ASSIGNMENT" as const;
-export const CONFIRM_ADMIN_ACTION = "Confirm Assignment" as const;
+export const CONFIRM_ADMIN_ACTION = "CONFIRM ASSIGNMENT" as const;

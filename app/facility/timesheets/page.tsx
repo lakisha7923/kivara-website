@@ -1,17 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
 
 import FacilityShell from "@/components/facility/FacilityShell";
+import {
+  HandoffNotifications,
+  HandoffRail,
+} from "@/components/handoffs/HandoffChrome";
+import { useHandoffs } from "@/components/handoffs/HandoffProvider";
 import { PageHeader, ScreenCard, StatusBadge } from "@/components/ui/primitives";
 import { mockTimesheets } from "@/lib/mock/v1-data";
 
 export default function FacilityTimesheetsPage() {
-  const [note, setNote] = useState("");
-  const [sent, setSent] = useState(false);
+  const { record, facilityReviewTimesheet, hydrated } = useHandoffs();
+  const canReview =
+    hydrated &&
+    record.completedSteps.includes("cna_clocked") &&
+    !record.completedSteps.includes("timesheet_reviewed");
+  const reviewed =
+    hydrated && record.completedSteps.includes("timesheet_reviewed");
 
   return (
     <FacilityShell title="Timesheets">
+      <HandoffRail portal="facility" />
+      <HandoffNotifications portal="facility" />
       <PageHeader
         eyebrow="Hours review"
         title="Review timesheets"
@@ -19,13 +31,58 @@ export default function FacilityTimesheetsPage() {
       />
 
       <div className="space-y-4">
+        {hydrated && record.clocked ? (
+          <ScreenCard>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wide text-[#0FA3A3]">
+                  Handoff timesheet
+                </p>
+                <h2 className="font-bold text-[#0D2B4D]">{record.cnaName}</h2>
+                <p className="text-sm text-slate-600">
+                  {record.date} · {record.actualHours} hrs (scheduled{" "}
+                  {record.scheduledHours})
+                </p>
+              </div>
+              <StatusBadge
+                label={reviewed ? "Facility Reviewed" : "Submitted"}
+                tone={reviewed ? "success" : "warning"}
+              />
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                disabled={!canReview}
+                onClick={() => facilityReviewTimesheet(true)}
+                className="rounded-full bg-[#0FA3A3] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              >
+                Accept hours
+              </button>
+              <button
+                type="button"
+                disabled={!canReview}
+                onClick={() => facilityReviewTimesheet(false)}
+                className="rounded-full border px-4 py-2 text-sm font-semibold disabled:opacity-50"
+              >
+                Flag discrepancy
+              </button>
+            </div>
+            {reviewed ? (
+              <p className="mt-3 text-sm font-medium text-emerald-700">
+                Handoff 6 complete. Kivara can now approve & lock hours.{" "}
+                <Link href="/admin/timesheets" className="underline">
+                  Open Admin Timesheets
+                </Link>
+              </p>
+            ) : null}
+          </ScreenCard>
+        ) : null}
+
         {mockTimesheets.map((sheet) => (
           <ScreenCard key={sheet.id}>
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <h2 className="font-bold text-[var(--kivara-navy)]">
-                  {sheet.cnaName}
-                </h2>
+                <h2 className="font-bold text-[#0D2B4D]">{sheet.cnaName}</h2>
                 <p className="text-sm text-slate-600">
                   {sheet.date} · {sheet.actualHours} hrs (scheduled{" "}
                   {sheet.scheduledHours})
@@ -33,39 +90,6 @@ export default function FacilityTimesheetsPage() {
               </div>
               <StatusBadge label={sheet.status} tone="warning" />
             </div>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <button
-                type="button"
-                className="rounded-full bg-[var(--kivara-teal)] px-4 py-2 text-sm font-semibold text-white"
-              >
-                Accept hours
-              </button>
-              <button
-                type="button"
-                className="rounded-full border border-[var(--kivara-navy)] px-4 py-2 text-sm font-semibold"
-                onClick={() => setSent(false)}
-              >
-                Flag discrepancy
-              </button>
-            </div>
-            <textarea
-              className="mt-3 min-h-20 w-full rounded-xl border px-3 py-2 text-sm"
-              placeholder="Discrepancy reason (required for disputes)"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-            />
-            <button
-              type="button"
-              className="mt-2 text-sm font-semibold text-[var(--kivara-teal)]"
-              onClick={() => setSent(true)}
-            >
-              Submit discrepancy to Kivara
-            </button>
-            {sent ? (
-              <p className="mt-2 text-sm text-emerald-700">
-                Discrepancy recorded for audit review (prototype).
-              </p>
-            ) : null}
           </ScreenCard>
         ))}
       </div>
