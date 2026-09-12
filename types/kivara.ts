@@ -193,7 +193,12 @@ export interface AuditEvent {
   at: string;
 }
 
-/** Screen Map §3 — Confirmed Assignment Screen Rule */
+/** Screen Map §3 — Confirmed Assignment Screen Rule
+ *  CNA sees: CONFIRMED — YOU ARE SCHEDULED TO WORK
+ *  Facility sees: CONFIRMED ASSIGNMENT
+ *  Admin action: CONFIRM ASSIGNMENT
+ *  No casual Cancel CNA — documented exception workflow required.
+ */
 export const CONFIRMED_CNA_COPY =
   "CONFIRMED — YOU ARE SCHEDULED TO WORK" as const;
 export const CONFIRMED_FACILITY_COPY = "CONFIRMED ASSIGNMENT" as const;

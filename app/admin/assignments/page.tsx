@@ -9,7 +9,12 @@ import {
 } from "@/components/handoffs/HandoffChrome";
 import { useHandoffs } from "@/components/handoffs/HandoffProvider";
 import { PageHeader, ScreenCard, StatusBadge } from "@/components/ui/primitives";
-import { CONFIRMED_CNA_COPY, mockAssignments } from "@/lib/mock/v1-data";
+import {
+  CONFIRM_ADMIN_ACTION,
+  CONFIRMED_CNA_COPY,
+  CONFIRMED_FACILITY_COPY,
+  mockAssignments,
+} from "@/lib/mock/v1-data";
 
 export default function AdminAssignmentsPage() {
   const { record, hydrated } = useHandoffs();
@@ -22,15 +27,15 @@ export default function AdminAssignmentsPage() {
       <PageHeader
         eyebrow="Coverage"
         title="Assignments"
-        subtitle="Confirmed → Call-Out / No-Show / Emergency Exception → Replacement Workflow"
+        subtitle="Confirmed coverage only changes through Call-Out / No-Show / Emergency Exception → Replacement. No casual Cancel CNA."
       />
 
       <p className="mb-4 text-sm text-slate-600">
-        Incoming eligibility reviews live under{" "}
+        Confirm new coverage from{" "}
         <Link href="/admin/shift-requests" className="font-semibold text-teal-700">
           Shift Requests
-        </Link>
-        .
+        </Link>{" "}
+        using {CONFIRM_ADMIN_ACTION}.
       </p>
 
       <div className="space-y-3">
@@ -42,7 +47,9 @@ export default function AdminAssignmentsPage() {
               {record.facilityName} · {record.date} · {record.startTime}–
               {record.endTime}
             </p>
-            <p className="mt-2 text-xs text-emerald-700">{CONFIRMED_CNA_COPY}</p>
+            <p className="mt-2 text-xs text-emerald-700">
+              CNA: {CONFIRMED_CNA_COPY} · Facility: {CONFIRMED_FACILITY_COPY}
+            </p>
           </ScreenCard>
         ) : null}
 

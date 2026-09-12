@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 import AdminShell from "@/components/admin/AdminShell";
+import { ConfirmedAssignmentBanner } from "@/components/shared/ConfirmedAssignmentBanner";
 import { PageHeader, ScreenCard, StatusBadge } from "@/components/ui/primitives";
-import { mockAssignments } from "@/lib/mock/v1-data";
+import { CONFIRM_ADMIN_ACTION, mockAssignments } from "@/lib/mock/v1-data";
 
 const exceptions = ["Call-Out", "No-Show", "Emergency Exception"] as const;
 
@@ -23,7 +24,10 @@ export default function AdminAssignmentDetailPage() {
     return (
       <AdminShell title="Assignment Detail">
         <PageHeader title="Assignment not found" />
-        <Link href="/admin/assignments" className="text-sm font-semibold text-teal-700">
+        <Link
+          href="/admin/assignments"
+          className="text-sm font-semibold text-teal-700"
+        >
           ← Back to Assignments
         </Link>
       </AdminShell>
@@ -35,8 +39,12 @@ export default function AdminAssignmentDetailPage() {
       <PageHeader
         eyebrow="Assignments"
         title={assignment.cnaName}
-        subtitle="Confirmed → Call-Out / No-Show / Emergency Exception → Replacement Workflow"
+        subtitle="Confirmed coverage — exceptions only through documented workflow"
       />
+
+      <div className="mb-4">
+        <ConfirmedAssignmentBanner portal="admin" />
+      </div>
 
       <ScreenCard className="mb-4">
         <div className="flex flex-wrap gap-2">
@@ -52,10 +60,19 @@ export default function AdminAssignmentDetailPage() {
         <p className="text-sm text-slate-600">
           {assignment.date} · {assignment.startTime}–{assignment.endTime}
         </p>
+        <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+          Admin confirm action: {CONFIRM_ADMIN_ACTION}
+        </p>
       </ScreenCard>
 
       <ScreenCard className="mb-4">
-        <h2 className="font-semibold text-[#0D2B4D]">Exception actions</h2>
+        <h2 className="font-semibold text-[#0D2B4D]">
+          Documented exception workflow
+        </h2>
+        <p className="mt-2 text-sm text-slate-600">
+          No casual Cancel CNA control. Call-Out, No-Show, or Emergency
+          Exception requires a reason and starts replacement with audit.
+        </p>
         <div className="mt-3 flex flex-wrap gap-2">
           {exceptions.map((item) => (
             <button
@@ -100,7 +117,9 @@ export default function AdminAssignmentDetailPage() {
             <li>Original assignment marked {exception} with audit reason.</li>
             <li>Open position republished to eligible Work Ready CNAs.</li>
             <li>Facility notified of coverage gap and ETA.</li>
-            <li>Confirm replacement via Shift Requests when eligible CNA requests.</li>
+            <li>
+              Confirm replacement via Shift Requests using {CONFIRM_ADMIN_ACTION}.
+            </li>
           </ol>
           <Link
             href="/admin/shift-requests"
@@ -112,7 +131,10 @@ export default function AdminAssignmentDetailPage() {
       ) : null}
 
       <p className="mt-5">
-        <Link href="/admin/assignments" className="text-sm font-semibold text-teal-700">
+        <Link
+          href="/admin/assignments"
+          className="text-sm font-semibold text-teal-700"
+        >
           ← Back to Assignments
         </Link>
       </p>

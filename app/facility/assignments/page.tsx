@@ -22,7 +22,7 @@ export default function FacilityAssignmentsPage() {
       <PageHeader
         eyebrow="Confirmed coverage"
         title="Active Assignments"
-        subtitle="Assignment Detail → CNA work-status → Contact Kivara / Emergency Change"
+        subtitle="CONFIRMED ASSIGNMENT detail → CNA work-status → Contact Kivara / documented Emergency Change. No casual Cancel CNA."
       />
 
       <div className="space-y-3">

@@ -12,6 +12,7 @@ import { PageHeader, ScreenCard, StatusBadge } from "@/components/ui/primitives"
 import {
   CONFIRM_ADMIN_ACTION,
   CONFIRMED_CNA_COPY,
+  CONFIRMED_FACILITY_COPY,
   mockShiftRequests,
 } from "@/lib/mock/v1-data";
 
@@ -63,9 +64,14 @@ export default function AdminShiftRequestsPage() {
             >
               {copy.adminConfirmAction}
             </button>
+            <p className="mt-2 text-xs text-slate-500">
+              Confirm Assignment locks coverage. There is no casual Cancel CNA —
+              later changes require a documented exception on the assignment.
+            </p>
             {confirmed ? (
               <p className="mt-3 text-sm font-medium text-emerald-700">
-                Assignment confirmed. CNA sees: {CONFIRMED_CNA_COPY}
+                Assignment confirmed. CNA sees: {CONFIRMED_CNA_COPY}. Facility
+                sees: {CONFIRMED_FACILITY_COPY}.
               </p>
             ) : null}
           </ScreenCard>

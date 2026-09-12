@@ -19,7 +19,7 @@ export default function CnaSchedulePage() {
       <PageHeader
         eyebrow="Schedule"
         title="Upcoming confirmed shifts"
-        subtitle="Upcoming → Confirmed Shift → Ready to Clock In → GPS Clock"
+        subtitle="CONFIRMED — YOU ARE SCHEDULED TO WORK. Changes require contacting Kivara — no casual cancel."
       />
 
       <div className="space-y-3">

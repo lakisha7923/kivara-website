@@ -6,12 +6,13 @@ import { useParams } from "next/navigation";
 
 import FacilityShell from "@/components/facility/FacilityShell";
 import { useHandoffs } from "@/components/handoffs/HandoffProvider";
+import { ConfirmedAssignmentBanner } from "@/components/shared/ConfirmedAssignmentBanner";
 import { PageHeader, ScreenCard, StatusBadge } from "@/components/ui/primitives";
-import { CONFIRMED_FACILITY_COPY, mockAssignments } from "@/lib/mock/v1-data";
+import { mockAssignments } from "@/lib/mock/v1-data";
 
 export default function FacilityAssignmentDetailPage() {
   const params = useParams<{ id: string }>();
-  const { record, hydrated, copy } = useHandoffs();
+  const { record, hydrated } = useHandoffs();
   const [emergencyOpen, setEmergencyOpen] = useState(false);
   const [contactSent, setContactSent] = useState(false);
   const [changeNote, setChangeNote] = useState("");
@@ -56,11 +57,12 @@ export default function FacilityAssignmentDetailPage() {
         subtitle={`${date} · ${start}–${end}`}
       />
 
+      <div className="mb-4">
+        <ConfirmedAssignmentBanner portal="facility" />
+      </div>
+
       <ScreenCard className="mb-4">
-        <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-teal-800">
-          {isHandoff ? copy.facilityConfirmed : CONFIRMED_FACILITY_COPY}
-        </p>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2">
           <StatusBadge label={assignmentStatus} tone="success" />
           <StatusBadge label={`Work status: ${workStatus}`} tone="brand" />
         </div>
@@ -116,10 +118,12 @@ export default function FacilityAssignmentDetailPage() {
         </ScreenCard>
 
         <ScreenCard>
-          <h2 className="font-semibold text-[#0D2B4D]">Emergency Change</h2>
+          <h2 className="font-semibold text-[#0D2B4D]">
+            Documented exception workflow
+          </h2>
           <p className="mt-2 text-sm text-slate-600">
-            Documented exception required for cancel, replace, or schedule
-            change after confirmation.
+            There is no Cancel CNA button. Cancel, replace, or schedule change
+            after confirmation requires a documented emergency exception.
           </p>
           {!emergencyOpen ? (
             <button
@@ -135,8 +139,9 @@ export default function FacilityAssignmentDetailPage() {
                 value={changeNote}
                 onChange={(e) => setChangeNote(e.target.value)}
                 rows={3}
-                placeholder="Reason for emergency change…"
+                placeholder="Documented reason for emergency change (required)…"
                 className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm"
+                required
               />
               <button
                 type="button"
@@ -144,11 +149,11 @@ export default function FacilityAssignmentDetailPage() {
                 onClick={() => setChangeSubmitted(true)}
                 className="rounded-full bg-rose-700 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
               >
-                Submit change request
+                Submit documented exception
               </button>
               {changeSubmitted ? (
                 <p className="text-sm text-emerald-700">
-                  Emergency change submitted to Kivara for review.
+                  Exception submitted to Kivara for review and audit.
                 </p>
               ) : null}
             </div>

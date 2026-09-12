@@ -2,8 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import CnaShell from "@/components/cna/CnaShell";
+import { ConfirmedAssignmentBanner } from "@/components/shared/ConfirmedAssignmentBanner";
 import { PageHeader, ScreenCard, StatusBadge } from "@/components/ui/primitives";
-import { CONFIRMED_CNA_COPY, mockAssignments } from "@/lib/mock/v1-data";
+import { mockAssignments } from "@/lib/mock/v1-data";
 
 export default async function CnaConfirmedShiftPage({
   params,
@@ -30,12 +31,12 @@ export default async function CnaConfirmedShiftPage({
       />
 
       <div className="space-y-4">
-        <ScreenCard className="border-teal-200 bg-teal-50/70">
-          <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-teal-800">
-            {CONFIRMED_CNA_COPY}
-          </p>
-          <div className="mt-3">
+        <ConfirmedAssignmentBanner portal="cna" />
+
+        <ScreenCard>
+          <div className="flex flex-wrap items-center gap-2">
             <StatusBadge label={assignment.status} tone="success" />
+            <StatusBadge label="Scheduled to work" tone="brand" />
           </div>
           <dl className="mt-4 space-y-2 text-sm">
             <div className="flex justify-between gap-3">
@@ -61,6 +62,10 @@ export default async function CnaConfirmedShiftPage({
               </dd>
             </div>
           </dl>
+          <p className="mt-4 text-xs text-slate-500">
+            Need to change this shift? Contact Kivara Support. There is no
+            in-app Cancel for confirmed assignments.
+          </p>
         </ScreenCard>
 
         <ScreenCard>
