@@ -33,16 +33,16 @@ export default function CnaCredentialDetailPage() {
     return (
       <CnaShell>
         <PageHeader
-          eyebrow="Screening"
+          eyebrow="Credentials · Screening"
           title={credential.name}
-          subtitle="Status, consent, and next steps for Work Ready. Full vendor reports stay with Kivara."
+          subtitle="Manual-first flow: consent → upload clearance → track result. Vendor e-order is a placeholder."
         />
         <ScreeningCredentialPanel credential={credential} />
         <Link
           href="/cna/credentials"
           className="mt-4 inline-block text-sm font-semibold text-teal-700"
         >
-          ← Back to credential list
+          ← Back to credentials
         </Link>
       </CnaShell>
     );
@@ -114,7 +114,7 @@ export default function CnaCredentialDetailPage() {
         </ScreenCard>
 
         <Link href="/cna/credentials" className="text-sm font-semibold text-teal-700">
-          ← Back to credential list
+          ← Back to credentials
         </Link>
       </div>
     </CnaShell>
