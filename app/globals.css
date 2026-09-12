@@ -22,10 +22,12 @@ html,
 body {
   background: var(--kivara-offwhite);
   color: var(--kivara-navy);
+  overflow-x: hidden;
 }
 
 body {
   font-family: var(--font-montserrat), system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
 h1,

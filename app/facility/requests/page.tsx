@@ -53,7 +53,7 @@ export default function FacilityRequestsPage() {
               onChange={(e) => setUnit(e.target.value)}
               required
             />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <input className="rounded-xl border px-4 py-3" value={record.date} readOnly />
               <input
                 className="rounded-xl border px-4 py-3"
@@ -61,7 +61,7 @@ export default function FacilityRequestsPage() {
                 readOnly
               />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <input className="rounded-xl border px-4 py-3" value={record.startTime} readOnly />
               <input className="rounded-xl border px-4 py-3" value={record.endTime} readOnly />
             </div>

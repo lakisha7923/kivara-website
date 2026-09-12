@@ -12,15 +12,7 @@ const PORTAL_BADGE: Record<PortalActor, string> = {
 };
 
 export default function HandoffsBoardPage() {
-  const { record, nextStep, resetJourney, hydrated, copy } = useHandoffs();
-
-  if (!hydrated) {
-    return (
-      <main className="mx-auto max-w-5xl px-4 py-10">
-        <p className="text-sm text-slate-500">Loading handoff board…</p>
-      </main>
-    );
-  }
+  const { record, nextStep, resetJourney, copy } = useHandoffs();
 
   const done = record.completedSteps.length;
 
@@ -32,7 +24,7 @@ export default function HandoffsBoardPage() {
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#0FA3A3]">
               Screen Map §2
             </p>
-            <h1 className="mt-1 font-[family-name:var(--font-playfair)] text-3xl font-bold">
+            <h1 className="mt-1 font-[family-name:var(--font-playfair)] text-2xl font-bold sm:text-3xl">
               Cross-Portal Handoffs
             </h1>
             <p className="mt-2 max-w-2xl text-sm text-slate-600">

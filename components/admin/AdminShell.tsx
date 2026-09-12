@@ -22,35 +22,43 @@ export default function AdminShell({
   title: string;
 }) {
   return (
-    <div className="min-h-screen bg-[var(--kivara-offwhite)]">
+    <div className="min-h-screen overflow-x-hidden bg-[var(--kivara-offwhite)]">
       <header className="border-b border-slate-200 bg-[var(--kivara-navy)] text-white">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-4">
-          <div className="flex items-center gap-3">
-            <KivaraLogo size={52} className="rounded-full bg-white p-0.5" />
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--kivara-aqua)]">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-4 sm:py-4">
+          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+            <KivaraLogo
+              size={40}
+              className="shrink-0 rounded-full bg-white p-0.5 sm:h-[52px] sm:w-[52px]"
+            />
+            <div className="min-w-0">
+              <p className="text-[9px] uppercase tracking-[0.18em] text-[var(--kivara-aqua)] sm:text-[10px] sm:tracking-[0.22em]">
                 Kivara Master Admin
               </p>
-              <h1 className="font-display text-xl font-bold">{title}</h1>
+              <h1 className="font-display truncate text-lg font-bold sm:text-xl">
+                {title}
+              </h1>
             </div>
           </div>
-          <Link href="/" className="rounded-full bg-white/10 px-4 py-2 text-sm">
-            Exit to site
+          <Link
+            href="/"
+            className="shrink-0 rounded-full bg-white/10 px-3 py-2 text-xs sm:px-4 sm:text-sm"
+          >
+            Exit
           </Link>
         </div>
-        <nav className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4 pb-3">
+        <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto px-3 pb-3 sm:px-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="whitespace-nowrap rounded-full bg-white/10 px-3 py-1.5 text-sm hover:bg-[var(--kivara-teal)]"
+              className="shrink-0 whitespace-nowrap rounded-full bg-white/10 px-3.5 py-2.5 text-sm font-medium hover:bg-[var(--kivara-teal)]"
             >
               {link.label}
             </Link>
           ))}
         </nav>
       </header>
-      <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
+      <main className="mx-auto max-w-7xl px-3 py-4 sm:px-4 sm:py-6">{children}</main>
     </div>
   );
 }

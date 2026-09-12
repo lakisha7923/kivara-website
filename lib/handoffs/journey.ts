@@ -66,7 +66,7 @@ export const HANDOFF_STEPS: HandoffStepDef[] = [
       "Admin sees attendance and exceptions; facility sees operational status only.",
     actor: "cna",
     actionLabel: "Complete GPS clock in/out",
-    portalHref: "/cna/clock/asg-clock-today",
+    portalHref: "/cna/clock/asg-handoff-1",
   },
   {
     id: "timesheet_reviewed",

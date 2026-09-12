@@ -12,12 +12,10 @@ const actorLabel: Record<PortalActor, string> = {
 };
 
 export function HandoffRail({ portal }: { portal: PortalActor }) {
-  const { record, nextStep, unreadFor, hydrated } = useHandoffs();
+  const { record, nextStep, unreadFor } = useHandoffs();
   const unread = unreadFor(portal);
   const done = record.completedSteps.length;
   const total = HANDOFF_STEPS.length;
-
-  if (!hydrated) return null;
 
   return (
     <div className="mb-4 rounded-2xl border border-[#0FA3A3]/30 bg-gradient-to-r from-[#D6F1F1]/80 to-white p-3 shadow-sm">
@@ -71,10 +69,10 @@ export function HandoffRail({ portal }: { portal: PortalActor }) {
 }
 
 export function HandoffNotifications({ portal }: { portal: PortalActor }) {
-  const { record, markPortalRead, hydrated } = useHandoffs();
+  const { record, markPortalRead } = useHandoffs();
   const notes = record.notifications.filter((n) => n.portal === portal);
 
-  if (!hydrated || notes.length === 0) return null;
+  if (notes.length === 0) return null;
 
   return (
     <div className="mb-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
