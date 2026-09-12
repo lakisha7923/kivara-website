@@ -1,12 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useMemo, useState } from "react";
 
+import ScreeningAdminPanel from "@/components/admin/ScreeningAdminPanel";
 import AdminShell from "@/components/admin/AdminShell";
 import { PageHeader, ScreenCard, StatusBadge } from "@/components/ui/primitives";
 import { mockCna, mockOnboardingCna } from "@/lib/mock/v1-data";
+import {
+  evaluateWorkReady,
+  isScreeningCredential,
+} from "@/lib/rules/screenings";
 
 const tabs = ["Overview", "Onboarding", "Credentials", "Work Ready"] as const;
 
@@ -17,7 +22,7 @@ export default function AdminCnaDetailPage() {
     () =>
       [mockCna, mockOnboardingCna].find((person) => person.id === params.id) ??
       null,
-    [params.id],
+    [params.id]
   );
 
   if (!cna) {
@@ -30,6 +35,8 @@ export default function AdminCnaDetailPage() {
       </AdminShell>
     );
   }
+
+  const workReadyEval = evaluateWorkReady(cna.credentials);
 
   return (
     <AdminShell title="CNA Detail">
@@ -80,7 +87,9 @@ export default function AdminCnaDetailPage() {
             </div>
             <div className="flex justify-between gap-3 border-b border-slate-100 py-2">
               <dt className="text-slate-500">Work areas</dt>
-              <dd className="text-right font-medium">{cna.workAreas.join(", ")}</dd>
+              <dd className="text-right font-medium">
+                {cna.workAreas.join(", ")}
+              </dd>
             </div>
             <div className="flex justify-between gap-3 py-2">
               <dt className="text-slate-500">Pay status</dt>
@@ -94,7 +103,9 @@ export default function AdminCnaDetailPage() {
         <ScreenCard>
           <h2 className="font-semibold text-[#0D2B4D]">Onboarding checklist</h2>
           {cna.actionItems.length === 0 ? (
-            <p className="mt-3 text-sm text-slate-600">No open onboarding items.</p>
+            <p className="mt-3 text-sm text-slate-600">
+              No open onboarding items.
+            </p>
           ) : (
             <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700">
               {cna.actionItems.map((item) => (
@@ -107,47 +118,57 @@ export default function AdminCnaDetailPage() {
 
       {tab === "Credentials" ? (
         <div className="space-y-3">
-          {cna.credentials.map((credential) => (
-            <ScreenCard key={credential.id}>
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="font-semibold text-[#0D2B4D]">{credential.name}</p>
-                  {credential.expiresOn ? (
-                    <p className="text-sm text-slate-600">
-                      Expires {credential.expiresOn}
+          {cna.credentials.map((credential) =>
+            isScreeningCredential(credential) ? (
+              <ScreeningAdminPanel
+                key={credential.id}
+                credential={credential}
+                cnaName={cna.fullName}
+              />
+            ) : (
+              <ScreenCard key={credential.id}>
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="font-semibold text-[#0D2B4D]">
+                      {credential.name}
                     </p>
-                  ) : null}
+                    {credential.expiresOn ? (
+                      <p className="text-sm text-slate-600">
+                        Expires {credential.expiresOn}
+                      </p>
+                    ) : null}
+                  </div>
+                  <StatusBadge
+                    label={credential.status}
+                    tone={
+                      credential.status === "Approved"
+                        ? "success"
+                        : credential.status === "Expiring Soon" ||
+                            credential.status === "Missing"
+                          ? "warning"
+                          : "info"
+                    }
+                  />
                 </div>
-                <StatusBadge
-                  label={credential.status}
-                  tone={
-                    credential.status === "Approved"
-                      ? "success"
-                      : credential.status === "Expiring Soon" ||
-                          credential.status === "Missing"
-                        ? "warning"
-                        : "info"
-                  }
-                />
-              </div>
-              {credential.status !== "Approved" ? (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    className="rounded-full bg-[#0FA3A3] px-4 py-2 text-sm font-semibold text-white"
-                  >
-                    Approve
-                  </button>
-                  <button
-                    type="button"
-                    className="rounded-full border px-4 py-2 text-sm font-semibold"
-                  >
-                    Request re-upload
-                  </button>
-                </div>
-              ) : null}
-            </ScreenCard>
-          ))}
+                {credential.status !== "Approved" ? (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      className="rounded-full bg-[#0FA3A3] px-4 py-2 text-sm font-semibold text-white"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      type="button"
+                      className="rounded-full border px-4 py-2 text-sm font-semibold"
+                    >
+                      Request re-upload
+                    </button>
+                  </div>
+                ) : null}
+              </ScreenCard>
+            )
+          )}
         </div>
       ) : null}
 
@@ -155,15 +176,40 @@ export default function AdminCnaDetailPage() {
         <ScreenCard>
           <h2 className="font-semibold text-[#0D2B4D]">Work Ready status</h2>
           <p className="mt-2 text-sm text-slate-600">
-            Work Ready requires approved credentials and completed onboarding.
-            Only Master Admin restores this status.
+            Work Ready requires approved core credentials, including Background
+            Check and Drug Screen. Only Master Admin restores this status.
           </p>
           <div className="mt-4">
             <StatusBadge
-              label={cna.workReady ? "Work Ready" : "Blocked"}
-              tone={cna.workReady ? "success" : "danger"}
+              label={
+                workReadyEval.workReady && cna.workReady
+                  ? "Work Ready"
+                  : "Blocked"
+              }
+              tone={
+                workReadyEval.workReady && cna.workReady ? "success" : "danger"
+              }
             />
           </div>
+          <ul className="mt-4 space-y-2">
+            {workReadyEval.required.map((item) => (
+              <li
+                key={item.name}
+                className="flex items-center justify-between gap-2 rounded-xl bg-slate-50 px-3 py-2 text-sm"
+              >
+                <span>
+                  {item.name}
+                  {!item.satisfied ? (
+                    <span className="ml-2 text-xs text-rose-700">blocker</span>
+                  ) : null}
+                </span>
+                <StatusBadge
+                  label={item.status}
+                  tone={item.satisfied ? "success" : "warning"}
+                />
+              </li>
+            ))}
+          </ul>
           {!cna.workReady ? (
             <button
               type="button"
@@ -173,7 +219,8 @@ export default function AdminCnaDetailPage() {
             </button>
           ) : (
             <p className="mt-4 text-sm font-medium text-emerald-700">
-              Eligible for shift matching and confirmations.
+              Eligible for shift matching and confirmations when all required
+              screenings stay Clear/Approved.
             </p>
           )}
         </ScreenCard>

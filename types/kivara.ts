@@ -72,6 +72,43 @@ export interface Credential {
   name: string;
   status: CredentialStatus;
   expiresOn?: string;
+  /** Optional kind for screening-specific flows */
+  kind?: "license" | "certification" | "background" | "drug" | "health" | "other";
+  vendorName?: string;
+  orderId?: string;
+  orderedOn?: string;
+  completedOn?: string;
+  resultSummary?: string;
+  cnaCanSeeDetails?: boolean;
+}
+
+/** Vendor-facing screening lifecycle used by Background + Drug Screen screens. */
+export type ScreeningOrderStatus =
+  | "Not Started"
+  | "Consent Needed"
+  | "Ordered"
+  | "In Progress"
+  | "Clear"
+  | "Consider"
+  | "Failed"
+  | "Expired"
+  | "Cancelled";
+
+export interface ScreeningRequirement {
+  id: string;
+  kind: "background" | "drug";
+  title: string;
+  credentialId: string;
+  orderStatus: ScreeningOrderStatus;
+  vendorName: string;
+  packageName: string;
+  orderedOn?: string;
+  completedOn?: string;
+  /** Minimum-necessary summary shown to CNA */
+  cnaSummary: string;
+  /** Restricted detail shown only to Kivara admin */
+  adminNotes?: string;
+  blocksWorkReady: boolean;
 }
 
 export type CnaPaymentMethod =

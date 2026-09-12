@@ -21,7 +21,7 @@ export default function CnaCredentialsPage() {
       <PageHeader
         eyebrow="Credentials"
         title="Credential list"
-        subtitle="Credential List → Detail → Upload/Replace → Pending Review → Approved/Rejected"
+        subtitle="Licenses, certifications, Background Check, and Drug Screen — required for Work Ready."
       />
       <div className="space-y-3">
         {mockCna.credentials.map((credential) => (

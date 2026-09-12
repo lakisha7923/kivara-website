@@ -4,13 +4,17 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 
+import ScreeningCredentialPanel from "@/components/cna/ScreeningCredentialPanel";
 import CnaShell from "@/components/cna/CnaShell";
 import { PageHeader, ScreenCard, StatusBadge } from "@/components/ui/primitives";
-import { mockCna } from "@/lib/mock/v1-data";
+import { isScreeningCredential } from "@/lib/rules/screenings";
+import { mockCna, mockOnboardingCna } from "@/lib/mock/v1-data";
 
 export default function CnaCredentialDetailPage() {
   const params = useParams<{ id: string }>();
-  const credential = mockCna.credentials.find((item) => item.id === params.id);
+  const credential =
+    mockCna.credentials.find((item) => item.id === params.id) ??
+    mockOnboardingCna.credentials.find((item) => item.id === params.id);
   const [status, setStatus] = useState(credential?.status ?? "Missing");
   const [note, setNote] = useState("");
 
@@ -20,6 +24,25 @@ export default function CnaCredentialDetailPage() {
         <PageHeader title="Credential not found" />
         <Link href="/cna/credentials" className="text-teal-700">
           Back to credentials
+        </Link>
+      </CnaShell>
+    );
+  }
+
+  if (isScreeningCredential(credential)) {
+    return (
+      <CnaShell>
+        <PageHeader
+          eyebrow="Screening"
+          title={credential.name}
+          subtitle="Status, consent, and next steps for Work Ready. Full vendor reports stay with Kivara."
+        />
+        <ScreeningCredentialPanel credential={credential} />
+        <Link
+          href="/cna/credentials"
+          className="mt-4 inline-block text-sm font-semibold text-teal-700"
+        >
+          ← Back to credential list
         </Link>
       </CnaShell>
     );
@@ -88,32 +111,6 @@ export default function CnaCredentialDetailPage() {
           {note ? (
             <p className="mt-3 text-sm font-medium text-emerald-700">{note}</p>
           ) : null}
-        </ScreenCard>
-
-        <ScreenCard>
-          <h2 className="font-bold text-[#0D2B4D]">Review outcomes</h2>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                setStatus("Approved");
-                setNote("Approved by Kivara credentialing.");
-              }}
-              className="rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-semibold text-emerald-800"
-            >
-              Simulate Approved
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setStatus("Rejected");
-                setNote("Rejected — please upload a clearer document.");
-              }}
-              className="rounded-full bg-rose-100 px-3 py-1.5 text-xs font-semibold text-rose-800"
-            >
-              Simulate Rejected
-            </button>
-          </div>
         </ScreenCard>
 
         <Link href="/cna/credentials" className="text-sm font-semibold text-teal-700">
