@@ -221,11 +221,12 @@ export default function CnaTimesheetsPanel({
           submits electronic timesheets automatically.
         </p>
         <form className="mt-4 space-y-3" onSubmit={submitUpload}>
-          <label className="block">
+          <label className="block" htmlFor="ts-work-date">
             <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Work date
             </span>
             <input
+              id="ts-work-date"
               type="date"
               value={workDate}
               onChange={(e) => setWorkDate(e.target.value)}
@@ -233,11 +234,12 @@ export default function CnaTimesheetsPanel({
               required
             />
           </label>
-          <label className="block">
+          <label className="block" htmlFor="ts-facility">
             <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Facility
             </span>
             <input
+              id="ts-facility"
               type="text"
               value={facilityName}
               onChange={(e) => setFacilityName(e.target.value)}
@@ -246,11 +248,12 @@ export default function CnaTimesheetsPanel({
               required
             />
           </label>
-          <label className="block">
+          <label className="block" htmlFor="ts-hours">
             <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Hours worked
             </span>
             <input
+              id="ts-hours"
               type="number"
               min="0.25"
               max="24"
@@ -261,11 +264,12 @@ export default function CnaTimesheetsPanel({
               required
             />
           </label>
-          <label className="block">
+          <label className="block" htmlFor="ts-notes">
             <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Notes (optional)
             </span>
             <textarea
+              id="ts-notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
@@ -273,11 +277,12 @@ export default function CnaTimesheetsPanel({
               placeholder="Break coverage, late stay, charge nurse signature…"
             />
           </label>
-          <label className="block">
+          <label className="block" htmlFor="ts-file">
             <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Timesheet file
             </span>
             <input
+              id="ts-file"
               type="file"
               accept="application/pdf,image/*"
               className={`${fieldClass} file:mr-3 file:rounded-full file:border-0 file:bg-[#E8F6F6] file:px-3 file:py-1 file:text-xs file:font-semibold file:text-[#0D2B4D]`}
@@ -317,11 +322,12 @@ export default function CnaTimesheetsPanel({
           appear together.
         </p>
         <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <label className="block">
+          <label className="block" htmlFor="ts-year">
             <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Year
             </span>
             <select
+              id="ts-year"
               value={year}
               onChange={(e) => {
                 setYear(e.target.value);
@@ -338,11 +344,12 @@ export default function CnaTimesheetsPanel({
               ))}
             </select>
           </label>
-          <label className="block">
+          <label className="block" htmlFor="ts-month">
             <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Month
             </span>
             <select
+              id="ts-month"
               value={month}
               onChange={(e) => {
                 setMonth(e.target.value);
@@ -358,11 +365,12 @@ export default function CnaTimesheetsPanel({
               ))}
             </select>
           </label>
-          <label className="block">
+          <label className="block" htmlFor="ts-week">
             <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Week
             </span>
             <select
+              id="ts-week"
               value={week}
               onChange={(e) => setWeek(e.target.value)}
               className={fieldClass}
