@@ -142,7 +142,7 @@ export default function FacilityDashboardPage() {
             Welcome back, Sarah!
           </h1>
           <p className="mt-1 text-sm text-[#6B7280]">
-            Here&apos;s your staffing snapshot for Memorial Care Center.
+            Here&apos;s what&apos;s happening at Memorial Care Center.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
@@ -316,47 +316,75 @@ export default function FacilityDashboardPage() {
         </div>
       </section>
 
-      {/* Bottom feature panels — matches mockup gallery row */}
+      {/* Bottom feature panels — navy headers match approved mockup */}
       <section className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-        <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <h3 className="font-[family-name:var(--font-playfair)] text-base font-bold text-[#0D2B4D]">
-            Request Staff
-          </h3>
-          <p className="mt-1 text-xs text-slate-500">Create a New Request</p>
-          <div className="mt-3 space-y-2">
-            <div className="rounded-lg border px-3 py-2 text-xs text-slate-500">
-              Location / Unit
+        <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <header className="flex items-center justify-between bg-[#0D2B4D] px-4 py-3 text-white">
+            <div className="flex items-center gap-2">
+              <Image
+                src="/logo/kivara-logo.png"
+                alt=""
+                width={22}
+                height={22}
+                className="rounded-full bg-white p-0.5"
+              />
+              <h3 className="text-sm font-semibold">Request Staff</h3>
             </div>
-            <div className="rounded-lg border px-3 py-2 text-xs text-slate-500">
-              Date
+            <span aria-hidden className="text-sm text-[#D6F1F1]">
+              🔔
+            </span>
+          </header>
+          <div className="p-4">
+            <p className="text-xs font-semibold text-[#0D2B4D]">
+              Create a New Request
+            </p>
+            <div className="mt-3 space-y-2">
+              <div className="rounded-lg border px-3 py-2 text-xs text-slate-500">
+                Location / Unit
+              </div>
+              <div className="rounded-lg border px-3 py-2 text-xs text-slate-500">
+                Date
+              </div>
+              <div className="rounded-lg border px-3 py-2 text-xs text-slate-500">
+                Time · CNA Count
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {["Active CNA License", "BLS"].map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full bg-[#D6F1F1] px-2 py-1 text-[10px] font-semibold text-[#0D2B4D]"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <Link
+                href="/facility/requests"
+                className="mt-1 flex w-full items-center justify-center rounded-full bg-[#0FA3A3] py-2 text-xs font-semibold text-white"
+              >
+                Submit Request
+              </Link>
             </div>
-            <div className="rounded-lg border px-3 py-2 text-xs text-slate-500">
-              Time · CNA Count
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {["Active CNA License", "BLS"].map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full bg-[#D6F1F1] px-2 py-1 text-[10px] font-semibold text-[#0D2B4D]"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-            <Link
-              href="/facility/requests"
-              className="mt-1 flex w-full items-center justify-center rounded-full bg-[#0FA3A3] py-2 text-xs font-semibold text-white"
-            >
-              Open request form
-            </Link>
           </div>
         </article>
 
-        <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <h3 className="font-[family-name:var(--font-playfair)] text-base font-bold text-[#0D2B4D]">
-            Confirmed Assignments
-          </h3>
-          <div className="mt-3 space-y-2">
+        <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <header className="flex items-center justify-between bg-[#0D2B4D] px-4 py-3 text-white">
+            <div className="flex items-center gap-2">
+              <Image
+                src="/logo/kivara-logo.png"
+                alt=""
+                width={22}
+                height={22}
+                className="rounded-full bg-white p-0.5"
+              />
+              <h3 className="text-sm font-semibold">Confirmed Assignments</h3>
+            </div>
+            <span aria-hidden className="text-sm text-[#D6F1F1]">
+              🔔
+            </span>
+          </header>
+          <div className="space-y-2 p-4">
             {confirmedPeople.map((person) => (
               <div
                 key={person.name}
@@ -379,11 +407,23 @@ export default function FacilityDashboardPage() {
           </div>
         </article>
 
-        <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <h3 className="font-[family-name:var(--font-playfair)] text-base font-bold text-[#0D2B4D]">
-            Today&apos;s Attendance
-          </h3>
-          <div className="mt-3 space-y-2">
+        <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <header className="flex items-center justify-between bg-[#0D2B4D] px-4 py-3 text-white">
+            <div className="flex items-center gap-2">
+              <Image
+                src="/logo/kivara-logo.png"
+                alt=""
+                width={22}
+                height={22}
+                className="rounded-full bg-white p-0.5"
+              />
+              <h3 className="text-sm font-semibold">Today&apos;s Attendance</h3>
+            </div>
+            <span aria-hidden className="text-sm text-[#D6F1F1]">
+              🔔
+            </span>
+          </header>
+          <div className="space-y-2 p-4">
             {attendance.map((row) => (
               <div
                 key={row.name}
@@ -403,72 +443,111 @@ export default function FacilityDashboardPage() {
           </div>
         </article>
 
-        <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <h3 className="font-[family-name:var(--font-playfair)] text-base font-bold text-[#0D2B4D]">
-            Timesheet Review
-          </h3>
-          <div className="mt-3 rounded-xl border border-slate-100 p-3 text-xs">
-            <p className="font-semibold text-[#0D2B4D]">Jasmine R.</p>
-            <p className="mt-1 text-slate-600">Clock In 7:01 AM</p>
-            <p className="text-slate-600">Clock Out 3:05 PM</p>
-            <p className="text-slate-600">Break 30m · Total 7.57 hrs</p>
-            <button
-              type="button"
-              className="mt-3 w-full rounded-full bg-[#0D2B4D] py-2 text-xs font-semibold text-white"
-            >
-              Approve
-            </button>
+        <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <header className="flex items-center justify-between bg-[#0D2B4D] px-4 py-3 text-white">
+            <div className="flex items-center gap-2">
+              <Image
+                src="/logo/kivara-logo.png"
+                alt=""
+                width={22}
+                height={22}
+                className="rounded-full bg-white p-0.5"
+              />
+              <h3 className="text-sm font-semibold">Timesheet Review</h3>
+            </div>
+            <span aria-hidden className="text-sm text-[#D6F1F1]">
+              🔔
+            </span>
+          </header>
+          <div className="p-4">
+            <div className="rounded-xl border border-slate-100 p-3 text-xs">
+              <p className="font-semibold text-[#0D2B4D]">Jasmine R.</p>
+              <p className="mt-1 text-slate-600">Clock In 7:01 AM</p>
+              <p className="text-slate-600">Clock Out 3:05 PM</p>
+              <p className="text-slate-600">Break 30m · Total 7.57 hrs</p>
+              <button
+                type="button"
+                className="mt-3 w-full rounded-full bg-[#0FA3A3] py-2 text-xs font-semibold text-white"
+              >
+                Approve
+              </button>
+            </div>
           </div>
         </article>
 
-        <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <h3 className="font-[family-name:var(--font-playfair)] text-base font-bold text-[#0D2B4D]">
-            Invoices & Billing
-          </h3>
-          <div className="mt-3 rounded-xl bg-[#0D2B4D] p-3 text-white">
-            <p className="text-[11px] text-[#D6F1F1]">Current balance</p>
-            <p className="text-xl font-bold">$2,560.00</p>
-          </div>
-          <div className="mt-3 space-y-2">
-            {invoices.map((invoice) => (
-              <div
-                key={invoice.id}
-                className="flex items-center justify-between rounded-lg bg-[#F2F4F7] px-2.5 py-2 text-xs"
-              >
-                <div>
-                  <p className="font-semibold text-[#0D2B4D]">{invoice.id}</p>
-                  <p className="text-slate-500">{invoice.date}</p>
+        <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <header className="flex items-center justify-between bg-[#0D2B4D] px-4 py-3 text-white">
+            <div className="flex items-center gap-2">
+              <Image
+                src="/logo/kivara-logo.png"
+                alt=""
+                width={22}
+                height={22}
+                className="rounded-full bg-white p-0.5"
+              />
+              <h3 className="text-sm font-semibold">Invoices & Billing</h3>
+            </div>
+            <span aria-hidden className="text-sm text-[#D6F1F1]">
+              🔔
+            </span>
+          </header>
+          <div className="p-4">
+            <div className="rounded-xl bg-[#0D2B4D] p-3 text-white">
+              <p className="text-[11px] text-[#D6F1F1]">Current balance</p>
+              <p className="text-xl font-bold">$2,560.00</p>
+            </div>
+            <div className="mt-3 space-y-2">
+              {invoices.map((invoice) => (
+                <div
+                  key={invoice.id}
+                  className="flex items-center justify-between rounded-lg bg-[#F2F4F7] px-2.5 py-2 text-xs"
+                >
+                  <div>
+                    <p className="font-semibold text-[#0D2B4D]">{invoice.id}</p>
+                    <p className="text-slate-500">{invoice.date}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold">{invoice.amount}</p>
+                    <p
+                      className={`text-[10px] font-bold ${
+                        invoice.status === "PAID"
+                          ? "text-emerald-700"
+                          : "text-amber-700"
+                      }`}
+                    >
+                      {invoice.status}
+                    </p>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="font-semibold">{invoice.amount}</p>
-                  <p
-                    className={`text-[10px] font-bold ${
-                      invoice.status === "PAID"
-                        ? "text-emerald-700"
-                        : "text-amber-700"
-                    }`}
-                  >
-                    {invoice.status}
-                  </p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </article>
       </section>
 
-      {/* Footer feature strip */}
-      <section className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-5">
+      {/* Footer feature strip — soft aqua cards with icons */}
+      <section className="grid gap-3 rounded-2xl bg-[#D6F1F1] p-4 sm:grid-cols-2 lg:grid-cols-5">
         {[
-          ["Reliable Staffing", "Confirmed coverage you can count on"],
-          ["Real-Time Updates", "Live attendance and shift status"],
-          ["Quality You Can Trust", "Credential-checked CNAs"],
-          ["We're Here For You", "24/7 facility support"],
-          ["Secure & Compliant", "Role-based access and audit trails"],
-        ].map(([title, copy]) => (
-          <div key={title} className="px-2 py-1">
-            <p className="text-sm font-bold text-[#0D2B4D]">{title}</p>
-            <p className="mt-1 text-xs text-slate-500">{copy}</p>
+          ["✓", "Reliable Staffing", "Confirmed coverage you can count on"],
+          ["⏱", "Real-Time Updates", "Live attendance and shift status"],
+          ["★", "Quality You Can Trust", "Credential-checked CNAs"],
+          ["💬", "We're Here For You", "24/7 facility support"],
+          ["🔒", "Secure & Compliant", "Role-based access and audit trails"],
+        ].map(([icon, title, copy]) => (
+          <div
+            key={title}
+            className="flex gap-3 rounded-xl bg-white/70 px-3 py-3"
+          >
+            <span
+              aria-hidden
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0FA3A3] text-sm font-bold text-white"
+            >
+              {icon}
+            </span>
+            <div>
+              <p className="text-sm font-bold text-[#0D2B4D]">{title}</p>
+              <p className="mt-0.5 text-xs text-slate-600">{copy}</p>
+            </div>
           </div>
         ))}
       </section>
