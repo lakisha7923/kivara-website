@@ -33,13 +33,21 @@ export default function CnaShell({ children }: { children: ReactNode }) {
               </p>
             </div>
           </div>
-          <Link
-            href="/cna/more"
-            className="rounded-full bg-white/10 px-3 py-1.5 text-sm"
-            aria-label="Notifications"
-          >
-            🔔
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/"
+              className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold hover:bg-white/20"
+            >
+              Website
+            </Link>
+            <Link
+              href="/cna/more"
+              className="rounded-full bg-white/10 px-3 py-1.5 text-sm"
+              aria-label="Notifications"
+            >
+              🔔
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -57,7 +65,7 @@ export default function CnaShell({ children }: { children: ReactNode }) {
             return (
               <li key={tab.href}>
                 <Link
-                  href={tab.href === "/cna/clock" ? "/cna/schedule" : tab.href}
+                  href={tab.href}
                   className={`flex flex-col items-center gap-0.5 py-2 text-[10px] font-semibold ${
                     active ? "text-[var(--kivara-teal)]" : "text-slate-500"
                   }`}

@@ -54,6 +54,41 @@ export const mockCna: CnaProfile = {
   ],
 };
 
+export const mockOnboardingCna: CnaProfile = {
+  id: "cna-avery",
+  fullName: "Avery Quinn",
+  email: "avery.quinn@email.com",
+  phone: "(678) 555-0199",
+  status: "Onboarding",
+  workReady: false,
+  actionItems: [
+    "Upload CPR / BLS card",
+    "Complete orientation packet",
+    "Sign handbook acknowledgment",
+  ],
+  workAreas: ["Long-term care"],
+  approvedHoursThisPeriod: 0,
+  payStatus: "Not ready",
+  credentials: [
+    {
+      id: "cred2-1",
+      name: "CNA License",
+      status: "Pending Review",
+      expiresOn: "2027-01-01",
+    },
+    {
+      id: "cred2-2",
+      name: "CPR / BLS",
+      status: "Missing",
+    },
+    {
+      id: "cred2-3",
+      name: "TB Screening",
+      status: "Uploaded",
+    },
+  ],
+};
+
 export const mockAvailableShifts: AvailableShift[] = [
   {
     id: "shift-1001-b",

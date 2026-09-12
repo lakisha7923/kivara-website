@@ -1,133 +1,135 @@
 "use client";
+
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
+
 import { auth, db } from "@/lib/firebase";
-import { useRouter } from "next/navigation";
+
 export default function LoginPage() {
-
   const [email, setEmail] = useState("");
-const [password, setPassword] = useState("");
-const router = useRouter();
-const handleLogin = async () => {
-  try {
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+  const [password, setPassword] = useState("");
+  const router = useRouter();
 
-    const userDoc = await getDoc(
-      doc(db, "users", userCredential.user.uid)
-    );
+  const handleLogin = async () => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
+      const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
 
-      if (userData.accountType === "Healthcare Professional") {
-  router.push("/professional");
-} else if (userData.accountType === "Healthcare Facility") {
-  router.push("/facility");
-} else {
-  alert("Unknown account type.");
-}
-    } else {
-      alert("User profile not found.");
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+
+        if (userData.accountType === "Healthcare Professional") {
+          router.push("/cna");
+        } else if (userData.accountType === "Healthcare Facility") {
+          router.push("/facility");
+        } else {
+          alert("Unknown account type.");
+        }
+      } else {
+        alert("User profile not found.");
+      }
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Unable to sign in.";
+      alert(message);
     }
+  };
 
-  } catch (error: any) {
-    alert(error.message);
-  }
-};
   return (
-    <main className="min-h-screen bg-slate-50 flex items-center justify-center px-6">
+    <main className="relative min-h-screen bg-[var(--kivara-offwhite)] px-4 py-8 sm:px-6">
+      <div className="mx-auto mb-6 flex max-w-5xl items-center justify-between">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[var(--kivara-navy)] shadow-sm hover:bg-[var(--kivara-aqua)]"
+        >
+          ← Back to website
+        </Link>
+        <Link
+          href="/register"
+          className="text-sm font-semibold text-[var(--kivara-teal)] hover:underline"
+        >
+          Create account
+        </Link>
+      </div>
 
-      <div className="bg-white shadow-2xl rounded-3xl overflow-hidden max-w-5xl w-full grid md:grid-cols-2">
-
-        {/* Left Side */}
-
-        <div className="bg-[#0D2B4D] text-white p-12 flex flex-col justify-center items-center">
-
+      <div className="mx-auto grid max-w-5xl overflow-hidden rounded-3xl bg-white shadow-2xl md:grid-cols-2">
+        <div className="flex flex-col items-center justify-center bg-[var(--kivara-navy)] px-8 py-12 text-white sm:px-12">
           <Image
             src="/logo/kivara-logo.png"
             alt="Kivara Healthcare"
             width={120}
             height={120}
-            className="mb-8"
+            className="mb-8 rounded-full bg-white p-1"
+            priority
           />
-
-          <h1 className="text-4xl font-bold mb-4 text-center">
-            Welcome Back
+          <h1 className="font-display text-center text-4xl font-bold">
+            Welcome back
           </h1>
-
-          <p className="text-lg text-slate-200 text-center">
-            Connecting Healthcare Professionals with Healthcare Facilities.
+          <p className="mt-4 text-center text-lg text-slate-200">
+            Sign in to your Kivara CNA, Facility, or Admin workspace.
           </p>
-
         </div>
 
-        {/* Right Side */}
-
-        <div className="p-12">
-
-          <h2 className="text-3xl font-bold text-[#0D2B4D] mb-8">
+        <div className="px-8 py-12 sm:px-12">
+          <h2 className="font-display text-3xl font-bold text-[var(--kivara-navy)]">
             Login
           </h2>
 
-          <form className="space-y-6">
-
+          <form className="mt-8 space-y-5" onSubmit={(e) => e.preventDefault()}>
             <input
-  type="email"
-  placeholder="Email Address"
-  value={email}
-  onChange={(e) => setEmail(e.target.value)}
-  className="w-full border border-gray-300 rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-teal-500"
-/>
-
+              type="email"
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-xl border border-gray-300 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[var(--kivara-teal)]"
+            />
             <input
-  type="password"
-  placeholder="Password"
-  value={password}
-  onChange={(e) => setPassword(e.target.value)}
-  className="w-full border border-gray-300 rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-teal-500"
-/>
-
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-xl border border-gray-300 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[var(--kivara-teal)]"
+            />
             <button
-  type="button"
-  onClick={handleLogin}
-  className="w-full bg-teal-500 text-white py-4 rounded-xl hover:bg-teal-600 transition"
->
-  Login
-</button>
-
+              type="button"
+              onClick={handleLogin}
+              className="w-full rounded-xl bg-[var(--kivara-teal)] py-4 font-semibold text-white transition hover:brightness-110"
+            >
+              Login
+            </button>
           </form>
 
-          <div className="mt-6 text-center">
-
-            <a
-              href="#"
-              className="text-sm text-teal-600 hover:underline"
-            >
-              Forgot Password?
+          <div className="mt-6 space-y-4 text-center">
+            <a href="#" className="text-sm text-[var(--kivara-teal)] hover:underline">
+              Forgot password?
             </a>
-
-            <p className="mt-6 text-gray-600">
-              Don't have an account?
-              <a
+            <p className="text-gray-600">
+              Don&apos;t have an account?
+              <Link
                 href="/register"
-                className="text-teal-600 font-semibold ml-2 hover:underline"
+                className="ml-2 font-semibold text-[var(--kivara-teal)] hover:underline"
               >
                 Register
-              </a>
+              </Link>
             </p>
-
+            <Link
+              href="/"
+              className="inline-flex text-sm font-semibold text-[var(--kivara-navy)] hover:underline"
+            >
+              ← Return to Kivara website
+            </Link>
           </div>
-
         </div>
-
       </div>
-
     </main>
   );
 }

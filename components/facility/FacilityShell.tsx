@@ -40,7 +40,7 @@ export default function FacilityShell({
             href="/"
             className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-[var(--kivara-navy)]"
           >
-            Exit
+            ← Back to website
           </Link>
         </div>
         <nav className="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-4 pb-3">

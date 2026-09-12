@@ -10,7 +10,8 @@ const links = [
   { href: "/cna/shifts", label: "Available shifts" },
   { href: "/messages", label: "Messages" },
   { href: "/notifications", label: "Notifications" },
-  { href: "/", label: "Exit to website" },
+  { href: "/", label: "← Back to Kivara website" },
+  { href: "/login", label: "Switch account / Login" },
 ];
 
 export default function CnaMorePage() {

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
@@ -33,9 +34,23 @@ console.log(userCredential.user);
   }
 }; 
 return (
-    <main className="min-h-screen bg-slate-50 flex items-center justify-center px-6">
+    <main className="min-h-screen bg-[var(--kivara-offwhite)] px-4 py-8 sm:px-6">
+      <div className="mx-auto mb-6 flex max-w-6xl items-center justify-between">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[var(--kivara-navy)] shadow-sm hover:bg-[var(--kivara-aqua)]"
+        >
+          ← Back to website
+        </Link>
+        <Link
+          href="/login"
+          className="text-sm font-semibold text-[var(--kivara-teal)] hover:underline"
+        >
+          Already have an account?
+        </Link>
+      </div>
 
-      <div className="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-6xl w-full grid md:grid-cols-2">
+      <div className="mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden max-w-6xl w-full grid md:grid-cols-2">
 
         {/* Left */}
 
@@ -125,12 +140,20 @@ return (
 
           <p className="text-center mt-6 text-gray-600">
             Already have an account?
-            <a
+            <Link
               href="/login"
               className="text-teal-600 font-semibold ml-2"
             >
               Login
-            </a>
+            </Link>
+          </p>
+          <p className="mt-4 text-center">
+            <Link
+              href="/"
+              className="text-sm font-semibold text-[var(--kivara-navy)] hover:underline"
+            >
+              ← Return to Kivara website
+            </Link>
           </p>
 
         </div>
