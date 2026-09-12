@@ -31,6 +31,11 @@ export default function LoginPage() {
           router.push("/cna");
         } else if (userData.accountType === "Healthcare Facility") {
           router.push("/facility");
+        } else if (
+          userData.accountType === "Master Admin" ||
+          userData.accountType === "Kivara Admin"
+        ) {
+          router.push("/login/mfa");
         } else {
           alert("Unknown account type.");
         }
@@ -112,6 +117,31 @@ export default function LoginPage() {
             <a href="#" className="text-sm text-[var(--kivara-teal)] hover:underline">
               Forgot password?
             </a>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-left">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Demo portals
+              </p>
+              <div className="mt-3 grid gap-2">
+                <Link
+                  href="/cna"
+                  className="rounded-xl bg-white px-3 py-2 text-sm font-semibold text-[#0D2B4D] shadow-sm"
+                >
+                  CNA App →
+                </Link>
+                <Link
+                  href="/facility"
+                  className="rounded-xl bg-white px-3 py-2 text-sm font-semibold text-[#0D2B4D] shadow-sm"
+                >
+                  Facility Portal →
+                </Link>
+                <Link
+                  href="/login/mfa"
+                  className="rounded-xl bg-[#0D2B4D] px-3 py-2 text-sm font-semibold text-white shadow-sm"
+                >
+                  Master Admin (Login + MFA) →
+                </Link>
+              </div>
+            </div>
             <p className="text-gray-600">
               Don&apos;t have an account?
               <Link

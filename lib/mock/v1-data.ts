@@ -358,4 +358,224 @@ export const mockAuditEvents: AuditEvent[] = [
     reason: "Eligible, no conflict, credentials approved",
     at: "Sep 11, 4:20 PM",
   },
+  {
+    id: "aud-2",
+    actor: "Ops Manager — Sam Rivera",
+    action: "Correct Timesheet",
+    recordType: "Timesheet",
+    recordId: "ts-7001",
+    previousValue: "8.05 hrs",
+    newValue: "8.00 hrs",
+    reason: "Facility discrepancy accepted — unpaid break adjustment",
+    at: "Sep 11, 5:02 PM",
+  },
+  {
+    id: "aud-3",
+    actor: "Billing — Casey Nguyen",
+    action: "Issue Invoice",
+    recordType: "Invoice",
+    recordId: "inv-3001",
+    previousValue: "Draft",
+    newValue: "Issued",
+    reason: "Locked hours for week of Sep 7",
+    at: "Sep 12, 9:10 AM",
+  },
+];
+
+export const mockFacilities = [
+  {
+    id: "fac-sunrise",
+    name: "Sunrise Care Center",
+    city: "Atlanta, GA",
+    status: "Active",
+    locations: 2,
+    openRequests: 2,
+    users: 4,
+  },
+  {
+    id: "fac-memorial",
+    name: "Memorial Care Center",
+    city: "Atlanta, GA",
+    status: "Active",
+    locations: 2,
+    openRequests: 1,
+    users: 5,
+  },
+  {
+    id: "fac-harbor",
+    name: "Harbor Ridge SNF",
+    city: "Marietta, GA",
+    status: "Onboarding",
+    locations: 1,
+    openRequests: 0,
+    users: 2,
+  },
+];
+
+export const mockFacilityDetail = {
+  id: "fac-sunrise",
+  name: "Sunrise Care Center",
+  locations: [
+    {
+      id: "loc-main",
+      name: "Main Campus",
+      address: "1840 Wellness Parkway, Atlanta, GA",
+      units: ["Memory Care", "Rehab Wing", "Skilled Nursing"],
+    },
+    {
+      id: "loc-east",
+      name: "East Wing",
+      address: "220 Hillcrest Ave, Decatur, GA",
+      units: ["Skilled Nursing"],
+    },
+  ],
+  users: [
+    { name: "Pat Ellis", role: "DON", email: "pellis@sunrise.example" },
+    { name: "Morgan Lee", role: "Scheduler", email: "mlee@sunrise.example" },
+    { name: "Riley Park", role: "Charge Nurse", email: "rpark@sunrise.example" },
+  ],
+  requirements: ["CNA License", "CPR / BLS", "TB Screening", "Background Screening"],
+  ratesTerms: {
+    standardBillRate: 38,
+    eveningBillRate: 41,
+    paymentTerms: "Net 15",
+    contractStatus: "Active through Dec 2026",
+  },
+};
+
+export const mockAtRiskShifts = [
+  {
+    id: "risk-1",
+    facilityName: "Sunrise Care Center",
+    unit: "Memory Care",
+    when: "Sun, Sep 14 · 7:00 AM–3:00 PM",
+    reason: "1 of 2 positions still open · 18 hrs to start",
+  },
+  {
+    id: "risk-2",
+    facilityName: "Memorial Care Center",
+    unit: "Skilled Nursing",
+    when: "Today · 3:00 PM–11:00 PM",
+    reason: "Confirmed CNA marked Arrived late · monitor for no-show",
+  },
+];
+
+export const mockPayrollBatches = [
+  {
+    id: "pay-401",
+    periodLabel: "Week of Sep 7, 2026",
+    cnaCount: 12,
+    hours: 384,
+    amount: 8448,
+    status: "Ready to Export",
+  },
+  {
+    id: "pay-400",
+    periodLabel: "Week of Aug 31, 2026",
+    cnaCount: 11,
+    hours: 352,
+    amount: 7744,
+    status: "Sent",
+  },
+  {
+    id: "pay-399",
+    periodLabel: "Week of Aug 24, 2026",
+    cnaCount: 10,
+    hours: 320,
+    amount: 7040,
+    status: "Reconciled",
+  },
+];
+
+export const mockAdminMessages = [
+  {
+    id: "msg-1",
+    from: "Memorial Care Center",
+    subject: "Emergency change on confirmed PM shift",
+    preview: "Need replacement for Memory Care 3–11…",
+    at: "10 min ago",
+    unread: true,
+  },
+  {
+    id: "msg-2",
+    from: "Jordan Miles",
+    subject: "Credential upload question",
+    preview: "TB screening renewal uploaded — please review…",
+    at: "1 hr ago",
+    unread: true,
+  },
+  {
+    id: "msg-3",
+    from: "Sunrise Care Center",
+    subject: "Invoice INV-3001 received",
+    preview: "Confirming Net 15 terms for week of Sep 7…",
+    at: "Yesterday",
+    unread: false,
+  },
+];
+
+export const mockAdminDocuments = [
+  {
+    id: "doc-1",
+    name: "Master Services Agreement — Sunrise",
+    type: "Contract",
+    updated: "Aug 12, 2026",
+  },
+  {
+    id: "doc-2",
+    name: "Rate card Q3 2026",
+    type: "Rates",
+    updated: "Jul 1, 2026",
+  },
+  {
+    id: "doc-3",
+    name: "GPS exception SOP",
+    type: "Policy",
+    updated: "Jun 18, 2026",
+  },
+];
+
+export const mockAdminReports = [
+  {
+    id: "rep-1",
+    name: "Fill rate by facility",
+    period: "Last 30 days",
+    summary: "91% positions filled before shift start",
+  },
+  {
+    id: "rep-2",
+    name: "Call-out & replacement",
+    period: "Last 30 days",
+    summary: "6 call-outs · 5 replaced · 1 open STAT",
+  },
+  {
+    id: "rep-3",
+    name: "Credential risk",
+    period: "Next 45 days",
+    summary: "8 CNAs with expiring credentials",
+  },
+];
+
+export const mockRequestPositions = [
+  {
+    id: "pos-1001-a",
+    requestId: "req-1001",
+    label: "Position A",
+    status: "Filled",
+    assignee: "Jordan Miles",
+  },
+  {
+    id: "pos-1001-b",
+    requestId: "req-1001",
+    label: "Position B",
+    status: "Open",
+    assignee: null,
+  },
+  {
+    id: "pos-1002-a",
+    requestId: "req-1002",
+    label: "Position A",
+    status: "Open",
+    assignee: null,
+  },
 ];

@@ -4,11 +4,11 @@ import { mockAuditEvents } from "@/lib/mock/v1-data";
 
 export default function AdminAuditPage() {
   return (
-    <AdminShell title="Audit history">
+    <AdminShell title="Audit History">
       <PageHeader
         eyebrow="Compliance"
-        title="Sensitive action audit trail"
-        subtitle="Who changed what, when, previous value, new value, and reason when required."
+        title="Audit History"
+        subtitle="Who changed what, when, previous value, new value, and reason."
       />
       <div className="space-y-3">
         {mockAuditEvents.map((event) => (
@@ -16,9 +16,7 @@ export default function AdminAuditPage() {
             <p className="text-xs font-semibold uppercase tracking-wide text-teal-700">
               {event.at}
             </p>
-            <h2 className="mt-1 font-bold text-[var(--kivara-navy)]">
-              {event.action}
-            </h2>
+            <h2 className="mt-1 font-bold text-[#0D2B4D]">{event.action}</h2>
             <p className="text-sm text-slate-600">
               {event.actor} · {event.recordType} {event.recordId}
             </p>

@@ -65,17 +65,17 @@ export default function AdminAttendancePage() {
   );
 
   return (
-    <AdminShell title="Live Attendance">
+    <AdminShell title="Time & Attendance">
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#0FA3A3]">
-            Time clock · GPS monitoring
+            Time & Attendance
           </p>
           <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-[#0D2B4D] sm:text-3xl">
-            Live Attendance
+            Live Status
           </h2>
           <p className="mt-1 text-sm text-slate-600">
-            Real-time clock status and geofence exceptions across facilities
+            Live Status → GPS/Time Exception Review across facilities
           </p>
         </div>
         <button
@@ -247,6 +247,24 @@ export default function AdminAttendancePage() {
             >
               View Location History
             </button>
+
+            {selected.onSite === "Outside Area" ? (
+              <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-3">
+                <p className="text-xs font-bold uppercase tracking-wide text-rose-800">
+                  GPS / Time Exception Review
+                </p>
+                <p className="mt-1 text-sm text-rose-900">
+                  Outside geofence while clocked. Capture reason and route to
+                  Audit History if hours are adjusted.
+                </p>
+                <button
+                  type="button"
+                  className="mt-3 w-full rounded-full bg-rose-700 py-2 text-sm font-semibold text-white"
+                >
+                  Open exception review
+                </button>
+              </div>
+            ) : null}
 
             <div className="mt-5 border-t border-slate-100 pt-4">
               <p className="text-xs font-bold uppercase tracking-wide text-slate-500">

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import AdminShell from "@/components/admin/AdminShell";
 import { PageHeader, ScreenCard, StatusBadge } from "@/components/ui/primitives";
 import { mockCna, mockOnboardingCna } from "@/lib/mock/v1-data";
@@ -9,48 +11,50 @@ export default function AdminCnasPage() {
     <AdminShell title="CNAs">
       <PageHeader
         eyebrow="Workforce"
-        title="Applications, credentials & Work Ready"
-        subtitle="Only authorized Kivara roles approve credentials and restore Work Ready status."
+        title="CNAs"
+        subtitle="Applications → CNA Detail → Onboarding → Credentials → Work Ready"
       />
 
-      <div className="space-y-4">
+      <div className="mb-4 flex flex-wrap gap-2">
+        {["Applications", "Onboarding", "Credentials", "Work Ready"].map(
+          (stage) => (
+            <span
+              key={stage}
+              className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700"
+            >
+              {stage}
+            </span>
+          ),
+        )}
+      </div>
+
+      <div className="space-y-3">
         {people.map((cna) => (
-          <ScreenCard key={cna.id}>
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <h2 className="text-lg font-bold text-[var(--kivara-navy)]">
-                  {cna.fullName}
-                </h2>
-                <p className="text-sm text-slate-600">
-                  {cna.email} · {cna.phone}
-                </p>
-              </div>
-              <StatusBadge
-                label={cna.status}
-                tone={cna.workReady ? "success" : "warning"}
-              />
-            </div>
-            <div className="mt-4 grid gap-2 sm:grid-cols-2">
-              {cna.credentials.map((credential) => (
-                <div
-                  key={credential.id}
-                  className="rounded-xl bg-[var(--kivara-offwhite)] px-3 py-2 text-sm"
-                >
-                  <p className="font-semibold text-[var(--kivara-navy)]">
-                    {credential.name}
+          <Link key={cna.id} href={`/admin/cnas/${cna.id}`}>
+            <ScreenCard className="transition hover:border-[#0FA3A3]">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-[#0FA3A3]">
+                    {cna.workReady ? "Work Ready" : "Application / Onboarding"}
                   </p>
-                  <p className="text-slate-600">{credential.status}</p>
+                  <h2 className="text-lg font-bold text-[#0D2B4D]">
+                    {cna.fullName}
+                  </h2>
+                  <p className="text-sm text-slate-600">
+                    {cna.email} · {cna.phone}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    {cna.credentials.filter((c) => c.status === "Approved").length}/
+                    {cna.credentials.length} credentials approved
+                  </p>
                 </div>
-              ))}
-            </div>
-            {!cna.workReady && cna.actionItems.length > 0 ? (
-              <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-slate-600">
-                {cna.actionItems.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            ) : null}
-          </ScreenCard>
+                <StatusBadge
+                  label={cna.status}
+                  tone={cna.workReady ? "success" : "warning"}
+                />
+              </div>
+            </ScreenCard>
+          </Link>
         ))}
       </div>
     </AdminShell>
