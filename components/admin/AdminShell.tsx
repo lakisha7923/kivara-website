@@ -8,6 +8,7 @@ const links = [
   { href: "/admin/cnas", label: "CNAs" },
   { href: "/admin/requests", label: "Requests" },
   { href: "/admin/assignments", label: "Assignments" },
+  { href: "/admin/attendance", label: "Live Attendance" },
   { href: "/admin/timesheets", label: "Timesheets" },
   { href: "/admin/invoices", label: "Invoices" },
   { href: "/admin/audit", label: "Audit" },
