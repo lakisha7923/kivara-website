@@ -172,15 +172,28 @@ export interface StaffingRequest {
   contactName: string;
 }
 
+export type TimesheetSource = "Clock-out" | "Upload";
+
 export interface Timesheet {
   id: string;
   assignmentId: string;
   cnaName: string;
   facilityName: string;
+  /** Display label, e.g. "Wed, Sep 10" */
   date: string;
+  /** ISO calendar date YYYY-MM-DD used for year/month/week history */
+  workDate: string;
+  year: number;
+  month: number;
+  week: number;
+  weekLabel: string;
   scheduledHours: number;
   actualHours: number;
   status: TimesheetStatus;
+  source: TimesheetSource;
+  fileName?: string;
+  uploadedAt?: string;
+  notes?: string;
 }
 
 export interface Invoice {

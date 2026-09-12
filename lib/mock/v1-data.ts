@@ -9,6 +9,7 @@ import type {
   StaffingRequest,
   Timesheet,
 } from "@/types/kivara";
+import { periodFromWorkDate } from "@/lib/timesheets/period";
 
 export {
   CONFIRM_ADMIN_ACTION,
@@ -325,17 +326,94 @@ export const mockFacilityWorkAreas = [
   { id: "wa-medsurg", name: "Med Surg" },
 ];
 
+function buildTimesheet(
+  partial: Omit<Timesheet, "date" | "year" | "month" | "week" | "weekLabel"> & {
+    workDate: string;
+  }
+): Timesheet {
+  const period = periodFromWorkDate(partial.workDate);
+  return {
+    ...partial,
+    date: period.date,
+    year: period.year,
+    month: period.month,
+    week: period.week,
+    weekLabel: period.weekLabel,
+  };
+}
+
 export const mockTimesheets: Timesheet[] = [
-  {
+  buildTimesheet({
     id: "ts-7001",
     assignmentId: "asg-9000",
     cnaName: "Jordan Miles",
     facilityName: "Sunrise Care Center",
-    date: "Wed, Sep 10",
+    workDate: "2026-09-10",
     scheduledHours: 8,
     actualHours: 8.05,
     status: "Submitted",
-  },
+    source: "Clock-out",
+  }),
+  buildTimesheet({
+    id: "ts-7002",
+    assignmentId: "asg-9001",
+    cnaName: "Jordan Miles",
+    facilityName: "Sunrise Care Center",
+    workDate: "2026-09-07",
+    scheduledHours: 8,
+    actualHours: 8,
+    status: "Kivara Approved",
+    source: "Clock-out",
+  }),
+  buildTimesheet({
+    id: "ts-7003",
+    assignmentId: "asg-8890",
+    cnaName: "Jordan Miles",
+    facilityName: "Piedmont Rehab",
+    workDate: "2026-08-22",
+    scheduledHours: 8,
+    actualHours: 7.75,
+    status: "Locked",
+    source: "Upload",
+    fileName: "august-week4-piedmont.pdf",
+    uploadedAt: "2026-08-23T14:10:00Z",
+    notes: "Paper timesheet signed by charge nurse",
+  }),
+  buildTimesheet({
+    id: "ts-7004",
+    assignmentId: "asg-8701",
+    cnaName: "Jordan Miles",
+    facilityName: "Sunrise Care Center",
+    workDate: "2026-07-15",
+    scheduledHours: 12,
+    actualHours: 12.25,
+    status: "Locked",
+    source: "Clock-out",
+  }),
+  buildTimesheet({
+    id: "ts-7005",
+    assignmentId: "asg-8102",
+    cnaName: "Jordan Miles",
+    facilityName: "Northside Memory Care",
+    workDate: "2025-12-18",
+    scheduledHours: 8,
+    actualHours: 8,
+    status: "Locked",
+    source: "Upload",
+    fileName: "dec-2025-week51.pdf",
+    uploadedAt: "2025-12-19T09:02:00Z",
+  }),
+  buildTimesheet({
+    id: "ts-7006",
+    assignmentId: "asg-8055",
+    cnaName: "Jordan Miles",
+    facilityName: "Sunrise Care Center",
+    workDate: "2025-11-05",
+    scheduledHours: 8,
+    actualHours: 8.5,
+    status: "Locked",
+    source: "Clock-out",
+  }),
 ];
 
 export const mockInvoices: Invoice[] = [
