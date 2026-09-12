@@ -60,8 +60,9 @@ export default function CnaShell({ children }: { children: ReactNode }) {
       </main>
 
       <nav
-        className="fixed bottom-0 left-1/2 z-50 w-full max-w-md -translate-x-1/2 border-t border-slate-200 bg-white/95 backdrop-blur"
+        className="fixed bottom-0 left-1/2 z-40 w-full max-w-md -translate-x-1/2 border-t border-slate-200 bg-white/95 backdrop-blur"
         style={{ paddingBottom: "max(0.35rem, env(safe-area-inset-bottom))" }}
+        aria-label="CNA primary navigation"
       >
         <ul className="grid grid-cols-6">
           {tabs.map((tab) => {

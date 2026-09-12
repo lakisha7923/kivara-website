@@ -53,15 +53,15 @@ function GeofenceMap({
 
 /**
  * Pins the primary CTA above the CNA bottom tab bar.
- * This is what made the partial verification fail: the action sat under
- * long shift content and competed with the fixed tab bar on phones.
+ * Must sit above the tab bar z-index (z-50) or taps hit Home/Clock links
+ * and navigate away instead of advancing the geofence → clock-in flow.
  */
 function StickyClockAction({ children }: { children: ReactNode }) {
   return (
     <div
-      className="pointer-events-none fixed inset-x-0 z-40 mx-auto w-full max-w-md px-3"
+      className="pointer-events-none fixed inset-x-0 z-[60] mx-auto w-full max-w-md px-3"
       style={{
-        bottom: "calc(3.75rem + max(0.35rem, env(safe-area-inset-bottom)))",
+        bottom: "calc(4.5rem + max(0.35rem, env(safe-area-inset-bottom)))",
       }}
     >
       <div className="pointer-events-auto rounded-2xl border border-slate-200/80 bg-white/95 p-2 shadow-lg backdrop-blur">
@@ -125,7 +125,7 @@ export default function GpsTimeClock({
   };
 
   return (
-    <div className="space-y-4 pb-28" data-testid="gps-time-clock">
+    <div className="space-y-4 pb-36" data-testid="gps-time-clock">
       {phase === "details" ? (
         <>
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -194,8 +194,12 @@ export default function GpsTimeClock({
             <button
               type="button"
               data-testid="ready-to-clock-in"
-              onClick={startGeofenceCheck}
-              className="w-full rounded-full bg-[#0D2B4D] py-3.5 text-sm font-semibold text-white shadow-sm active:brightness-95"
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                startGeofenceCheck();
+              }}
+              className="relative z-[61] w-full rounded-full bg-[#0D2B4D] py-3.5 text-sm font-semibold text-white shadow-sm active:brightness-95"
             >
               I’m Here – Ready to Clock In
             </button>
@@ -243,8 +247,12 @@ export default function GpsTimeClock({
               type="button"
               data-testid="clock-in"
               disabled={checking || !withinGeofence}
-              onClick={handleClockIn}
-              className="w-full rounded-full bg-[#0FA3A3] py-3.5 text-sm font-semibold text-white shadow-sm disabled:cursor-not-allowed disabled:opacity-50 active:brightness-95"
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                handleClockIn();
+              }}
+              className="relative z-[61] w-full rounded-full bg-[#0FA3A3] py-3.5 text-sm font-semibold text-white shadow-sm disabled:cursor-not-allowed disabled:opacity-50 active:brightness-95"
             >
               {checking ? "Verifying GPS…" : "Clock In"}
             </button>
