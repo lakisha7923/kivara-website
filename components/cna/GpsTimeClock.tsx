@@ -1,16 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 
 import { cnaActiveClockShift } from "@/lib/mock/attendance";
 
 type Phase = "details" | "geofence" | "on_shift" | "clock_out" | "submitted";
 
 function formatElapsed(totalSeconds: number) {
-  const h = Math.floor(totalSeconds / 3600).toString().padStart(2, "0");
-  const m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, "0");
-  const s = Math.floor(totalSeconds % 60).toString().padStart(2, "0");
+  const h = Math.floor(totalSeconds / 3600)
+    .toString()
+    .padStart(2, "0");
+  const m = Math.floor((totalSeconds % 3600) / 60)
+    .toString()
+    .padStart(2, "0");
+  const s = Math.floor(totalSeconds % 60)
+    .toString()
+    .padStart(2, "0");
   return `${h}:${m}:${s}`;
 }
 
@@ -23,8 +29,14 @@ function GeofenceMap({
 }) {
   return (
     <div className="relative mx-auto aspect-square w-full max-w-[280px] overflow-hidden rounded-full border-[6px] border-[#D6F1F1] bg-[#E8F6F6] shadow-inner">
-      <div className="absolute inset-[18%] rounded-full border-2 border-dashed border-[#0FA3A3]/40" aria-hidden />
-      <div className="absolute inset-[32%] rounded-full bg-[#0FA3A3]/15" aria-hidden />
+      <div
+        className="absolute inset-[18%] rounded-full border-2 border-dashed border-[#0FA3A3]/40"
+        aria-hidden
+      />
+      <div
+        className="absolute inset-[32%] rounded-full bg-[#0FA3A3]/15"
+        aria-hidden
+      />
       <div
         className={`absolute left-1/2 top-[42%] flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-lg text-white shadow-lg ${
           within ? "bg-[#0FA3A3]" : "bg-rose-500"
@@ -34,6 +46,26 @@ function GeofenceMap({
       </div>
       <div className="absolute bottom-6 left-1/2 w-[80%] -translate-x-1/2 rounded-full bg-white/95 px-3 py-1.5 text-center text-[11px] font-semibold text-[#0D2B4D] shadow">
         GPS accuracy · {accuracyFt} ft
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Pins the primary CTA above the CNA bottom tab bar.
+ * This is what made the partial verification fail: the action sat under
+ * long shift content and competed with the fixed tab bar on phones.
+ */
+function StickyClockAction({ children }: { children: ReactNode }) {
+  return (
+    <div
+      className="pointer-events-none fixed inset-x-0 z-40 mx-auto w-full max-w-md px-3"
+      style={{
+        bottom: "calc(3.75rem + max(0.35rem, env(safe-area-inset-bottom)))",
+      }}
+    >
+      <div className="pointer-events-auto rounded-2xl border border-slate-200/80 bg-white/95 p-2 shadow-lg backdrop-blur">
+        {children}
       </div>
     </div>
   );
@@ -49,7 +81,7 @@ export default function GpsTimeClock({
   const shift = cnaActiveClockShift;
   const [phase, setPhase] = useState<Phase>("details");
   const [checking, setChecking] = useState(false);
-  const [withinGeofence, setWithinGeofence] = useState(true);
+  const [withinGeofence, setWithinGeofence] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [onBreak, setOnBreak] = useState(false);
   const [breakSeconds, setBreakSeconds] = useState(0);
@@ -71,15 +103,17 @@ export default function GpsTimeClock({
   }, [phase, onBreak]);
 
   const startGeofenceCheck = () => {
+    setWithinGeofence(false);
     setChecking(true);
     setPhase("geofence");
     window.setTimeout(() => {
       setWithinGeofence(true);
       setChecking(false);
-    }, 1200);
+    }, 900);
   };
 
   const handleClockIn = () => {
+    if (checking || !withinGeofence) return;
     const now = new Date();
     setClockInLabel(
       now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
@@ -91,7 +125,7 @@ export default function GpsTimeClock({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pb-28" data-testid="gps-time-clock">
       {phase === "details" ? (
         <>
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -120,10 +154,12 @@ export default function GpsTimeClock({
                 {shift.address}
               </p>
               <p>
-                <span className="font-semibold text-[#0D2B4D]">Unit</span> · {shift.unit}
+                <span className="font-semibold text-[#0D2B4D]">Unit</span> ·{" "}
+                {shift.unit}
               </p>
               <p>
-                <span className="font-semibold text-[#0D2B4D]">Pay</span> · ${shift.payRate.toFixed(2)}/hr
+                <span className="font-semibold text-[#0D2B4D]">Pay</span> · $
+                {shift.payRate.toFixed(2)}/hr
               </p>
             </div>
 
@@ -136,34 +172,47 @@ export default function GpsTimeClock({
               </div>
               <div className="flex items-center justify-between bg-white px-3 py-2">
                 <p className="text-xs text-slate-500">Facility location</p>
-                <span className="text-xs font-semibold text-[#0FA3A3]">View on Map</span>
+                <span className="text-xs font-semibold text-[#0FA3A3]">
+                  View on Map
+                </span>
               </div>
             </div>
 
             <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3">
-              <p className="text-xs font-bold uppercase tracking-wide text-amber-900">Important</p>
+              <p className="text-xs font-bold uppercase tracking-wide text-amber-900">
+                Important
+              </p>
               <p className="mt-1 text-sm text-amber-950">{shift.instructions}</p>
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={startGeofenceCheck}
-            className="w-full rounded-full bg-[#0D2B4D] py-3.5 text-sm font-semibold text-white shadow-sm"
-          >
-            I’m Here – Ready to Clock In
-          </button>
           <p className="text-center text-xs text-slate-500">
             Assignment {assignmentId ?? shift.id} · Geofence check required
           </p>
+
+          <StickyClockAction>
+            <button
+              type="button"
+              data-testid="ready-to-clock-in"
+              onClick={startGeofenceCheck}
+              className="w-full rounded-full bg-[#0D2B4D] py-3.5 text-sm font-semibold text-white shadow-sm active:brightness-95"
+            >
+              I’m Here – Ready to Clock In
+            </button>
+          </StickyClockAction>
         </>
       ) : null}
 
       {phase === "geofence" ? (
         <>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div
+            className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+            data-testid="geofence-panel"
+          >
             <h2 className="text-center font-[family-name:var(--font-playfair)] text-xl font-bold text-[#0D2B4D]">
-              {checking ? "Checking your location…" : "You’re at the right location!"}
+              {checking
+                ? "Checking your location…"
+                : "You’re at the right location!"}
             </h2>
             <p className="mt-2 text-center text-sm text-slate-600">
               {checking
@@ -175,7 +224,8 @@ export default function GpsTimeClock({
             </div>
             {!checking ? (
               <div className="mt-4 rounded-xl bg-emerald-50 px-3 py-2 text-center text-sm font-semibold text-emerald-800">
-                Within {shift.geofenceRadiusFt} ft geofence · GPS {gpsAccuracy} ft
+                Within {shift.geofenceRadiusFt} ft geofence · GPS {gpsAccuracy}{" "}
+                ft
               </div>
             ) : (
               <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100">
@@ -183,27 +233,38 @@ export default function GpsTimeClock({
               </div>
             )}
           </div>
-          <button
-            type="button"
-            disabled={checking || !withinGeofence}
-            onClick={handleClockIn}
-            className="w-full rounded-full bg-[#0FA3A3] py-3.5 text-sm font-semibold text-white shadow-sm disabled:opacity-50"
-          >
-            Clock In
-          </button>
           <p className="text-center text-xs text-slate-500">
-            GPS exceptions create a review flag — they do not automatically penalize you.
+            GPS exceptions create a review flag — they do not automatically
+            penalize you.
           </p>
+
+          <StickyClockAction>
+            <button
+              type="button"
+              data-testid="clock-in"
+              disabled={checking || !withinGeofence}
+              onClick={handleClockIn}
+              className="w-full rounded-full bg-[#0FA3A3] py-3.5 text-sm font-semibold text-white shadow-sm disabled:cursor-not-allowed disabled:opacity-50 active:brightness-95"
+            >
+              {checking ? "Verifying GPS…" : "Clock In"}
+            </button>
+          </StickyClockAction>
         </>
       ) : null}
 
       {phase === "on_shift" ? (
         <>
-          <div className="rounded-2xl bg-emerald-600 p-4 text-white shadow-sm">
+          <div
+            className="rounded-2xl bg-emerald-600 p-4 text-white shadow-sm"
+            data-testid="on-shift-timer"
+          >
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-100">
               You are clocked in
             </p>
-            <p className="mt-3 font-mono text-4xl font-bold tracking-tight">
+            <p
+              className="mt-3 font-mono text-4xl font-bold tracking-tight"
+              data-testid="elapsed-timer"
+            >
               {formatElapsed(elapsed)}
             </p>
             <p className="mt-1 text-sm text-emerald-100">
@@ -218,12 +279,15 @@ export default function GpsTimeClock({
               </span>
               <div>
                 <p className="font-semibold text-[#0D2B4D]">On-Site Status</p>
-                <p className="text-sm text-emerald-700">Within the approved work area</p>
+                <p className="text-sm text-emerald-700">
+                  Within the approved work area
+                </p>
               </div>
             </div>
             <div className="mt-4 grid grid-cols-2 gap-2">
               <button
                 type="button"
+                data-testid="toggle-break"
                 onClick={() => setOnBreak((v) => !v)}
                 className="rounded-full border border-slate-200 py-2.5 text-sm font-semibold text-[#0D2B4D]"
               >
@@ -249,16 +313,19 @@ export default function GpsTimeClock({
             </button>
           </div>
 
-          <button
-            type="button"
-            onClick={() => {
-              setOnBreak(false);
-              setPhase("clock_out");
-            }}
-            className="w-full rounded-full bg-[#0D2B4D] py-3.5 text-sm font-semibold text-white"
-          >
-            Ready to Clock Out
-          </button>
+          <StickyClockAction>
+            <button
+              type="button"
+              data-testid="ready-to-clock-out"
+              onClick={() => {
+                setOnBreak(false);
+                setPhase("clock_out");
+              }}
+              className="w-full rounded-full bg-[#0D2B4D] py-3.5 text-sm font-semibold text-white active:brightness-95"
+            >
+              Ready to Clock Out
+            </button>
+          </StickyClockAction>
         </>
       ) : null}
 
@@ -277,7 +344,9 @@ export default function GpsTimeClock({
             <div className="mt-4 space-y-2 rounded-xl bg-[#F2F4F7] p-3 text-sm">
               <div className="flex justify-between">
                 <span className="text-slate-500">Clock In</span>
-                <span className="font-semibold text-[#0D2B4D]">{clockInLabel}</span>
+                <span className="font-semibold text-[#0D2B4D]">
+                  {clockInLabel}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Break</span>
@@ -299,21 +368,28 @@ export default function GpsTimeClock({
               </div>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              setPhase("submitted");
-              onTimesheetSubmitted?.();
-            }}
-            className="w-full rounded-full bg-[#0FA3A3] py-3.5 text-sm font-semibold text-white"
-          >
-            Clock Out
-          </button>
+
+          <StickyClockAction>
+            <button
+              type="button"
+              data-testid="clock-out"
+              onClick={() => {
+                setPhase("submitted");
+                onTimesheetSubmitted?.();
+              }}
+              className="w-full rounded-full bg-[#0FA3A3] py-3.5 text-sm font-semibold text-white active:brightness-95"
+            >
+              Clock Out
+            </button>
+          </StickyClockAction>
         </>
       ) : null}
 
       {phase === "submitted" ? (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm">
+        <div
+          className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm"
+          data-testid="timesheet-submitted"
+        >
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-3xl text-emerald-700">
             ✓
           </div>
