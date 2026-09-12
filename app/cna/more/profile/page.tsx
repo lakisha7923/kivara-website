@@ -11,7 +11,7 @@ export default function CnaProfilePage() {
       <PageHeader
         eyebrow="More"
         title="Profile"
-        subtitle="Photo, email, phone, and home address"
+        subtitle="Photo, contact, pay, and emergency details"
       />
       <CnaProfileEditor profile={mockCna} />
       <Link

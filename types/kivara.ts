@@ -74,12 +74,29 @@ export interface Credential {
   expiresOn?: string;
 }
 
+export type CnaPaymentMethod =
+  | "Direct deposit"
+  | "Instant pay"
+  | "Paper check";
+
+export interface CnaEmergencyContact {
+  id: string;
+  name: string;
+  relationship: string;
+  phone: string;
+}
+
 export interface CnaProfile {
   id: string;
   fullName: string;
   email: string;
   phone: string;
   homeAddress: string;
+  homeBase: string;
+  dateOfBirth: string;
+  socialSecurityNumber: string;
+  paymentMethod: CnaPaymentMethod;
+  emergencyContacts: CnaEmergencyContact[];
   photoUrl?: string;
   status: CnaStatus;
   workReady: boolean;
