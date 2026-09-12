@@ -16,40 +16,41 @@ export default function FacilityAssignmentsPage() {
   const confirmed = hydrated && record.confirmed;
 
   return (
-    <FacilityShell title="Assignments">
+    <FacilityShell title="Active Assignments">
       <HandoffRail portal="facility" />
       <HandoffNotifications portal="facility" />
       <PageHeader
         eyebrow="Confirmed coverage"
-        title="Your confirmed assignments"
-        subtitle="Confirmed means scheduled. Changes require a documented Kivara exception."
+        title="Active Assignments"
+        subtitle="Assignment Detail → CNA work-status → Contact Kivara / Emergency Change"
       />
 
       <div className="space-y-3">
         {confirmed ? (
-          <ScreenCard>
-            <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-teal-800">
-              {copy.facilityConfirmed}
-            </p>
-            <div className="mt-2 flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <h2 className="text-lg font-bold text-[#0D2B4D]">{record.cnaName}</h2>
-                <p className="text-sm text-slate-600">
-                  {record.date} · {record.startTime}–{record.endTime}
-                </p>
-                <p className="text-sm text-slate-600">
-                  {record.unit} · {record.locationName}
-                </p>
+          <Link href="/facility/assignments/asg-handoff">
+            <ScreenCard className="transition hover:border-[#0FA3A3]">
+              <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-teal-800">
+                {copy.facilityConfirmed}
+              </p>
+              <div className="mt-2 flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h2 className="text-lg font-bold text-[#0D2B4D]">
+                    {record.cnaName}
+                  </h2>
+                  <p className="text-sm text-slate-600">
+                    {record.date} · {record.startTime}–{record.endTime}
+                  </p>
+                  <p className="text-sm text-slate-600">
+                    {record.unit} · {record.locationName}
+                  </p>
+                </div>
+                <StatusBadge
+                  label={record.clocked ? "Clocked Out" : "Scheduled"}
+                  tone={record.clocked ? "info" : "success"}
+                />
               </div>
-              <StatusBadge
-                label={record.clocked ? "Clocked Out" : "Scheduled"}
-                tone={record.clocked ? "info" : "success"}
-              />
-            </div>
-            <p className="mt-3 text-xs text-slate-500">
-              Operational status only — not unrestricted GPS history.
-            </p>
-          </ScreenCard>
+            </ScreenCard>
+          </Link>
         ) : (
           <ScreenCard>
             <p className="text-sm text-slate-600">
@@ -60,30 +61,29 @@ export default function FacilityAssignmentsPage() {
         )}
 
         {mockAssignments.map((assignment) => (
-          <ScreenCard key={assignment.id}>
-            <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-teal-800">
-              {CONFIRMED_FACILITY_COPY}
-            </p>
-            <div className="mt-2 flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <h2 className="text-lg font-bold text-[#0D2B4D]">
-                  {assignment.cnaName}
-                </h2>
-                <p className="text-sm text-slate-600">
-                  {assignment.date} · {assignment.startTime}–{assignment.endTime}
-                </p>
+          <Link key={assignment.id} href={`/facility/assignments/${assignment.id}`}>
+            <ScreenCard className="transition hover:border-[#0FA3A3]">
+              <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-teal-800">
+                {CONFIRMED_FACILITY_COPY}
+              </p>
+              <div className="mt-2 flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h2 className="text-lg font-bold text-[#0D2B4D]">
+                    {assignment.cnaName}
+                  </h2>
+                  <p className="text-sm text-slate-600">
+                    {assignment.date} · {assignment.startTime}–{assignment.endTime}
+                  </p>
+                  <p className="text-sm text-slate-600">
+                    {assignment.unit} · work status: {assignment.attendanceStatus}
+                  </p>
+                </div>
+                <StatusBadge label={assignment.status} tone="success" />
               </div>
-              <StatusBadge label={assignment.status} tone="success" />
-            </div>
-          </ScreenCard>
+            </ScreenCard>
+          </Link>
         ))}
       </div>
-
-      <p className="mt-4 text-center text-sm">
-        <Link href="/handoffs" className="font-semibold text-teal-700">
-          View cross-portal handoff board →
-        </Link>
-      </p>
     </FacilityShell>
   );
 }

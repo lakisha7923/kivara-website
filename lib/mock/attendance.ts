@@ -1,9 +1,9 @@
 export type AttendanceStatusLabel =
   | "Scheduled"
+  | "Arrived"
   | "Clocked In"
   | "On Shift"
-  | "Clocked Out"
-  | "Not Clocked In";
+  | "Clocked Out";
 
 export type OnSiteLabel = "Within Area" | "Outside Area" | "Unknown";
 export type PunctualityLabel = "On Time" | "Late" | "Early" | "—";
@@ -106,9 +106,25 @@ export const facilityTodayAttendance: LiveAttendanceRow[] = [
     facilityCity: "Atlanta, GA",
     unit: "Memory Care",
     shiftLabel: "3:00 PM – 11:00 PM",
-    status: "Not Clocked In",
+    status: "Arrived",
+    punctuality: "On Time",
+    onSite: "Within Area",
+    lastSeen: "Just now",
+  },
+  {
+    id: "att-7",
+    cnaName: "Devon K.",
+    initials: "DK",
+    facilityName: "Memorial Care Center",
+    facilityCity: "Atlanta, GA",
+    unit: "Skilled Nursing",
+    shiftLabel: "7:00 AM – 3:00 PM",
+    status: "Clocked In",
+    clockInAt: "7:11 AM",
     punctuality: "Late",
-    onSite: "Unknown",
+    onSite: "Within Area",
+    lastSeen: "Just now",
+    duration: "0h 05m",
   },
   {
     id: "att-6",
@@ -207,9 +223,10 @@ export const adminLiveAttendance: LiveAttendanceRow[] = [
     facilityCity: "Atlanta, GA",
     unit: "Memory Care",
     shiftLabel: "3:00 PM – 11:00 PM",
-    status: "Not Clocked In",
+    status: "Arrived",
     punctuality: "—",
-    onSite: "Unknown",
+    onSite: "Within Area",
+    lastSeen: "Just now",
   },
   {
     id: "adm-6",

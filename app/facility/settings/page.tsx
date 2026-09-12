@@ -1,28 +1,48 @@
+import Link from "next/link";
+
 import FacilityShell from "@/components/facility/FacilityShell";
+import { PageHeader, ScreenCard } from "@/components/ui/primitives";
+
+const SETTINGS_SECTIONS = [
+  {
+    href: "/facility/settings/locations",
+    title: "Locations",
+    detail: "Facilities, campuses, and unit addresses on your account.",
+  },
+  {
+    href: "/facility/settings/users",
+    title: "Users",
+    detail: "Authorized facility users and their contact details.",
+  },
+  {
+    href: "/facility/settings/permissions",
+    title: "Permissions",
+    detail: "Who can request staff, review timesheets, and view invoices.",
+  },
+  {
+    href: "/facility/settings/notifications",
+    title: "Notification Preferences",
+    detail: "Email and in-app alerts for staffing, attendance, and billing.",
+  },
+] as const;
 
 export default function FacilitySettingsPage() {
   return (
     <FacilityShell>
-      <h1 className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-[#0D2B4D]">
-        Facility Settings
-      </h1>
-      <p className="mt-2 text-sm text-slate-600">
-        Locations, authorized users, permissions, and notification preferences.
-      </p>
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
-        {[
-          ["Locations", "Memorial Care Center · Main Campus"],
-          ["Users & Permissions", "Sarah Johnson (DON) · Scheduler access"],
-          ["Notification Preferences", "Email + in-app for staffing alerts"],
-          ["Billing Contact", "Accounts Payable · invoices@memorial.example"],
-        ].map(([title, detail]) => (
-          <div
-            key={title}
-            className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
-          >
-            <p className="font-semibold text-[#0D2B4D]">{title}</p>
-            <p className="mt-1 text-sm text-slate-600">{detail}</p>
-          </div>
+      <PageHeader
+        eyebrow="Account"
+        title="Settings"
+        subtitle="Locations | Users | Permissions | Notification Preferences"
+      />
+      <div className="grid gap-4 md:grid-cols-2">
+        {SETTINGS_SECTIONS.map((section) => (
+          <Link key={section.href} href={section.href}>
+            <ScreenCard className="h-full transition hover:border-[#0FA3A3]">
+              <p className="font-semibold text-[#0D2B4D]">{section.title}</p>
+              <p className="mt-1 text-sm text-slate-600">{section.detail}</p>
+              <p className="mt-3 text-sm font-semibold text-teal-700">Open →</p>
+            </ScreenCard>
+          </Link>
         ))}
       </div>
     </FacilityShell>

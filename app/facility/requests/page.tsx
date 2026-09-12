@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
 
 import FacilityShell from "@/components/facility/FacilityShell";
 import {
@@ -11,112 +10,108 @@ import {
 import { useHandoffs } from "@/components/handoffs/HandoffProvider";
 import { PageHeader, ScreenCard, StatusBadge } from "@/components/ui/primitives";
 import { mockStaffingRequests } from "@/lib/mock/v1-data";
+import type { StaffingRequestStatus } from "@/types/kivara";
+
+const STATUS_ORDER: StaffingRequestStatus[] = [
+  "Open",
+  "Partially Filled",
+  "Fully Staffed",
+  "In Progress",
+  "Completed",
+  "Billed",
+];
+
+function statusTone(status: string): "success" | "warning" | "info" | "neutral" | "brand" {
+  if (status === "Open" || status === "Partially Filled") return "warning";
+  if (status === "Fully Staffed" || status === "In Progress") return "brand";
+  if (status === "Completed" || status === "Billed") return "success";
+  return "neutral";
+}
 
 export default function FacilityRequestsPage() {
-  const { record, submitStaffingRequest, hydrated } = useHandoffs();
-  const [unit, setUnit] = useState("Skilled Nursing");
-  const [message, setMessage] = useState("");
-
+  const { record, hydrated } = useHandoffs();
   const submitted =
     hydrated && record.completedSteps.includes("facility_submitted");
 
-  function onSubmit(e: FormEvent) {
-    e.preventDefault();
-    submitStaffingRequest({
-      unit,
-      instructions: message || record.instructions,
-    });
-  }
-
   return (
-    <FacilityShell title="Request staff">
+    <FacilityShell title="Request Staff">
       <HandoffRail portal="facility" />
       <HandoffNotifications portal="facility" />
       <PageHeader
         eyebrow="Staffing requests"
-        title="Create & track requests"
-        subtitle="Submitting a request hands the need to Kivara Admin for review and publishing."
+        title="Request Staff"
+        subtitle="New Request → Review → Submit → Request Detail. Statuses: Open through Billed."
       />
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <ScreenCard>
-          <h2 className="text-lg font-bold text-[#0D2B4D]">New staffing request</h2>
-          <form className="mt-4 space-y-3" onSubmit={onSubmit}>
-            <input
-              className="w-full rounded-xl border px-4 py-3"
-              value={`${record.facilityName} — ${record.locationName}`}
-              readOnly
-            />
-            <input
-              className="w-full rounded-xl border px-4 py-3"
-              value={unit}
-              onChange={(e) => setUnit(e.target.value)}
-              required
-            />
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <input className="rounded-xl border px-4 py-3" value={record.date} readOnly />
-              <input
-                className="rounded-xl border px-4 py-3"
-                value={`${record.quantity} CNA`}
-                readOnly
-              />
-            </div>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <input className="rounded-xl border px-4 py-3" value={record.startTime} readOnly />
-              <input className="rounded-xl border px-4 py-3" value={record.endTime} readOnly />
-            </div>
-            <textarea
-              className="min-h-24 w-full rounded-xl border px-4 py-3"
-              placeholder="Requirements & instructions"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-            <button
-              type="submit"
-              disabled={submitted}
-              className="w-full rounded-full bg-[#0FA3A3] py-3 font-semibold text-white disabled:opacity-60"
-            >
-              {submitted ? "Submitted to Kivara" : "Submit to Kivara"}
-            </button>
-            {submitted ? (
-              <p className="text-sm font-medium text-emerald-700">
-                Handoff 1 complete.{" "}
-                <Link href="/admin/requests" className="underline">
-                  Open Admin Requests
-                </Link>
-              </p>
-            ) : null}
-          </form>
-        </ScreenCard>
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap gap-2">
+          {STATUS_ORDER.map((status) => {
+            const count = mockStaffingRequests.filter((r) => r.status === status).length;
+            return (
+              <span
+                key={status}
+                className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700"
+              >
+                {status}: {count}
+              </span>
+            );
+          })}
+        </div>
+        <Link
+          href="/facility/requests/new"
+          className="rounded-full bg-[#0FA3A3] px-4 py-2.5 text-sm font-semibold text-white"
+        >
+          New Request
+        </Link>
+      </div>
 
-        <div className="space-y-3">
-          {submitted ? (
-            <ScreenCard>
-              <StatusBadge label="Submitted" tone="brand" />
-              <h3 className="mt-2 font-bold text-[#0D2B4D]">
-                {record.facilityName} · {record.unit}
-              </h3>
-              <p className="text-sm text-slate-600">
-                {record.date} · {record.startTime}–{record.endTime}
-              </p>
-            </ScreenCard>
-          ) : null}
-          {mockStaffingRequests.map((request) => (
-            <ScreenCard key={request.id}>
-              <div className="flex items-start justify-between gap-2">
+      <div className="space-y-3">
+        {submitted ? (
+          <Link href="/facility/requests/req-submitted">
+            <ScreenCard className="transition hover:border-[#0FA3A3]">
+              <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
-                  <h3 className="font-bold text-[#0D2B4D]">
-                    {request.facilityName} · {request.unit}
-                  </h3>
-                  <p className="text-sm text-slate-600">
-                    {request.date} · {request.startTime}–{request.endTime}
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-[#0FA3A3]">
+                    Just submitted
+                  </p>
+                  <h2 className="font-bold text-[#0D2B4D]">
+                    CNA — {record.unit}
+                  </h2>
+                  <p className="mt-1 text-sm text-slate-600">
+                    {record.date} · {record.startTime}–{record.endTime} ·{" "}
+                    {record.quantity} open
                   </p>
                 </div>
-                <StatusBadge label={request.status} tone="info" />
+                <StatusBadge label="Open" tone="warning" />
               </div>
             </ScreenCard>
-          ))}
-        </div>
+          </Link>
+        ) : null}
+
+        {mockStaffingRequests.map((request) => (
+          <Link key={request.id} href={`/facility/requests/${request.id}`}>
+            <ScreenCard className="transition hover:border-[#0FA3A3]">
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div>
+                  <h2 className="font-bold text-[#0D2B4D]">
+                    {request.unit} · {request.locationName}
+                  </h2>
+                  <p className="mt-1 text-sm text-slate-600">
+                    {request.date} · {request.startTime}–{request.endTime} · $
+                    {request.billRate}/hr bill
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Filled {request.filled}/{request.quantity}
+                  </p>
+                </div>
+                <StatusBadge
+                  label={request.status}
+                  tone={statusTone(request.status)}
+                />
+              </div>
+            </ScreenCard>
+          </Link>
+        ))}
       </div>
     </FacilityShell>
   );

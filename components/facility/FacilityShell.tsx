@@ -15,15 +15,12 @@ import { createPortal } from "react-dom";
 const navItems = [
   { href: "/facility", label: "Dashboard", icon: "▦", exact: true },
   { href: "/facility/requests", label: "Request Staff", icon: "＋" },
-  { href: "/facility/assignments", label: "Shifts", icon: "📅" },
-  { href: "/facility/assignments", label: "My Assignments", icon: "✓" },
+  { href: "/facility/assignments", label: "Active Assignments", icon: "✓" },
   { href: "/facility/attendance", label: "Today's Attendance", icon: "⏱" },
   { href: "/facility/timesheets", label: "Timesheets", icon: "▤" },
-  { href: "/facility/invoices", label: "Invoices & Billing", icon: "$" },
-  { href: "/facility/settings", label: "Documents", icon: "📄" },
+  { href: "/facility/invoices", label: "Invoices", icon: "$" },
   { href: "/facility/messages", label: "Messages", icon: "💬", badge: 3 },
-  { href: "/facility/settings", label: "Reports", icon: "📊" },
-  { href: "/facility/settings", label: "Facility Settings", icon: "⚙" },
+  { href: "/facility/settings", label: "Settings", icon: "⚙" },
 ];
 
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {

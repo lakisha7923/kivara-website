@@ -148,16 +148,40 @@ export default function FacilityDashboardPage() {
         </div>
         <div className="flex flex-wrap gap-3">
           <Link
-            href="/facility/requests"
+            href="/facility/requests/new"
             className="rounded-full bg-[#0FA3A3] px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:brightness-110"
           >
             Request Staff
           </Link>
           <Link
-            href="/facility/messages"
+            href="/facility/assignments"
+            className="rounded-full border-2 border-[#0D2B4D] bg-white px-5 py-2.5 text-sm font-semibold text-[#0D2B4D]"
+          >
+            Active Assignments
+          </Link>
+          <Link
+            href="/facility/attendance"
             className="rounded-full border-2 border-[#0FA3A3] bg-white px-5 py-2.5 text-sm font-semibold text-[#0FA3A3]"
           >
-            Message Kivara
+            Today&apos;s Attendance
+          </Link>
+          <Link
+            href="/facility/timesheets"
+            className="rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-[#0D2B4D]"
+          >
+            Timesheets
+          </Link>
+          <Link
+            href="/facility/invoices"
+            className="rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-[#0D2B4D]"
+          >
+            Invoices
+          </Link>
+          <Link
+            href="/facility/messages"
+            className="rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-[#0D2B4D]"
+          >
+            Messages
           </Link>
         </div>
       </section>
