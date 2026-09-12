@@ -1,19 +1,13 @@
 import Link from "next/link";
 
 import CnaShell from "@/components/cna/CnaShell";
-import { PageHeader, ScreenCard, StatusBadge } from "@/components/ui/primitives";
+import { PageHeader, ScreenCard } from "@/components/ui/primitives";
 import { mockCna } from "@/lib/mock/v1-data";
 
 const pages: Record<
   string,
   { title: string; subtitle: string; body: string; cta?: { href: string; label: string } }
 > = {
-  profile: {
-    title: "Profile",
-    subtitle: "Your Kivara CNA profile",
-    body: `${mockCna.fullName} · ${mockCna.email} · ${mockCna.phone}`,
-    cta: { href: "/cna/work-ready", label: "View Work Ready details" },
-  },
   timesheets: {
     title: "Timesheets",
     subtitle: "Submitted and in-review time",
@@ -82,14 +76,6 @@ export default async function CnaMoreSubpage({
       />
       <ScreenCard>
         <p className="text-sm text-slate-700">{page.body}</p>
-        {section === "profile" ? (
-          <div className="mt-4">
-            <StatusBadge
-              label={mockCna.status}
-              tone={mockCna.workReady ? "success" : "warning"}
-            />
-          </div>
-        ) : null}
         {page.cta ? (
           <Link
             href={page.cta.href}

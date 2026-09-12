@@ -79,6 +79,8 @@ export interface CnaProfile {
   fullName: string;
   email: string;
   phone: string;
+  homeAddress: string;
+  photoUrl?: string;
   status: CnaStatus;
   workReady: boolean;
   actionItems: string[];

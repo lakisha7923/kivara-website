@@ -21,6 +21,8 @@ export const mockCna: CnaProfile = {
   fullName: "Jordan Miles",
   email: "jordan.miles@email.com",
   phone: "(404) 555-0142",
+  homeAddress: "1842 Peachtree Street NE, Apt 3B, Atlanta, GA 30309",
+  photoUrl: undefined,
   status: "Work Ready",
   workReady: true,
   actionItems: [
@@ -62,6 +64,8 @@ export const mockOnboardingCna: CnaProfile = {
   fullName: "Avery Quinn",
   email: "avery.quinn@email.com",
   phone: "(678) 555-0199",
+  homeAddress: "910 Piedmont Avenue NE, Atlanta, GA 30309",
+  photoUrl: undefined,
   status: "Onboarding",
   workReady: false,
   actionItems: [
