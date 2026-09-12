@@ -1,0 +1,121 @@
+KIVARA HEALTHCARE
+VERSION 1 BUSINESS RULES & LOGIC SPECIFICATION
+Rules the app must enforce automatically • First Draft • July 2026
+Purpose: Define the operational rules, statuses, permissions, automatic checks, exceptions, and record transitions required for the Kivara Version 1 app. Rules already approved are marked APPROVED. Items that require a future business decision are marked OPEN DECISION.
+1. CNA Work Ready Logic
+APPROVED — A CNA is not Work Ready until required onboarding steps are complete and all required core credentials are approved.
+APPROVED — A missing, rejected, or expired required credential can remove Work Ready status or restrict affected shift eligibility.
+APPROVED — Facility-specific requirements affect eligibility for that facility without necessarily making the CNA inactive everywhere.
+APPROVED — Only an authorized Kivara role may mark or restore Work Ready status.
+OPEN DECISION — Final list of core credentials and screening requirements.
+2. Shift Visibility & Eligibility
+APPROVED — A CNA should see or request only shifts for which the system considers them eligible.
+APPROVED — Eligibility checks include active employment/Work Ready status, required credentials, facility-specific requirements, schedule conflicts, and configured work-area rules.
+APPROVED — The app should flag overtime risk before confirmation.
+OPEN DECISION — Whether overtime risk blocks a request, requires admin approval, or only shows a warning.
+OPEN DECISION — Exact travel-distance rules and whether CNAs can override them.
+3. Shift Request Logic
+APPROVED — A CNA may request an eligible open position.
+APPROVED — A request does not guarantee the shift until Kivara confirms the assignment.
+APPROVED — Kivara reviews the request and system eligibility results.
+APPROVED — One staffing request may contain multiple positions; each CNA assignment is tracked separately.
+OPEN DECISION — Whether some shifts may use automatic first-qualified confirmation later. Not included in Version 1 unless specifically approved.
+4. Confirmed Means Scheduled
+APPROVED — The admin action is Confirm Assignment.
+APPROVED — Once confirmed, the CNA sees: CONFIRMED — YOU ARE SCHEDULED TO WORK.
+APPROVED — A confirmed CNA is not removed merely because another worker becomes available.
+APPROVED — The facility cannot casually cancel or replace a confirmed CNA through a simple button.
+APPROVED — Any confirmed-assignment exception requires a reason, authorized action, timestamp, and audit record.
+OPEN DECISION — Cancellation-pay or minimum-pay policy for facility-caused confirmed-shift exceptions.
+5. Multi-Position Staffing Requests
+APPROVED — If a facility requests multiple CNAs, each requested position has its own fill status.
+APPROVED — Confirmed assignments remain intact while Kivara fills remaining open positions.
+APPROVED — If one confirmed CNA calls out, only that CNA's position reopens.
+APPROVED — Other confirmed CNAs keep their assignments.
+6. Call-Out, No-Show & Replacement Logic
+APPROVED — A call-out creates an urgent admin alert and reopens only the affected position.
+APPROVED — Eligible available CNAs may be notified of the replacement opening.
+APPROVED — A replacement is not scheduled until Kivara confirms the new assignment.
+APPROVED — The facility is updated when the replacement is confirmed.
+OPEN DECISION — Call-out notice requirements, attendance points, disciplinary rules, and emergency exceptions.
+7. GPS & Clock-In Logic
+APPROVED — Clock-in is tied to a confirmed assignment.
+APPROVED — The app checks the worker's proximity to the assigned facility geofence at clock-in and clock-out.
+APPROVED — A GPS failure or outside-geofence result creates an exception for review; it does not automatically accuse or penalize the CNA.
+APPROVED — Facilities see operational status, not unrestricted GPS history.
+APPROVED — Location collection is limited to defined work-verification purposes.
+OPEN DECISION — Exact geofence radius.
+OPEN DECISION — How many minutes before/after scheduled start the Clock In button becomes active.
+OPEN DECISION — Break-tracking requirements.
+8. Time Correction Logic
+APPROVED — A CNA cannot silently overwrite a punch.
+APPROVED — A missed or incorrect punch creates a correction request.
+APPROVED — Authorized review records the original value, corrected value, user, time, and reason.
+APPROVED — Locked timesheets require elevated permission to reopen.
+OPEN DECISION — Which admin roles may reopen a locked timesheet.
+9. Timesheet Logic
+APPROVED — A timesheet is generated from the confirmed assignment and time records.
+APPROVED — The facility may review hours or submit a documented discrepancy.
+APPROVED — Kivara gives final approval.
+APPROVED — Once approved and locked, the same hours feed payroll-ready data and facility billing.
+APPROVED — Changes after locking require an audited correction process.
+OPEN DECISION — Facility review deadline and what happens if the facility does not respond.
+OPEN DECISION — Kivara internal timesheet approval deadline.
+10. Payroll-Ready Logic
+APPROVED — Only approved and locked hours become payroll ready.
+APPROVED — The Kivara app does not calculate or file payroll taxes itself.
+APPROVED — The payroll provider handles withholding, tax filings, direct deposit, official pay stubs, and W-2s.
+APPROVED — Kivara tracks export/send status and reconciliation status.
+OPEN DECISION — Payroll provider and pay schedule.
+11. Facility Billing Logic
+APPROVED — Approved locked billable hours create invoice data.
+APPROVED — Invoice drafts remain reviewable by authorized Kivara users before issue.
+APPROVED — Facilities see only their own invoices and billing records.
+OPEN DECISION — Bill rates, overtime billing rules, minimum shift charges, cancellation charges, payment terms, and late-payment rules.
+12. Credential Logic
+APPROVED — Credential status flow: Missing → Uploaded → Pending Review → Approved, Rejected, Expiring Soon, or Expired.
+APPROVED — Replacing a credential preserves prior history.
+APPROVED — Expiration can automatically affect eligibility according to the credential requirement.
+APPROVED — Only authorized Kivara users approve or reject credentials.
+OPEN DECISION — Reminder schedule, such as 60/30/14/7 days before expiration.
+13. Facility Data Isolation
+APPROVED — Each facility company has a private workspace.
+APPROVED — Facility users see only authorized company locations.
+APPROVED — A multi-location client may have regional users with access to selected locations.
+APPROVED — No facility can see another facility's shifts, CNAs, invoices, messages, or documents.
+14. Notification Logic
+APPROVED — Urgent operational events may use app notification plus text.
+APPROVED — Routine events should primarily use in-app notifications and email according to preference.
+APPROVED — Shift confirmation notifies both CNA and facility.
+APPROVED — Call-outs, no-shows, and at-risk shifts create urgent admin alerts.
+OPEN DECISION — Exact notification timing and which alerts users may disable.
+15. Audit Trail Logic
+APPROVED — Sensitive actions record who acted, what changed, when, previous state, new state, and reason when required.
+APPROVED — Audit history applies to confirmed assignments, credentials, GPS/time records, timesheets, pay/bill rates, invoices, and permissions.
+APPROVED — The system must not silently delete operational history.
+16. Security Logic
+APPROVED — Every person has an individual account; shared logins are not allowed.
+APPROVED — Privileged Kivara accounts require multi-factor authentication.
+APPROVED — Permissions are role based.
+APPROVED — Banking details should remain with the payroll provider whenever possible.
+APPROVED — Background and drug-screen details are restricted; most workflows use minimum necessary status information.
+17. Version 1 Exception Principle
+APPROVED — Outside-service outages or GPS failures must not stop the agency from operating.
+APPROVED — Authorized manual fallback is allowed only with a reason and audit history.
+APPROVED — Exceptions should be visible for review and should not silently bypass business rules.
+18. Status Dictionary
+19. Open Decision Register
+The items marked OPEN DECISION must be decided before the related feature is coded. They are intentionally not guessed in this specification.
+20. Developer Acceptance Rule
+A feature is not complete merely because a screen exists. The developer must demonstrate that the approved business rule is enforced across CNA, Facility, and Admin experiences, including permissions, status changes, notifications, exceptions, and audit history.
+
+--- TABLE 1 ---
+Record | Version 1 Status Flow
+CNA | Applicant → Onboarding → Pending Review → Work Ready → Restricted / Inactive
+Credential | Missing → Uploaded → Pending Review → Approved / Rejected → Expiring Soon → Expired
+Staffing Request | Draft → Submitted → Open → Partially Filled → Fully Staffed → In Progress → Completed → Billed
+Shift Request | Requested → Under Review → Confirmed / Not Selected / Withdrawn
+Assignment | Confirmed → Ready to Clock In → Clocked In → On Shift → Clocked Out → Timesheet Submitted → Completed
+Timesheet | Draft → Submitted → Facility Reviewed / Disputed → Kivara Approved → Locked → Corrected if authorized
+Payroll | Not Ready → Payroll Ready → Sent → Processing → Paid → Reconciled
+Invoice | Draft → Reviewed → Issued → Sent → Due → Paid / Overdue / Adjusted

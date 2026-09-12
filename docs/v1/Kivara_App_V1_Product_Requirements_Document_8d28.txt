@@ -1,0 +1,144 @@
+KIVARA HEALTHCARE
+VERSION 1 PRODUCT REQUIREMENTS DOCUMENT
+Digital Healthcare Staffing Platform • First Draft • July 2026
+1. Product Vision
+Kivara will provide one connected digital system with three private experiences: a CNA mobile app, a Facility Portal, and a Kivara Master Admin Portal.
+The platform will manage the workflow from application and credentialing through confirmed assignments, GPS-verified attendance, timesheets, payroll-ready hours, and facility billing.
+2. Version 1 Success Flow
+Apply → Get Cleared → Become Work Ready → See Eligible Shifts → Request Shift → Kivara Confirms Assignment → Shift Locks → GPS Clock In/Out → Timesheet → Kivara Approval → Payroll-Ready Data + Facility Invoice
+3. User Types
+CNA — mobile-first worker app; sees only their own profile, credentials, shifts, time, messages, and pay status.
+Facility User — secure portal; sees only authorized facility company and locations.
+Kivara Admin — master dashboard; agency-wide access according to assigned role.
+4. Non-Negotiable Business Rules
+Confirmed Means Scheduled — when Kivara confirms an assignment, the CNA is scheduled to work and is not removed merely because another worker becomes available.
+No Casual Facility Cancellation — facilities do not receive a simple Cancel CNA button. A confirmed-assignment exception requires a documented reason and audit record.
+One Position Reopens — if one confirmed CNA calls out, only that assignment reopens. Other confirmed CNAs keep their shifts.
+Eligibility Before Visibility — CNAs see or request only shifts they are eligible to work.
+One Connected Record Chain — staffing request → shift position → assignment → GPS punches → timesheet → payroll-ready record + invoice.
+No Silent Edits — sensitive changes preserve the original value, new value, user, time, and reason.
+5. CNA App — Version 1 Requirements
+Secure account creation, login, password reset, and session management.
+Digital application and onboarding checklist.
+Personal profile with controlled editing.
+Secure document upload and replacement.
+Credential statuses: Missing, Uploaded, Pending Review, Approved, Expiring Soon, Expired, Rejected.
+Work Ready status and action items.
+Eligible available shifts with filters.
+Shift details: facility, location, date/time, unit, pay rate, requirements, and instructions.
+Request Shift and request-status tracking.
+Confirmed schedule with clear language: Confirmed — You Are Scheduled to Work.
+GPS/geofence-assisted clock-in and clock-out.
+Shift-day states: Confirmed, Ready to Clock In, Clocked In, On Shift, Clocked Out, Timesheet Submitted.
+Timesheet review and correction requests.
+Messages, alerts, notification preferences, support, forms/resources, and work-area preferences.
+Approved-hours and payroll-status visibility; official payroll documents remain with the payroll provider.
+6. Facility Portal — Version 1 Requirements
+Separate secure workspace for each facility company, with multiple locations when needed.
+Authorized facility users with role-based permissions.
+Create staffing requests with location, unit, date, time, CNA quantity, requirements, instructions, and contacts.
+Track request states: Draft, Submitted, Open, Partially Filled, Fully Staffed, In Progress, Completed, Billed.
+View confirmed assignments and limited work-related CNA information approved by Kivara.
+View attendance statuses: Scheduled, Arrived, Clocked In, On Shift, Clocked Out.
+Review timesheets or submit a documented discrepancy.
+View invoices and billing status.
+Message Kivara and submit urgent operational issues.
+No access to other facilities’ data or unrestricted CNA GPS history.
+7. Kivara Master Admin Portal — Version 1 Requirements
+Agency command-center dashboard.
+CNA application review, onboarding progress, and Work Ready controls.
+Credential review, expiration tracking, and facility-specific requirements.
+Facility company, location, contact, and permission management.
+Staffing request review and shift publishing.
+Eligibility checks and shift-request review.
+Confirm Assignment action.
+Call-out, no-show, and replacement workflow without disturbing unrelated confirmed assignments.
+Live attendance status and GPS/time exceptions.
+Timesheet review, correction history, approval, and lock controls.
+Payroll-ready data creation/export status.
+Invoice draft generation from approved billable hours.
+Messages, alerts, reports, documents, and audit history.
+8. Roles & Permissions
+Owner / Super Admin — full system access.
+Operations Manager — facilities, requests, assignments, schedule, attendance, call-outs.
+Recruiter / Credentialing — applications, onboarding, profiles, credentials, screening statuses.
+Payroll / Billing — approved timesheets, payroll-ready hours, invoices, payment status.
+Read Only / Auditor — authorized view access without record changes.
+Facility Admin — authorized locations, users, staffing, assignments, timesheets, invoices.
+DON / Scheduler — request staff, view assignments, communicate with Kivara.
+Shift Supervisor — today’s assigned CNAs, attendance, timesheet review, incident reporting.
+Billing Contact — invoices, statements, payment history.
+9. Core Records
+CNA profile and employment record.
+Facility company, locations, authorized users, requirements, rates, and billing terms.
+Credential record with document, dates, status, verification, reviewer, and history.
+Staffing Request with one or more requested positions.
+Assignment connecting one CNA to one position.
+GPS Punch with time, type, geofence result, exception, and correction history.
+Timesheet with scheduled/actual hours, breaks, review, approval, and lock status.
+Payroll Record with approved hours, pay rate, period, and export/provider status.
+Invoice with shifts, billable hours, rates, dates, and status.
+Audit Event recording who did what, when, and why.
+10. GPS & Timekeeping Requirements
+Use location for defined work-verification purposes, not unrestricted off-duty tracking.
+Verify proximity to the assigned facility geofence at clock-in and clock-out.
+Record location-verification result and exception status.
+Allow controlled manual review when GPS is unavailable or inaccurate.
+Do not automatically penalize a CNA solely because of a GPS exception.
+Facility users see operational status, not unrestricted location history.
+Time corrections require authorization, reason, and audit history.
+11. Integrations
+Background Screening — invite candidate and receive workflow status; provider handles sensitive screening.
+Drug Screening — order when required and show status.
+Payroll — send approved hours; provider handles taxes, withholding, direct deposit, pay stubs, and W-2s.
+Accounting — sync invoice/payment references; accounting platform handles books and reconciliation.
+E-signature — track document version, signer, completion, final copy, and evidence.
+Email/SMS/Push — deliver Kivara-created alerts.
+Maps/GPS — facility address verification, directions, distance, and geofence services.
+12. Security & Privacy Requirements
+Unique user accounts; no shared credentials.
+Multi-factor authentication for privileged Kivara accounts.
+Role-based access and strict facility data isolation.
+Encryption in transit and at rest.
+Secure file uploads and controlled document access.
+Sensitive data minimization and masking.
+Banking data remains with payroll provider whenever possible.
+Background and drug-screen details restricted to authorized users.
+Secure backups, monitoring, patching, account recovery, and incident response.
+Separate development/test and production environments.
+Kivara controls the domain, cloud accounts, source-code repository, database ownership, app-store accounts, and production credentials.
+13. Version 1 Screen Inventory
+CNA App — Home; Available Shifts; Shift Details; Request Status; Schedule; Confirmed Shift; GPS Time Clock; Timesheet Review; Credentials; Upload/Replace Credential; Profile; Messages; Notifications; Work Areas; Forms/Resources; Support.
+Facility Portal — Dashboard; Request Staff; Request Detail; Assignments; Attendance; Timesheets; Timesheet Dispute; Invoices; Messages; Documents; Users/Permissions; Settings.
+Admin Portal — Dashboard; CNAs; CNA Detail; Applications; Credentials; Facilities; Facility Detail; Staffing Requests; Request Detail; Assignments; Schedule; Time & Attendance; Timesheets; Payroll; Invoices; Messages; Alerts; Reports; Documents; Settings; Audit History.
+14. Out of Scope for Version 1
+Continuous live-map tracking throughout an entire shift.
+AI-based automatic shift matching.
+Public worker marketplace.
+Built-in payroll tax processing.
+Built-in background-check adjudication engine.
+Built-in laboratory/drug-testing system.
+Instant-pay wallet owned by Kivara.
+Advanced forecasting, complex analytics, and automated collections.
+15. Build Stages
+Stage 1 — Interactive Prototype: clickable CNA, Facility, and Admin journeys using test data only.
+Stage 2 — Core Working App: authentication, roles, profiles, facilities, documents, credentials, requests, shifts, assignments, notifications.
+Stage 3 — GPS, Timekeeping & Money Flow: geofences, punches, exceptions, timesheets, payroll-ready hours, invoice generation.
+Stage 4 — Integrations & Launch Testing: connect selected providers and test complete workflows before real sensitive data.
+16. Open Business Decisions Before Development
+Actual CNA pay schedule and payroll provider.
+Overtime rules and approval workflow.
+Facility billing terms and rate structure.
+Confirmed-shift exception and cancellation-pay policy.
+Exact credential requirements.
+Background-screening provider and workflow.
+Drug-screen policy and provider.
+Geofence radius and clock-in/out windows.
+Timesheet approval deadlines and dispute process.
+Data-retention periods.
+Final privacy notice, location disclosure/consent, user terms, and facility contract language.
+Selected technology/build path and development budget.
+17. MVP Acceptance Standard
+Version 1 is ready for controlled pilot testing when a test CNA can complete the full digital flow from application through a confirmed assignment and GPS-verified timesheet; a test facility can request staff, view the confirmed assignment, review the timesheet, and receive an invoice; and a Kivara admin can manage the workflow with role controls and an audit trail without re-entering the same shift data into multiple places.
+
+FIRST-DRAFT PRD — BASED ON APPROVED KIVARA APP BLUEPRINT PARTS 1–8

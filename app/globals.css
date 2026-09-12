@@ -1,17 +1,60 @@
 @import "tailwindcss";
 
+/**
+ * Official Kivara brand tokens from Visual Design & Approved Mockup Spec.
+ * Do not swap these for a generic theme.
+ */
 :root {
   --kivara-navy: #0d2b4d;
   --kivara-teal: #0fa3a3;
-  --kivara-mist: #d6f4f4;
+  --kivara-aqua: #d6f1f1;
+  --kivara-gray: #6b7280;
+  --kivara-offwhite: #f2f4f7;
+  --kivara-white: #ffffff;
+}
+
+/* Alias used by shells */
+:root {
+  --kivara-off-white: var(--kivara-offwhite);
+}
+
+html,
+body {
+  background: var(--kivara-offwhite);
+  color: var(--kivara-navy);
 }
 
 body {
-  font-family: var(--font-manrope), system-ui, sans-serif;
+  font-family: var(--font-montserrat), system-ui, sans-serif;
 }
 
 h1,
 h2,
-h3 {
-  font-family: var(--font-fraunces), Georgia, serif;
+h3,
+.font-display {
+  font-family: var(--font-playfair), Georgia, "Times New Roman", serif;
+}
+
+.kivara-navy {
+  background-color: var(--kivara-navy);
+}
+
+.kivara-teal {
+  background-color: var(--kivara-teal);
+}
+
+.kivara-aqua {
+  background-color: var(--kivara-aqua);
+}
+
+.text-kivara-navy {
+  color: var(--kivara-navy);
+}
+
+.text-kivara-teal {
+  color: var(--kivara-teal);
+}
+
+.bg-kivara-offwhite {
+  background-color: var(--kivara-offwhite);
 }

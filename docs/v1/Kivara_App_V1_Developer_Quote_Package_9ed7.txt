@@ -1,0 +1,149 @@
+KIVARA HEALTHCARE
+VERSION 1 DEVELOPER QUOTE PACKAGE
+Request for Proposal / Fixed-Scope Estimate • First Draft • July 2026
+1. Purpose of This Package
+Kivara Healthcare is requesting comparable proposals to design and build Version 1 of a connected healthcare staffing platform. Every bidder should quote the same defined scope and clearly identify assumptions, exclusions, recurring costs, and optional items.
+2. Product Summary
+One connected platform with three private experiences: (1) CNA mobile app, (2) Facility Portal, and (3) Kivara Master Admin Portal. Core flow: Application → Work Ready → Eligible Shift → Request Shift → Confirm Assignment → Confirmed Schedule → GPS Clock In/Out → Timesheet → Payroll-Ready Hours + Facility Invoice.
+3. Required Version 1 Products
+CNA mobile-first application experience.
+Facility web/mobile-responsive portal with strict facility data isolation.
+Kivara Master Admin web portal.
+Shared backend, database, permissions, audit history, notifications, and integration layer.
+4. Non-Negotiable Business Rules
+Confirmed Means Scheduled: once Kivara confirms an assignment, the CNA is scheduled and is not removed merely because another worker becomes available.
+Facilities do not receive a casual Cancel CNA button; confirmed-assignment exceptions require a documented reason and audit history.
+If one CNA calls out, only that position reopens; unrelated confirmed assignments remain intact.
+CNAs see/request only shifts for which they are eligible.
+One connected record chain: staffing request → position → assignment → GPS punches → timesheet → payroll-ready data + invoice.
+No silent edits to sensitive operational or financial records.
+5. CNA App Scope
+Authentication and account recovery.
+Digital application and onboarding checklist.
+Profile and controlled personal-information updates.
+Secure credential/document upload and replacement.
+Credential statuses and expiration tracking.
+Work Ready status and action items.
+Eligible available shifts, filters, and shift details.
+Shift request and request-status tracking.
+Confirmed schedule.
+GPS/geofence-assisted clock-in and clock-out.
+Shift-day status flow and attendance exceptions.
+Timesheet review and correction requests.
+Messages, notifications, work areas, resources, support, and settings.
+Approved-hours and payroll-status visibility.
+6. Facility Portal Scope
+Private workspace per facility company with multiple locations when needed.
+Role-based facility users and location permissions.
+Create and track staffing requests.
+View confirmed assignments and approved work-related CNA information.
+View operational attendance status without unrestricted GPS history.
+Review timesheets or submit documented discrepancies.
+View invoices and billing status.
+Message Kivara and submit urgent operational issues.
+7. Master Admin Portal Scope
+Command-center dashboard.
+CNA applications, onboarding, profiles, Work Ready controls, and credentials.
+Facility companies, locations, contacts, users, permissions, and requirements.
+Staffing requests, positions, shift publishing, eligibility review, and Confirm Assignment.
+Call-out, no-show, emergency-exception, and replacement workflows.
+Live attendance and GPS/time exception review.
+Timesheet review, corrections, approval, and locking.
+Payroll-ready data and export/send status.
+Invoice drafts generated from approved billable hours.
+Messages, alerts, reports, documents, settings, and audit history.
+8. Security & Privacy Minimums
+Unique user accounts; no shared credentials.
+Multi-factor authentication for privileged Kivara accounts.
+Role-based access control and strict facility/tenant data isolation.
+Encryption in transit and at rest.
+Secure file upload/storage and controlled access.
+Audit logging for sensitive actions.
+Secure backups, monitoring, patching, account recovery, and incident-response process.
+Separate development/test and production environments.
+Sensitive-data minimization; banking should remain with payroll provider whenever possible.
+9. Integration Boundaries
+Background screening: Kivara initiates workflow and receives status; provider handles sensitive screening.
+Drug screening: Kivara initiates order and receives workflow status.
+Payroll: Kivara sends approved hours; provider handles taxes, withholding, direct deposit, pay stubs, and W-2s.
+Accounting: invoice/payment references may sync to accounting platform.
+E-signature, email/SMS/push, and maps/geofence services should use replaceable external providers.
+Proposal must identify which integrations are included, mocked, deferred, or priced separately.
+10. Required Build Stages and Separate Pricing
+11. Required Proposal Response
+Company/legal name, location, website, and primary contact.
+Who will actually perform the work: employees, contractors, or subcontractors?
+Relevant healthcare staffing, workforce, scheduling, credentialing, GPS timekeeping, or multi-tenant SaaS experience.
+Links or demos of relevant past work and two client references when available.
+Recommended technology stack and why it fits this project.
+Native mobile apps, cross-platform app, progressive web app, or other approach proposed.
+Architecture for facility data isolation and role permissions.
+Approach to GPS/geofence accuracy, exceptions, and privacy.
+Approach to secure document storage and audit history.
+Detailed price by build stage and milestone.
+Estimated calendar timeline by stage.
+Team members and roles.
+All recurring monthly/annual costs expected at launch and at growth.
+All third-party services and estimated usage-based costs.
+Exactly what is included, excluded, assumed, and optional.
+Warranty/bug-fix period after launch.
+Ongoing support and maintenance options and rates.
+Code handoff, documentation, deployment, and administrator training included.
+12. Ownership & Account-Control Requirements
+Kivara must own the source code and receive access to the full repository throughout the project.
+Kivara must control the domain, cloud account, database account, app-store accounts, production credentials, analytics, messaging accounts, and other production services.
+The developer receives only the access needed to perform the work.
+Proposal must identify all pre-existing code, licensed components, open-source components, templates, and third-party intellectual property.
+Final contract must clearly state ownership and license rights. Kivara will review final legal language before signing.
+No production system may depend on a personal account controlled only by an individual developer.
+13. Required Deliverables
+Clickable prototype and approved user flows.
+UI design files and design system.
+Source code and repository access.
+Database schema and architecture documentation.
+API/integration documentation.
+Role and permission configuration.
+Automated and manual test plan/results.
+Deployment instructions and environment documentation.
+Admin training and basic user documentation.
+Backup/recovery procedure and incident contact process.
+Final handoff package.
+14. Quote Comparison Table
+15. Bid Evaluation Criteria
+Understanding of Kivara’s workflow and non-negotiable rules.
+Security, privacy, permissions, and facility data-isolation approach.
+Ability to build a reliable connected record flow without duplicate data entry.
+Relevant product experience and quality of prior work.
+Clear milestone plan and realistic timeline.
+Transparent total cost and recurring costs.
+Kivara ownership and account control.
+Maintainability, documentation, and ability to replace vendors later.
+Communication quality and willingness to demonstrate completed milestones.
+16. Version 1 Exclusions
+Continuous live-map tracking throughout an entire shift.
+AI automatic shift matching.
+Public worker marketplace.
+Kivara-built payroll tax engine.
+Kivara-built background-check adjudication engine.
+Kivara-built laboratory/drug-testing system.
+Kivara-owned instant-pay wallet.
+Advanced enterprise forecasting and automated collections.
+17. Proposal Submission Format
+Please return one written proposal that follows the sections in this package, includes a stage-by-stage price and timeline, lists all recurring costs, identifies all assumptions and exclusions, and confirms whether every ownership and account-control requirement is accepted.
+18. Important Note
+This package is a first-draft procurement document based on Kivara’s approved Version 1 product blueprint. Open business decisions—including final payroll provider, geofence radius, cancellation-pay policy, exact credential requirements, rates, and legal/privacy language—will be resolved before the related features are finalized.
+
+--- TABLE 1 ---
+Stage | Scope | Price | Timeline
+Stage 1 — Interactive Prototype | Clickable CNA, Facility, and Admin flows using test data only. | Bidder to complete | Bidder to complete
+Stage 2 — Core Working App | Authentication, roles, profiles, facilities, documents, credentials, requests, shifts, assignments, notifications. | Bidder to complete | Bidder to complete
+Stage 3 — GPS, Timekeeping & Money Flow | Geofences, punches, exceptions, timesheets, payroll-ready hours, invoice generation. | Bidder to complete | Bidder to complete
+Stage 4 — Integrations & Launch Testing | Selected provider connections, QA, security review, pilot preparation, deployment support. | Bidder to complete | Bidder to complete
+
+--- TABLE 2 ---
+Developer | Stage 1 | Stage 2 | Stage 3 | Stage 4 | Recurring Cost | Total / Notes
+ |  |  |  |  |  | 
+ |  |  |  |  |  | 
+ |  |  |  |  |  | 
+ |  |  |  |  |  | 
+ |  |  |  |  |  | 

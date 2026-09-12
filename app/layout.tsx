@@ -1,23 +1,29 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope, Fraunces } from "next/font/google";
+import { Montserrat, Playfair_Display } from "next/font/google";
 
 import "./globals.css";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
+  weight: ["500", "600", "700"],
 });
 
 export const metadata: Metadata = {
   title: "Kivara Healthcare",
   description:
-    "Kivara connects healthcare facilities with licensed professionals for on-demand shifts, credentials, messaging, and payouts.",
-  applicationName: "Kivara",
+    "Empowering healthcare through exceptional staffing. Kivara connects facilities and CNAs through credentialing, confirmed assignments, GPS timekeeping, timesheets, and billing.",
+  applicationName: "Kivara Healthcare",
+  icons: {
+    icon: "/brand/favicon.png",
+    apple: "/brand/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
@@ -35,9 +41,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${fraunces.variable} h-full antialiased`}
+      className={`${montserrat.variable} ${playfair.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-[family-name:var(--font-manrope)] bg-slate-50 text-slate-900">
+      <body className="min-h-full flex flex-col bg-[var(--kivara-offwhite)] text-[var(--kivara-navy)] font-[family-name:var(--font-montserrat)]">
         {children}
       </body>
     </html>

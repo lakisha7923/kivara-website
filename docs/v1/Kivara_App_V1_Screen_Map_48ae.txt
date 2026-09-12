@@ -1,0 +1,57 @@
+KIVARA HEALTHCARE
+VERSION 1 SCREEN MAP
+CNA App • Facility Portal • Master Admin Portal
+1. Whole-System Map
+CNA APP  ↔  KIVARA MASTER ADMIN  ↔  FACILITY PORTAL
+
+Application → Work Ready → Eligible Shift → Request Shift → Confirm Assignment → Confirmed Schedule → GPS Clock In/Out → Timesheet → Payroll-Ready Hours + Facility Invoice
+CNA App Navigation
+Launch / Login → Home
+Home → Work Ready details | Action Items | Next Confirmed Shift | Available Shifts | Hours/Pay Status
+Shifts → Available Shifts → Shift Details → Request Shift → Request Status
+Schedule → Upcoming → Confirmed Shift → Ready to Clock In → GPS Check → Clocked In → On Shift → Clock Out → Timesheet Review → Submitted
+Credentials → Credential List → Credential Detail → Upload/Replace → Pending Review → Approved/Rejected
+More → Profile | Timesheets | Pay Status | Messages | Notifications | Work Areas | Forms & Resources | Help | Settings
+Facility Portal Navigation
+Login → Facility Dashboard
+Dashboard → Request Staff | Active Assignments | Today’s Attendance | Timesheets | Invoices | Messages
+Request Staff → New Request → Review → Submit → Request Detail
+Request Detail → Open / Partially Filled / Fully Staffed / In Progress / Completed / Billed
+Assignments → Assignment Detail → CNA work-status view → Contact Kivara / Emergency Change
+Attendance → Today’s Roster → Scheduled / Arrived / Clocked In / On Shift / Clocked Out
+Timesheets → Review → Accept or Submit Discrepancy
+Invoices → Invoice Detail → Status / Documents
+Settings → Locations | Users | Permissions | Notification Preferences
+Kivara Master Admin Navigation
+Login + MFA → Master Dashboard
+Dashboard → Urgent Alerts | Open Requests | At-Risk Shifts | Live Attendance | Credential Alerts | Timesheets | Payroll | Invoices
+CNAs → Applications → CNA Detail → Onboarding → Credentials → Work Ready
+Facilities → Facility Detail → Locations → Users → Requirements → Rates/Terms
+Staffing Requests → Request Detail → Positions → Publish to Eligible CNAs
+Shift Requests → Eligibility Review → Confirm Assignment
+Assignments → Confirmed → Call-Out / No-Show / Emergency Exception → Replacement Workflow
+Time & Attendance → Live Status → GPS/Time Exception Review
+Timesheets → Review → Correct with Audit → Approve → Lock
+Payroll → Payroll-Ready Hours → Export/Send → Status/Reconcile
+Invoices → Draft from Locked Timesheet → Review → Issue → Due/Paid
+Messages / Alerts / Reports / Documents / Settings / Audit History
+2. Cross-Portal Handoffs
+3. Confirmed Assignment Screen Rule
+The CNA sees: CONFIRMED — YOU ARE SCHEDULED TO WORK. The facility sees: CONFIRMED ASSIGNMENT. The admin action is: CONFIRM ASSIGNMENT. There is no casual Cancel CNA button. A documented exception workflow is required.
+4. Screen Count for Version 1
+CNA App: approximately 16 primary screens, plus states/modals.
+Facility Portal: approximately 12 primary screens, plus request and review states.
+Admin Portal: approximately 24 primary screens, plus record details and exception states.
+Estimated Version 1 total: about 52 primary screens before detailed design states.
+5. Next Design Deliverable
+Convert this map into clickable prototype flows in this order: 1) CNA confirmed-shift and GPS time-clock journey; 2) Facility staffing-request and timesheet journey; 3) Admin request-to-confirmation and timesheet-to-invoice journey.
+
+--- TABLE 1 ---
+Trigger | What Happens Next
+Facility submits staffing request | Admin receives request and reviews it.
+Admin publishes eligible positions | Qualified CNAs can see the shift.
+CNA requests shift | Admin receives the request with eligibility checks.
+Admin confirms assignment | CNA schedule locks; facility sees assigned CNA; both are notified.
+CNA clocks in/out | Admin sees attendance and exceptions; facility sees operational status only.
+Timesheet is submitted | Facility reviews; Kivara gives final approval and locks hours.
+Hours are locked | Payroll-ready record and facility invoice draft are created from the same approved hours.

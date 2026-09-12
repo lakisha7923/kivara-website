@@ -1,0 +1,79 @@
+KIVARA HEALTHCARE
+VISUAL DESIGN & APPROVED MOCKUP SPECIFICATION
+Version 1 Design Direction • July 2026
+1. Purpose
+This document defines the approved visual direction for the Kivara Version 1 platform. The Product Requirements Document explains what to build; the Screen Map explains navigation; the Business Rules & Logic Specification explains behavior; this document explains how the product should look and feel.
+2. Official Brand Palette
+Deep Navy — #0D2B4D
+Kivara Teal — #0FA3A3
+Soft Aqua — #D6F1F1
+Gray — #6B7280
+Off-White — #F2F4F7
+3. Typography Direction
+Primary display/headline direction: Playfair Display where appropriate for branded headings.
+Primary interface/body direction: Montserrat or a closely matched, highly readable production-safe equivalent.
+Accessibility and readability take priority over decorative typography in operational screens.
+4. Approved Interface Style
+Clean, modern healthcare staffing SaaS appearance.
+Navy navigation areas with teal actions and status accents.
+White/off-white content surfaces with soft aqua highlights.
+Rounded cards, clear spacing, restrained shadows, and strong information hierarchy.
+Large, obvious primary actions for shift requests, confirmations, clock-in/out, credential uploads, and timesheet approval.
+Status-first design: users should immediately understand what is Ready, Pending, Confirmed, Expiring, At Risk, or Complete.
+Mobile-first CNA experience; responsive web experiences for facilities and Kivara admins.
+Consistent visual language across all three portals so the system feels like one Kivara product.
+5. Design Rules That Must Not Be Changed Without Approval
+The finished product must use Kivara's approved navy-and-teal brand direction rather than a generic template theme.
+Confirmed assignments must be visually unmistakable and use the approved meaning: Confirmed — You Are Scheduled to Work.
+The CNA time clock must be easy to reach from the confirmed shift and must clearly show current shift status.
+Facility users must see operational status without unrestricted GPS-history views.
+Admin dashboards should prioritize urgent staffing, attendance, credential, timesheet, payroll, and invoice issues.
+The three portals may have different layouts, but they must share the same brand system, components, and status language.
+Sample names, facilities, dates, dollar amounts, phone numbers, pay schedules, and policies in concept images are placeholders only.
+6. Approved Mockup Gallery
+The following images are approved concept references. Developers/designers should recreate them as functional, responsive interfaces. They are not pixel-perfect production files, and small layout changes may be necessary for accessibility, responsiveness, and real data.
+Official Brand Reference
+CNA Home Dashboard
+Approved direction: Work Ready status, action items, next shift, available shifts, hours/pay summary.
+Available Shifts & Shift Details
+Shift Request & Admin Confirmation
+Confirmed Means Scheduled Workflow
+GPS Time Clock & Live Attendance
+Facility Portal
+Approved direction: private facility workspace for staffing requests, assignments, attendance, timesheets, invoices, and messages.
+Master Admin Dashboard
+Approved direction: Kivara command center for facilities, requests, assignments, live attendance, exceptions, credentials, timesheets, payroll, and invoices.
+Admin Credential Center
+CNA Credential Center
+CNA Application & Onboarding
+Timesheets, Payroll & Billing
+Staffing Requests & Shift Management
+Alerts, Messages & Notifications
+7. Responsive Design Expectations
+CNA app screens must be optimized for common phone sizes and touch use.
+Facility and Admin portals must work on desktop and tablet, with responsive behavior for smaller screens.
+No critical action may depend on hover-only behavior.
+Tables must collapse or transform appropriately on smaller screens.
+Primary buttons and status labels must remain readable and accessible.
+8. Accessibility Expectations
+Maintain sufficient text/background contrast.
+Do not rely on color alone to communicate status.
+Use readable type sizes and clear labels.
+Provide keyboard-accessible web navigation and visible focus states.
+Use descriptive form labels, validation messages, and error recovery.
+Support screen-reader-friendly structure where technically applicable.
+9. Developer / Designer Deliverables
+Production-ready design system with colors, typography, spacing, buttons, inputs, cards, tables, status badges, alerts, modals, and navigation.
+High-fidelity screen designs for all Version 1 primary screens.
+Responsive states for CNA mobile, Facility Portal, and Admin Portal.
+Interactive prototype for the three priority journeys.
+Design-source files owned and controlled by Kivara.
+Documented component library and status-language guide.
+Final approval checkpoint before development of each major portal.
+10. Priority Prototype Journeys
+CNA: Application → Work Ready → Available Shift → Request → Confirmed → GPS Clock In/Out → Timesheet.
+Facility: Request Staff → Track Fill Status → Confirmed Assignment → Attendance → Timesheet Review → Invoice.
+Admin: Review Request → Publish Position → Review CNA Request → Confirm Assignment → Monitor Attendance → Approve Timesheet → Payroll Ready + Invoice.
+11. Approval Standard
+A design is not approved merely because it contains the required features. It must also follow the Kivara brand direction, match the clarity and visual quality of the approved concepts, preserve the approved workflow language, and work across real screen sizes.
+APPROVED MOCKUP REFERENCES INCLUDED: 14
