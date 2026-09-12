@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+:root {
+  --kivara-navy: #0d2b4d;
+  --kivara-teal: #0fa3a3;
+  --kivara-mist: #d6f4f4;
+}
+
+body {
+  font-family: var(--font-manrope), system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-fraunces), Georgia, serif;
+}
