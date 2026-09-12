@@ -3,7 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useState,
+  type ReactNode,
+} from "react";
+import { createPortal } from "react-dom";
 
 const navItems = [
   { href: "/facility", label: "Dashboard", icon: "▦", exact: true },
@@ -97,6 +104,53 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
+function MobileDrawer({
+  open,
+  onClose,
+  titleId,
+}: {
+  open: boolean;
+  onClose: () => void;
+  titleId: string;
+}) {
+  if (!open) return null;
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[100] lg:hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      data-testid="facility-mobile-drawer"
+    >
+      <button
+        type="button"
+        className="absolute inset-0 bg-black/45"
+        aria-label="Close menu"
+        data-testid="facility-menu-backdrop"
+        onClick={onClose}
+      />
+      <aside className="absolute inset-y-0 left-0 flex w-[min(18rem,88vw)] flex-col bg-[#0D2B4D] text-white shadow-2xl">
+        <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+          <p id={titleId} className="text-sm font-semibold">
+            Facility menu
+          </p>
+          <button
+            type="button"
+            data-testid="facility-menu-close"
+            onClick={onClose}
+            className="rounded-lg border border-white/20 px-3 py-1.5 text-sm font-semibold"
+          >
+            Close
+          </button>
+        </div>
+        <SidebarNav onNavigate={onClose} />
+      </aside>
+    </div>,
+    document.body
+  );
+}
+
 export default function FacilityShell({
   children,
 }: {
@@ -104,50 +158,44 @@ export default function FacilityShell({
   title?: string;
 }) {
   const pathname = usePathname();
+  const titleId = useId();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  const openMenu = useCallback(() => setMenuOpen(true), []);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
+    if (!menuOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = "";
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = previous;
     };
   }, [menuOpen]);
 
   return (
     <div className="min-h-screen bg-[#F2F4F7] text-[#0D2B4D]">
       <div className="flex min-h-screen">
-        {/* Desktop / tablet sidebar */}
         <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col bg-[#0D2B4D] text-white lg:flex lg:w-64">
           <SidebarNav />
         </aside>
 
-        {/* Mobile drawer */}
-        {menuOpen ? (
-          <div className="fixed inset-0 z-50 lg:hidden">
-            <button
-              type="button"
-              className="absolute inset-0 bg-black/40"
-              aria-label="Close menu"
-              onClick={() => setMenuOpen(false)}
-            />
-            <aside className="absolute inset-y-0 left-0 flex w-[min(18rem,88vw)] flex-col bg-[#0D2B4D] text-white shadow-2xl">
-              <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
-                <p className="text-sm font-semibold">Facility menu</p>
-                <button
-                  type="button"
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded-lg border border-white/20 px-3 py-1.5 text-sm font-semibold"
-                >
-                  Close
-                </button>
-              </div>
-              <SidebarNav onNavigate={() => setMenuOpen(false)} />
-            </aside>
-          </div>
+        {mounted ? (
+          <MobileDrawer open={menuOpen} onClose={closeMenu} titleId={titleId} />
         ) : null}
 
         <div className="flex min-w-0 flex-1 flex-col">
@@ -156,18 +204,26 @@ export default function FacilityShell({
               <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
                 <button
                   type="button"
-                  className="inline-flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-[#0D2B4D] active:bg-slate-50 lg:hidden"
-                  aria-label="Open sidebar menu"
+                  data-testid="facility-menu-button"
+                  className="relative z-40 inline-flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-[#0D2B4D] shadow-sm active:bg-slate-50 lg:hidden"
+                  aria-label="Open facility menu"
                   aria-expanded={menuOpen}
-                  onClick={() => setMenuOpen(true)}
+                  aria-controls={menuOpen ? titleId : undefined}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    openMenu();
+                  }}
                 >
                   <span aria-hidden>☰</span>
                   <span>Menu</span>
                 </button>
                 <div className="min-w-0">
-                  <p className="font-[family-name:var(--font-playfair)] truncate text-base font-semibold text-[#0D2B4D] sm:text-xl">
+                  <p className="truncate font-[family-name:var(--font-playfair)] text-base font-semibold text-[#0D2B4D] sm:text-xl">
                     <span className="sm:hidden">Facility Portal</span>
-                    <span className="hidden sm:inline">Kivara Facility Portal</span>
+                    <span className="hidden sm:inline">
+                      Kivara Facility Portal
+                    </span>
                   </p>
                   <div className="mt-1 inline-flex max-w-full items-center gap-2 truncate rounded-full border border-slate-200 bg-[#F2F4F7] px-2.5 py-0.5 text-[11px] font-semibold text-[#0D2B4D] sm:px-3 sm:py-1 sm:text-xs">
                     Memorial Care Center
