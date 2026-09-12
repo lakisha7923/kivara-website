@@ -58,7 +58,7 @@ export default function FacilityShell({
                 : pathname === item.href || pathname.startsWith(`${item.href}/`);
               return (
                 <Link
-                  key={item.href}
+                  key={item.label}
                   href={item.href}
                   className={`flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition ${
                     active
