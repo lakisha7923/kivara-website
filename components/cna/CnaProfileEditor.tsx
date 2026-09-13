@@ -6,16 +6,28 @@ import { useEffect, useId, useRef, useState } from "react";
 import { ScreenCard, StatusBadge } from "@/components/ui/primitives";
 import type {
   CnaEmergencyContact,
+  CnaEmrSystem,
   CnaPaymentMethod,
   CnaProfile,
 } from "@/types/kivara";
 
-const STORAGE_KEY = "kivara.cna.profile.v2";
+const STORAGE_KEY = "kivara.cna.profile.v3";
 
 const PAYMENT_METHODS: CnaPaymentMethod[] = [
   "Direct deposit",
   "Instant pay",
   "Paper check",
+];
+
+export const EMR_SYSTEM_OPTIONS: CnaEmrSystem[] = [
+  "Epic",
+  "Cerner",
+  "Meditech",
+  "Allscripts",
+  "CPSI",
+  "PointClickCare",
+  "Matrix Care",
+  "Other",
 ];
 
 const HOME_BASE_OPTIONS = [
@@ -35,6 +47,8 @@ type EditableProfile = {
   dateOfBirth: string;
   socialSecurityNumber: string;
   paymentMethod: CnaPaymentMethod;
+  emrExperience: CnaEmrSystem[];
+  emrOtherNotes: string;
   emergencyContacts: CnaEmergencyContact[];
   photoUrl?: string;
 };
@@ -86,6 +100,12 @@ function loadSaved(defaults: EditableProfile): EditableProfile {
         parsed.paymentMethod && PAYMENT_METHODS.includes(parsed.paymentMethod)
           ? parsed.paymentMethod
           : defaults.paymentMethod,
+      emrExperience: Array.isArray(parsed.emrExperience)
+        ? parsed.emrExperience.filter((item): item is CnaEmrSystem =>
+            EMR_SYSTEM_OPTIONS.includes(item as CnaEmrSystem)
+          )
+        : defaults.emrExperience,
+      emrOtherNotes: parsed.emrOtherNotes ?? defaults.emrOtherNotes,
       emergencyContacts: contacts.length
         ? contacts
         : defaults.emergencyContacts,
@@ -107,6 +127,8 @@ export default function CnaProfileEditor({ profile }: { profile: CnaProfile }) {
     dateOfBirth: profile.dateOfBirth,
     socialSecurityNumber: profile.socialSecurityNumber,
     paymentMethod: profile.paymentMethod,
+    emrExperience: [...profile.emrExperience],
+    emrOtherNotes: profile.emrOtherNotes ?? "",
     emergencyContacts: profile.emergencyContacts.map((c) => ({ ...c })),
     photoUrl: profile.photoUrl,
   };
@@ -122,6 +144,10 @@ export default function CnaProfileEditor({ profile }: { profile: CnaProfile }) {
   const [paymentMethod, setPaymentMethod] = useState<CnaPaymentMethod>(
     defaults.paymentMethod
   );
+  const [emrExperience, setEmrExperience] = useState<CnaEmrSystem[]>(
+    defaults.emrExperience
+  );
+  const [emrOtherNotes, setEmrOtherNotes] = useState(defaults.emrOtherNotes);
   const [emergencyContacts, setEmergencyContacts] = useState(
     defaults.emergencyContacts
   );
@@ -140,6 +166,8 @@ export default function CnaProfileEditor({ profile }: { profile: CnaProfile }) {
     setDateOfBirth(saved.dateOfBirth);
     setSocialSecurityNumber(saved.socialSecurityNumber);
     setPaymentMethod(saved.paymentMethod);
+    setEmrExperience(saved.emrExperience);
+    setEmrOtherNotes(saved.emrOtherNotes);
     setEmergencyContacts(saved.emergencyContacts);
     setPhotoUrl(saved.photoUrl);
     setHydrated(true);
@@ -206,6 +234,17 @@ export default function CnaProfileEditor({ profile }: { profile: CnaProfile }) {
     markDirty();
   }
 
+  function toggleEmrSystem(system: CnaEmrSystem) {
+    setEmrExperience((prev) => {
+      if (prev.includes(system)) {
+        if (system === "Other") setEmrOtherNotes("");
+        return prev.filter((item) => item !== system);
+      }
+      return [...prev, system];
+    });
+    markDirty();
+  }
+
   function save() {
     setSaveError(null);
     const next: EditableProfile = {
@@ -216,6 +255,8 @@ export default function CnaProfileEditor({ profile }: { profile: CnaProfile }) {
       dateOfBirth: dateOfBirth.trim(),
       socialSecurityNumber: socialSecurityNumber.trim(),
       paymentMethod,
+      emrExperience,
+      emrOtherNotes: emrExperience.includes("Other") ? emrOtherNotes.trim() : "",
       emergencyContacts: emergencyContacts.map((c) => ({
         ...c,
         name: c.name.trim(),
@@ -242,6 +283,14 @@ export default function CnaProfileEditor({ profile }: { profile: CnaProfile }) {
     }
     if (!isValidSsn(next.socialSecurityNumber)) {
       setSaveError("Enter a valid Social Security number (###-##-####).");
+      return;
+    }
+    if (next.emrExperience.length === 0) {
+      setSaveError("Select at least one EMR system you have used.");
+      return;
+    }
+    if (next.emrExperience.includes("Other") && !next.emrOtherNotes) {
+      setSaveError('Add the EMR name when you select "Other".');
       return;
     }
     const incompleteContact = next.emergencyContacts.find(
@@ -502,6 +551,57 @@ export default function CnaProfileEditor({ profile }: { profile: CnaProfile }) {
               ))}
             </select>
           </label>
+
+          <div className="border-t border-slate-100 pt-4">
+            <h3 className="text-sm font-bold text-[#0D2B4D]">EMR experience</h3>
+            <p className="mt-1 text-xs text-slate-500">
+              Select every charting system you have used. Facilities use this to
+              match shifts.
+            </p>
+            <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {EMR_SYSTEM_OPTIONS.map((system) => {
+                const checked = emrExperience.includes(system);
+                return (
+                  <label
+                    key={system}
+                    className={`flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 text-sm ${
+                      checked
+                        ? "border-[#0FA3A3] bg-[#E8F6F6] font-semibold text-[#0D2B4D]"
+                        : "border-slate-200 bg-white text-slate-700"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      disabled={!hydrated}
+                      onChange={() => toggleEmrSystem(system)}
+                      className="h-4 w-4 rounded border-slate-300 text-[#0FA3A3] focus:ring-[#0FA3A3]"
+                    />
+                    {system}
+                  </label>
+                );
+              })}
+            </div>
+            {emrExperience.includes("Other") ? (
+              <label className="mt-3 block">
+                <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  Other EMR name
+                </span>
+                <input
+                  type="text"
+                  value={emrOtherNotes}
+                  onChange={(e) => {
+                    setEmrOtherNotes(e.target.value);
+                    markDirty();
+                  }}
+                  disabled={!hydrated}
+                  className={fieldClass}
+                  placeholder="e.g. Netsmart, American HealthTech"
+                  required
+                />
+              </label>
+            ) : null}
+          </div>
 
           <div className="border-t border-slate-100 pt-4">
             <div className="flex items-start justify-between gap-3">

@@ -116,6 +116,16 @@ export type CnaPaymentMethod =
   | "Instant pay"
   | "Paper check";
 
+export type CnaEmrSystem =
+  | "Epic"
+  | "Cerner"
+  | "Meditech"
+  | "Allscripts"
+  | "CPSI"
+  | "PointClickCare"
+  | "Matrix Care"
+  | "Other";
+
 export interface CnaEmergencyContact {
   id: string;
   name: string;
@@ -133,6 +143,10 @@ export interface CnaProfile {
   dateOfBirth: string;
   socialSecurityNumber: string;
   paymentMethod: CnaPaymentMethod;
+  /** EMR / charting systems this CNA has used */
+  emrExperience: CnaEmrSystem[];
+  /** Required when emrExperience includes Other */
+  emrOtherNotes?: string;
   emergencyContacts: CnaEmergencyContact[];
   photoUrl?: string;
   status: CnaStatus;

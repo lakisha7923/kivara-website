@@ -27,6 +27,7 @@ export const mockCna: CnaProfile = {
   dateOfBirth: "1994-06-18",
   socialSecurityNumber: "***-**-0142",
   paymentMethod: "Direct deposit",
+  emrExperience: ["Epic", "PointClickCare", "Cerner"],
   emergencyContacts: [
     {
       id: "ec-1",
@@ -107,6 +108,7 @@ export const mockOnboardingCna: CnaProfile = {
   dateOfBirth: "1998-11-03",
   socialSecurityNumber: "***-**-0199",
   paymentMethod: "Instant pay",
+  emrExperience: [],
   emergencyContacts: [
     {
       id: "ec-a1",

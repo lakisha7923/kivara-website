@@ -11,7 +11,7 @@ export default function CnaProfilePage() {
       <PageHeader
         eyebrow="More"
         title="Profile"
-        subtitle="Photo, contact, pay, and emergency details"
+        subtitle="Photo, contact, EMR experience, pay, and emergency details"
       />
       <CnaProfileEditor profile={mockCna} />
       <Link
