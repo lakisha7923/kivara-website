@@ -234,11 +234,19 @@ export default function ScreeningCredentialPanel({
         </ul>
         <button
           type="button"
-          disabled
-          className="mt-4 w-full rounded-full border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-400"
+          data-testid="vendor-order"
+          onClick={() =>
+            setMessage(
+              "Vendor e-order is not connected yet. Use consent + manual upload for V1."
+            )
+          }
+          className="mt-4 w-full rounded-full border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-[#0D2B4D]"
         >
           Order via vendor (coming soon)
         </button>
+        {message?.includes("Vendor e-order") ? (
+          <p className="mt-3 text-sm font-medium text-amber-800">{message}</p>
+        ) : null}
       </ScreenCard>
 
       <ScreenCard>

@@ -5,7 +5,8 @@ export default function CnaFormsPage() {
     <CnaMoreStaticSection
       title="Forms & Resources"
       subtitle="Handbooks, packets, and references"
-      body="Orientation packet, handbook acknowledgment, and facility-specific forms will live here."
+      body="Orientation packet, handbook acknowledgment, and facility-specific forms will live here. Until then, track required uploads under Credentials."
+      cta={{ href: "/cna/credentials", label: "Open credentials" }}
     />
   );
 }

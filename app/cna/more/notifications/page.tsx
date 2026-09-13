@@ -6,6 +6,7 @@ export default function CnaNotificationsPage() {
       title="Notifications"
       subtitle="Alerts that need attention"
       body="New eligible shifts, confirmation updates, credential decisions, and timesheet status changes."
+      cta={{ href: "/cna/shifts", label: "Browse available shifts" }}
     />
   );
 }

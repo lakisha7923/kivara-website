@@ -85,8 +85,20 @@ export default function GpsTimeClock({
   const [elapsed, setElapsed] = useState(0);
   const [onBreak, setOnBreak] = useState(false);
   const [breakSeconds, setBreakSeconds] = useState(0);
+  const [breakLog, setBreakLog] = useState<
+    { startedAt: string; endedAt?: string; seconds: number }[]
+  >([]);
+  const [breakStartedAt, setBreakStartedAt] = useState<string | null>(null);
+  const [breakAnchorElapsed, setBreakAnchorElapsed] = useState(0);
+  const [showBreaks, setShowBreaks] = useState(false);
+  const [issueNote, setIssueNote] = useState("");
+  const [issueSent, setIssueSent] = useState(false);
+  const [showIssueForm, setShowIssueForm] = useState(false);
+  const [correctionRequested, setCorrectionRequested] = useState(false);
+  const [mapOpened, setMapOpened] = useState(false);
   const [clockInLabel, setClockInLabel] = useState("2:59 PM");
   const gpsAccuracy = 12;
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(shift.address)}`;
 
   const totalPay = useMemo(() => {
     const worked = Math.max(elapsed - breakSeconds, 0) / 3600;
@@ -121,7 +133,51 @@ export default function GpsTimeClock({
     setElapsed(0);
     setBreakSeconds(0);
     setOnBreak(false);
+    setBreakLog([]);
+    setBreakStartedAt(null);
+    setBreakAnchorElapsed(0);
+    setShowBreaks(false);
+    setShowIssueForm(false);
+    setIssueNote("");
+    setIssueSent(false);
     setPhase("on_shift");
+  };
+
+  const toggleBreak = () => {
+    const stamp = new Date().toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+    if (onBreak) {
+      const segmentSeconds = Math.max(elapsed - breakAnchorElapsed, 0);
+      setBreakLog((prev) => {
+        const next = [...prev];
+        const last = next[next.length - 1];
+        if (last && !last.endedAt) {
+          next[next.length - 1] = {
+            ...last,
+            endedAt: stamp,
+            seconds: segmentSeconds,
+          };
+        }
+        return next;
+      });
+      setBreakStartedAt(null);
+      setOnBreak(false);
+      return;
+    }
+    setBreakStartedAt(stamp);
+    setBreakAnchorElapsed(elapsed);
+    setBreakLog((prev) => [...prev, { startedAt: stamp, seconds: 0 }]);
+    setOnBreak(true);
+    setShowBreaks(true);
+  };
+
+  const submitIssue = () => {
+    const trimmed = issueNote.trim();
+    if (!trimmed) return;
+    setIssueSent(true);
+    setShowIssueForm(false);
   };
 
   return (
@@ -170,12 +226,24 @@ export default function GpsTimeClock({
                   📍
                 </div>
               </div>
-              <div className="flex items-center justify-between bg-white px-3 py-2">
+              <div className="flex items-center justify-between gap-2 bg-white px-3 py-2">
                 <p className="text-xs text-slate-500">Facility location</p>
-                <span className="text-xs font-semibold text-[#0FA3A3]">
+                <a
+                  href={mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setMapOpened(true)}
+                  className="text-xs font-semibold text-[#0FA3A3] hover:underline"
+                  data-testid="view-on-map"
+                >
                   View on Map
-                </span>
+                </a>
               </div>
+              {mapOpened ? (
+                <p className="border-t border-slate-100 bg-white px-3 py-2 text-xs text-emerald-700">
+                  Map link opened for {shift.address}.
+                </p>
+              ) : null}
             </div>
 
             <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3">
@@ -296,29 +364,102 @@ export default function GpsTimeClock({
               <button
                 type="button"
                 data-testid="toggle-break"
-                onClick={() => setOnBreak((v) => !v)}
+                onClick={toggleBreak}
                 className="rounded-full border border-slate-200 py-2.5 text-sm font-semibold text-[#0D2B4D]"
               >
                 {onBreak ? "End Break" : "Start Break"}
               </button>
               <button
                 type="button"
+                data-testid="view-breaks"
+                onClick={() => setShowBreaks((v) => !v)}
                 className="rounded-full border border-slate-200 py-2.5 text-sm font-semibold text-[#0D2B4D]"
               >
-                View Breaks
+                {showBreaks ? "Hide Breaks" : "View Breaks"}
               </button>
             </div>
             {onBreak ? (
               <p className="mt-3 text-center text-xs font-semibold text-amber-700">
                 Break in progress · {formatElapsed(breakSeconds)}
+                {breakStartedAt ? ` · started ${breakStartedAt}` : null}
               </p>
+            ) : null}
+            {showBreaks ? (
+              <div
+                className="mt-3 rounded-xl bg-[#F2F4F7] p-3 text-sm"
+                data-testid="break-log"
+              >
+                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                  Break log
+                </p>
+                {breakLog.length === 0 ? (
+                  <p className="mt-2 text-slate-600">No breaks recorded yet.</p>
+                ) : (
+                  <ul className="mt-2 space-y-2">
+                    {breakLog.map((entry, index) => (
+                      <li
+                        key={`${entry.startedAt}-${index}`}
+                        className="flex justify-between gap-2 text-[#0D2B4D]"
+                      >
+                        <span>
+                          {entry.startedAt}
+                          {entry.endedAt ? ` – ${entry.endedAt}` : " – in progress"}
+                        </span>
+                        <span className="font-semibold">
+                          {entry.endedAt
+                            ? formatElapsed(Math.max(entry.seconds, 0))
+                            : formatElapsed(
+                                Math.max(elapsed - breakAnchorElapsed, 0)
+                              )}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <p className="mt-2 text-xs text-slate-500">
+                  Total break time · {formatElapsed(breakSeconds)}
+                </p>
+              </div>
             ) : null}
             <button
               type="button"
+              data-testid="report-issue"
+              onClick={() => {
+                setShowIssueForm((v) => !v);
+                setIssueSent(false);
+              }}
               className="mt-3 w-full text-center text-sm font-semibold text-rose-600"
             >
-              Report an Issue
+              {showIssueForm ? "Cancel issue report" : "Report an Issue"}
             </button>
+            {showIssueForm ? (
+              <div className="mt-3 space-y-2 rounded-xl border border-rose-100 bg-rose-50 p-3">
+                <label className="block text-xs font-semibold uppercase tracking-wide text-rose-800">
+                  What happened?
+                  <textarea
+                    value={issueNote}
+                    onChange={(e) => setIssueNote(e.target.value)}
+                    rows={3}
+                    className="mt-1.5 w-full rounded-xl border border-rose-200 bg-white px-3 py-2 text-sm text-[#0D2B4D] outline-none ring-rose-300 focus:ring-2"
+                    placeholder="GPS issue, unsafe condition, staffing concern…"
+                  />
+                </label>
+                <button
+                  type="button"
+                  data-testid="submit-issue"
+                  onClick={submitIssue}
+                  disabled={!issueNote.trim()}
+                  className="w-full rounded-full bg-rose-700 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+                >
+                  Send to Kivara support
+                </button>
+              </div>
+            ) : null}
+            {issueSent ? (
+              <p className="mt-2 text-center text-xs font-semibold text-emerald-700">
+                Issue sent to Kivara support. A coordinator will follow up.
+              </p>
+            ) : null}
           </div>
 
           <StickyClockAction>
@@ -422,12 +563,20 @@ export default function GpsTimeClock({
           <p className="mt-3 text-xs text-slate-500">
             Facility can review; Kivara gives final approval.
           </p>
-          <button
-            type="button"
-            className="mt-4 w-full rounded-full border border-slate-200 py-2.5 text-sm font-semibold text-[#0D2B4D]"
-          >
-            Request Correction
-          </button>
+          {correctionRequested ? (
+            <p className="mt-4 text-sm font-medium text-emerald-700">
+              Correction requested. Kivara payroll will review this timesheet.
+            </p>
+          ) : (
+            <button
+              type="button"
+              data-testid="request-correction"
+              onClick={() => setCorrectionRequested(true)}
+              className="mt-4 w-full rounded-full border border-slate-200 py-2.5 text-sm font-semibold text-[#0D2B4D]"
+            >
+              Request Correction
+            </button>
+          )}
           <Link
             href="/cna/schedule"
             className="mt-3 flex w-full items-center justify-center rounded-full bg-[#0D2B4D] py-3 text-sm font-semibold text-white"

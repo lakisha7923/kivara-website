@@ -5,7 +5,8 @@ export default function CnaMessagesPage() {
     <CnaMoreStaticSection
       title="Messages"
       subtitle="Facility and Kivara threads"
-      body="Shift confirmations, credential questions, and support messages appear here."
+      body="Shift confirmations, credential questions, and support messages appear here. No unread threads right now."
+      cta={{ href: "/cna/more/notifications", label: "Check notifications" }}
     />
   );
 }

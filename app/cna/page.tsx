@@ -58,14 +58,26 @@ export default function CnaHomePage() {
               />
             </div>
             <ul className="mt-3 space-y-2">
-              {mockCna.actionItems.map((item) => (
-                <li
-                  key={item}
-                  className="rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-950"
-                >
-                  {item}
-                </li>
-              ))}
+              {mockCna.actionItems.map((item) => {
+                const href = item.toLowerCase().includes("drug screen")
+                  ? "/cna/credentials/cred-5"
+                  : item.toLowerCase().includes("tb")
+                    ? "/cna/credentials/cred-3"
+                    : item.toLowerCase().includes("arrival") ||
+                        item.toLowerCase().includes("shift")
+                      ? "/cna/schedule"
+                      : "/cna/credentials";
+                return (
+                  <li key={item}>
+                    <Link
+                      href={href}
+                      className="block rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-950 hover:bg-amber-100"
+                    >
+                      {item} →
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
             <Link
               href="/cna/credentials"

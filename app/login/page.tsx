@@ -12,6 +12,7 @@ import { auth, db } from "@/lib/firebase";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [resetNote, setResetNote] = useState<string | null>(null);
   const router = useRouter();
 
   const handleLogin = async () => {
@@ -114,9 +115,24 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 space-y-4 text-center">
-            <a href="#" className="text-sm text-[var(--kivara-teal)] hover:underline">
+            <button
+              type="button"
+              onClick={() =>
+                setResetNote(
+                  email.trim()
+                    ? `If an account exists for ${email.trim()}, a reset link will be sent when password recovery is connected.`
+                    : "Enter your email above, then tap Forgot password again."
+                )
+              }
+              className="text-sm text-[var(--kivara-teal)] hover:underline"
+            >
               Forgot password?
-            </a>
+            </button>
+            {resetNote ? (
+              <p className="text-sm text-slate-600" role="status">
+                {resetNote}
+              </p>
+            ) : null}
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-left">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Demo portals
