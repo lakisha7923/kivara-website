@@ -14,17 +14,15 @@ Open [http://127.0.0.1:4317](http://127.0.0.1:4317).
 
 ## Site URL
 
-Put your live website URL in `.env.local`:
+Live site: [https://www.kivarahealthcare.com](https://www.kivarahealthcare.com)
+
+Configured in `.env.local` as:
 
 ```bash
-NEXT_PUBLIC_SITE_URL=https://your-real-site-url.com
+NEXT_PUBLIC_SITE_URL=https://www.kivarahealthcare.com
 ```
 
-Examples:
-- `https://kivara.vercel.app`
-- `https://www.kivara.health`
-
-Then restart the app. Your homepage, CNA app, and Facility app will use that URL.
+Restart the app after changing this value.
 
 ## Stack
 
