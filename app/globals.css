@@ -23,6 +23,8 @@ body {
   background: var(--kivara-offwhite);
   color: var(--kivara-navy);
   overflow-x: hidden;
+  /* Keep scroll-into-view / in-page targets above the CNA fixed tab bar */
+  scroll-padding-bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px));
 }
 
 body {

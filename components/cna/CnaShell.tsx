@@ -55,7 +55,17 @@ export default function CnaShell({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <main className="flex-1 overflow-x-hidden px-3 py-3 pb-28 sm:px-4 sm:py-4">
+      <main
+        className="flex-1 overflow-x-hidden px-3 py-3 sm:px-4 sm:py-4"
+        style={{
+          // Keep page content and scroll-into-view targets above the fixed tab bar
+          // so taps do not land on Schedule/Shifts/etc. underneath.
+          paddingBottom:
+            "calc(5.75rem + max(0.35rem, env(safe-area-inset-bottom)))",
+          scrollPaddingBottom:
+            "calc(5.75rem + max(0.35rem, env(safe-area-inset-bottom)))",
+        }}
+      >
         {children}
       </main>
 
