@@ -3,51 +3,87 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
+import {
+  DEMO_ACCOUNTS,
+  loginDemoAccount,
+  portalForAccountType,
+  withAuthTimeout,
+} from "@/lib/auth/demoAuth";
 import { auth, db } from "@/lib/firebase";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [resetNote, setResetNote] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
   const router = useRouter();
 
-  const handleLogin = async () => {
+  const finishLogin = (accountType: string) => {
+    router.push(portalForAccountType(accountType));
+  };
+
+  const handleLogin = async (event?: FormEvent) => {
+    event?.preventDefault();
+    setError(null);
+    setResetNote(null);
+    setBusy(true);
+
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
+      try {
+        const demo = loginDemoAccount(email, password);
+        finishLogin(demo.accountType);
+        return;
+      } catch {
+        // Not a demo/local account — try Firebase next.
+      }
+
+      const userCredential = await withAuthTimeout(
+        signInWithEmailAndPassword(auth, email.trim(), password)
+      );
+      const userDoc = await withAuthTimeout(
+        getDoc(doc(db, "users", userCredential.user.uid))
       );
 
-      const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
-
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-
-        if (userData.accountType === "Healthcare Professional") {
-          router.push("/cna");
-        } else if (userData.accountType === "Healthcare Facility") {
-          router.push("/facility");
-        } else if (
-          userData.accountType === "Master Admin" ||
-          userData.accountType === "Kivara Admin"
-        ) {
-          router.push("/login/mfa");
-        } else {
-          alert("Unknown account type.");
-        }
-      } else {
-        alert("User profile not found.");
+      if (!userDoc.exists()) {
+        throw new Error(
+          "Signed in, but no Kivara profile was found for this user."
+        );
       }
-    } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : "Unable to sign in.";
-      alert(message);
+
+      const accountType = String(userDoc.data().accountType ?? "");
+      if (!accountType) {
+        throw new Error("This account is missing an account type.");
+      }
+      finishLogin(accountType);
+    } catch (err: unknown) {
+      try {
+        const demo = loginDemoAccount(email, password);
+        finishLogin(demo.accountType);
+        return;
+      } catch {
+        const message =
+          err instanceof Error ? err.message : "Unable to sign in.";
+        setError(
+          message.includes("Firebase") || message.includes("auth/")
+            ? "Sign-in could not reach Firebase. Use a demo account below, or create a local account on Register."
+            : message
+        );
+      }
+    } finally {
+      setBusy(false);
     }
+  };
+
+  const fillDemo = (demoEmail: string, demoPassword: string) => {
+    setEmail(demoEmail);
+    setPassword(demoPassword);
+    setError(null);
+    setResetNote(null);
   };
 
   return (
@@ -90,27 +126,51 @@ export default function LoginPage() {
             Login
           </h2>
 
-          <form className="mt-8 space-y-5" onSubmit={(e) => e.preventDefault()}>
-            <input
-              type="email"
-              placeholder="Email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[var(--kivara-teal)]"
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[var(--kivara-teal)]"
-            />
+          <form className="mt-8 space-y-5" onSubmit={handleLogin}>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-slate-600">
+                Email
+              </span>
+              <input
+                type="email"
+                autoComplete="email"
+                placeholder="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-xl border border-gray-300 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[var(--kivara-teal)]"
+                required
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-slate-600">
+                Password
+              </span>
+              <input
+                type="password"
+                autoComplete="current-password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-xl border border-gray-300 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[var(--kivara-teal)]"
+                required
+              />
+            </label>
+
+            {error ? (
+              <p
+                className="rounded-xl bg-rose-50 px-3 py-2 text-sm text-rose-800"
+                role="alert"
+              >
+                {error}
+              </p>
+            ) : null}
+
             <button
-              type="button"
-              onClick={handleLogin}
-              className="w-full rounded-xl bg-[var(--kivara-teal)] py-4 font-semibold text-white transition hover:brightness-110"
+              type="submit"
+              disabled={busy}
+              className="w-full rounded-xl bg-[var(--kivara-teal)] py-4 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Login
+              {busy ? "Signing in…" : "Login"}
             </button>
           </form>
 
@@ -120,7 +180,7 @@ export default function LoginPage() {
               onClick={() =>
                 setResetNote(
                   email.trim()
-                    ? `If an account exists for ${email.trim()}, a reset link will be sent when password recovery is connected.`
+                    ? `Password reset for ${email.trim()} will send when recovery email is connected. For now use a demo password or create a new local account.`
                     : "Enter your email above, then tap Forgot password again."
                 )
               }
@@ -133,38 +193,59 @@ export default function LoginPage() {
                 {resetNote}
               </p>
             ) : null}
+
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-left">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Demo portals
+                Demo sign-in (always works)
+              </p>
+              <p className="mt-1 text-xs text-slate-500">
+                Tap a row to fill the form, then press Login. Password for all:{" "}
+                <span className="font-semibold">demo1234</span>
               </p>
               <div className="mt-3 grid gap-2">
+                {DEMO_ACCOUNTS.map((account) => (
+                  <button
+                    key={account.uid}
+                    type="button"
+                    onClick={() => fillDemo(account.email, account.password)}
+                    className="rounded-xl bg-white px-3 py-2 text-left text-sm font-semibold text-[#0D2B4D] shadow-sm hover:bg-[var(--kivara-aqua)]"
+                  >
+                    <span className="block">{account.fullName}</span>
+                    <span className="block text-xs font-medium text-slate-500">
+                      {account.email} · {account.note}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <div className="mt-3 grid gap-2 border-t border-slate-200 pt-3">
                 <Link
                   href="/cna"
                   className="rounded-xl bg-white px-3 py-2 text-sm font-semibold text-[#0D2B4D] shadow-sm"
                 >
-                  CNA App →
+                  Skip to CNA App →
                 </Link>
                 <Link
                   href="/facility"
                   className="rounded-xl bg-white px-3 py-2 text-sm font-semibold text-[#0D2B4D] shadow-sm"
                 >
-                  Facility Portal →
+                  Skip to Facility App →
                 </Link>
                 <Link
                   href="/login/mfa"
                   className="rounded-xl bg-[#0D2B4D] px-3 py-2 text-sm font-semibold text-white shadow-sm"
                 >
-                  Master Admin (Login + MFA) →
+                  Skip to Admin MFA →
                 </Link>
               </div>
             </div>
+
             <p className="text-gray-600">
               Don&apos;t have an account?
               <Link
                 href="/register"
                 className="ml-2 font-semibold text-[var(--kivara-teal)] hover:underline"
               >
-                Register
+                Create account
               </Link>
             </p>
             <Link
