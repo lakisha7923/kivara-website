@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Montserrat, Playfair_Display } from "next/font/google";
 
 import { HandoffProvider } from "@/components/handoffs/HandoffProvider";
+import { getSiteUrl } from "@/lib/site";
 
 import "./globals.css";
 
@@ -17,11 +18,25 @@ const playfair = Playfair_Display({
   weight: ["500", "600", "700"],
 });
 
+const siteUrl = getSiteUrl();
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Kivara Healthcare",
   description:
     "Empowering healthcare through exceptional staffing. Kivara connects facilities and CNAs through credentialing, confirmed assignments, GPS timekeeping, timesheets, and billing.",
   applicationName: "Kivara Healthcare",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    url: siteUrl,
+    siteName: "Kivara Healthcare",
+    title: "Kivara Healthcare",
+    description:
+      "Connect facilities and CNAs with confirmed assignments, credentials, GPS timekeeping, and billing.",
+  },
   icons: {
     icon: "/brand/favicon.png",
     apple: "/brand/apple-touch-icon.png",
