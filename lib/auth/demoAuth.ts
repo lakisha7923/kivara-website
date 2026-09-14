@@ -4,11 +4,25 @@ export type DemoAccountType =
   | "Master Admin"
   | "Kivara Admin";
 
+export type ProfessionalRole =
+  | "Registered Nurse"
+  | "Licensed Vocational Nurse"
+  | "Certified Nurse Aide"
+  | "Certified Medication Aide";
+
+export const PROFESSIONAL_ROLES: ProfessionalRole[] = [
+  "Registered Nurse",
+  "Licensed Vocational Nurse",
+  "Certified Nurse Aide",
+  "Certified Medication Aide",
+];
+
 export type DemoSession = {
   uid: string;
   email: string;
   fullName: string;
   accountType: DemoAccountType;
+  professionalRole?: ProfessionalRole;
   createdAt: string;
 };
 
@@ -24,6 +38,7 @@ export const DEMO_ACCOUNTS: Array<
     password: "demo1234",
     fullName: "Jordan Miles",
     accountType: "Healthcare Professional",
+    professionalRole: "Certified Nurse Aide",
     createdAt: "2026-01-01T00:00:00.000Z",
     note: "Opens the CNA mobile app",
   },
@@ -103,6 +118,7 @@ export function registerDemoAccount(input: {
   password: string;
   fullName: string;
   accountType: DemoAccountType;
+  professionalRole?: ProfessionalRole;
 }): DemoSession {
   const email = input.email.trim().toLowerCase();
   const fullName = input.fullName.trim();
@@ -112,6 +128,12 @@ export function registerDemoAccount(input: {
     throw new Error("Password must be at least 6 characters.");
   }
   if (!input.accountType) throw new Error("Select an account type.");
+  if (
+    input.accountType === "Healthcare Professional" &&
+    !input.professionalRole
+  ) {
+    throw new Error("Select your professional role.");
+  }
 
   const existing = [
     ...DEMO_ACCOUNTS.map(({ password: _p, note: _n, ...rest }) => rest),
@@ -127,6 +149,10 @@ export function registerDemoAccount(input: {
     password: input.password,
     fullName,
     accountType: input.accountType,
+    professionalRole:
+      input.accountType === "Healthcare Professional"
+        ? input.professionalRole
+        : undefined,
     createdAt: new Date().toISOString(),
   };
 

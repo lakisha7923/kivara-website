@@ -9,9 +9,11 @@ import { doc, setDoc } from "firebase/firestore";
 
 import {
   portalForAccountType,
+  PROFESSIONAL_ROLES,
   registerDemoAccount,
   withAuthTimeout,
   type DemoAccountType,
+  type ProfessionalRole,
 } from "@/lib/auth/demoAuth";
 import { auth, db } from "@/lib/firebase";
 
@@ -22,6 +24,9 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [accountType, setAccountType] = useState<DemoAccountType | "">("");
+  const [professionalRole, setProfessionalRole] = useState<
+    ProfessionalRole | ""
+  >("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -53,6 +58,10 @@ export default function RegisterPage() {
       );
       return;
     }
+    if (accountType === "Healthcare Professional" && !professionalRole) {
+      setError("Select your professional role.");
+      return;
+    }
 
     setBusy(true);
     try {
@@ -61,6 +70,10 @@ export default function RegisterPage() {
         password,
         fullName,
         accountType,
+        professionalRole:
+          accountType === "Healthcare Professional"
+            ? professionalRole || undefined
+            : undefined,
       });
 
       try {
@@ -73,6 +86,7 @@ export default function RegisterPage() {
             fullName: session.fullName,
             email: session.email,
             accountType: session.accountType,
+            professionalRole: session.professionalRole ?? null,
             createdAt: new Date(),
           }),
           3500
@@ -174,9 +188,13 @@ export default function RegisterPage() {
             />
             <select
               value={accountType}
-              onChange={(e) =>
-                setAccountType(e.target.value as DemoAccountType | "")
-              }
+              onChange={(e) => {
+                const next = e.target.value as DemoAccountType | "";
+                setAccountType(next);
+                if (next !== "Healthcare Professional") {
+                  setProfessionalRole("");
+                }
+              }}
               className="w-full rounded-xl border px-5 py-4"
               required
             >
@@ -188,6 +206,24 @@ export default function RegisterPage() {
                 Healthcare Facility
               </option>
             </select>
+
+            {accountType === "Healthcare Professional" ? (
+              <select
+                value={professionalRole}
+                onChange={(e) =>
+                  setProfessionalRole(e.target.value as ProfessionalRole | "")
+                }
+                className="w-full rounded-xl border px-5 py-4"
+                required
+              >
+                <option value="">Select Professional Role</option>
+                {PROFESSIONAL_ROLES.map((role) => (
+                  <option key={role} value={role}>
+                    {role}
+                  </option>
+                ))}
+              </select>
+            ) : null}
 
             {error ? (
               <p
