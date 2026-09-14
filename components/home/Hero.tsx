@@ -18,24 +18,12 @@ export default function Hero() {
             hours, and facility billing — in one branded system.
           </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
+          <div className="mt-8">
             <Link
               href="/#services"
-              className="rounded-full bg-[var(--kivara-teal)] px-8 py-4 text-center text-base font-semibold text-white transition hover:brightness-110"
+              className="inline-flex rounded-full bg-[var(--kivara-teal)] px-8 py-4 text-center text-base font-semibold text-white transition hover:brightness-110"
             >
               Explore services
-            </Link>
-            <Link
-              href="/register"
-              className="rounded-full border-2 border-[var(--kivara-navy)] px-8 py-4 text-center text-base font-semibold text-[var(--kivara-navy)] transition hover:bg-[var(--kivara-navy)] hover:text-white"
-            >
-              Create account
-            </Link>
-            <Link
-              href="/login"
-              className="rounded-full bg-[var(--kivara-navy)] px-8 py-4 text-center text-base font-semibold text-white transition hover:brightness-110"
-            >
-              Login
             </Link>
           </div>
         </div>
