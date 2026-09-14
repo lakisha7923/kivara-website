@@ -221,14 +221,6 @@ export default function RegisterPage() {
               Login
             </Link>
           </p>
-          <p className="mt-4 text-center">
-            <Link
-              href="/"
-              className="text-sm font-semibold text-[var(--kivara-navy)] hover:underline"
-            >
-              ← Return to Kivara website
-            </Link>
-          </p>
         </div>
       </div>
     </main>
