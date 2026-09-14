@@ -127,7 +127,7 @@ export default function RegisterPage() {
           />
           <h1 className="mb-4 font-display text-4xl font-bold">Join Kivara</h1>
           <p className="text-center text-slate-200">
-            Create an account for the CNA mobile app or Facility mobile app.
+            Create an account and connect with healthcare opportunities.
           </p>
         </div>
 
