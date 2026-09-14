@@ -219,7 +219,7 @@ export default function LoginPage() {
               </div>
               <div className="mt-3 grid gap-2 border-t border-slate-200 pt-3">
                 <Link
-                  href="/cna"
+                  href="/cna/more/profile"
                   className="rounded-xl bg-white px-3 py-2 text-sm font-semibold text-[#0D2B4D] shadow-sm"
                 >
                   Skip to CNA App →
