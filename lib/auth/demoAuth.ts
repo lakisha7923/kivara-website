@@ -90,7 +90,7 @@ export function clearDemoSession() {
 }
 
 export function portalForAccountType(accountType: string): string {
-  if (accountType === "Healthcare Professional") return "/cna";
+  if (accountType === "Healthcare Professional") return "/cna/more/profile";
   if (accountType === "Healthcare Facility") return "/facility";
   if (accountType === "Master Admin" || accountType === "Kivara Admin") {
     return "/login/mfa";
