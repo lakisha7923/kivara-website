@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export default function Hero() {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-[var(--kivara-offwhite)] via-[var(--kivara-aqua)] to-white">
