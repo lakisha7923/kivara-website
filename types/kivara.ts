@@ -143,6 +143,8 @@ export interface CnaProfile {
   dateOfBirth: string;
   socialSecurityNumber: string;
   paymentMethod: CnaPaymentMethod;
+  /** Professional license / certification role selected at signup */
+  professionalRole?: string;
   /** EMR / charting systems this CNA has used */
   emrExperience: CnaEmrSystem[];
   /** Required when emrExperience includes Other */

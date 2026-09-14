@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 
 import { ScreenCard, StatusBadge } from "@/components/ui/primitives";
+import { getDemoSession } from "@/lib/auth/demoAuth";
 import type {
   CnaEmergencyContact,
   CnaEmrSystem,
@@ -11,7 +12,8 @@ import type {
   CnaProfile,
 } from "@/types/kivara";
 
-const STORAGE_KEY = "kivara.cna.profile.v3";
+const STORAGE_KEY = "kivara.cna.profile.v4";
+const ROLE_STORAGE_KEY = "kivara.cna.professionalRole";
 
 const PAYMENT_METHODS: CnaPaymentMethod[] = [
   "Direct deposit",
@@ -153,6 +155,10 @@ export default function CnaProfileEditor({ profile }: { profile: CnaProfile }) {
   );
   const [photoUrl, setPhotoUrl] = useState<string | undefined>(defaults.photoUrl);
   const [photoError, setPhotoError] = useState<string | null>(null);
+  const [displayName, setDisplayName] = useState(profile.fullName);
+  const [professionalRole, setProfessionalRole] = useState(
+    profile.professionalRole ?? ""
+  );
   const [hydrated, setHydrated] = useState(false);
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -170,6 +176,24 @@ export default function CnaProfileEditor({ profile }: { profile: CnaProfile }) {
     setEmrOtherNotes(saved.emrOtherNotes);
     setEmergencyContacts(saved.emergencyContacts);
     setPhotoUrl(saved.photoUrl);
+
+    const session = getDemoSession();
+    const storedRole =
+      typeof window !== "undefined"
+        ? window.localStorage.getItem(ROLE_STORAGE_KEY)
+        : null;
+    const role =
+      session?.professionalRole ||
+      storedRole ||
+      profile.professionalRole ||
+      "";
+    setProfessionalRole(role);
+    if (role && typeof window !== "undefined") {
+      window.localStorage.setItem(ROLE_STORAGE_KEY, role);
+    }
+    if (session?.fullName) {
+      setDisplayName(session.fullName);
+    }
     setHydrated(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- hydrate once from mock + localStorage
   }, []);
@@ -313,7 +337,7 @@ export default function CnaProfileEditor({ profile }: { profile: CnaProfile }) {
     }
   }
 
-  const initials = profile.fullName
+  const initials = displayName
     .split(" ")
     .map((part) => part[0])
     .join("")
@@ -330,7 +354,7 @@ export default function CnaProfileEditor({ profile }: { profile: CnaProfile }) {
                 // eslint-disable-next-line @next/next/no-img-element -- local FileReader data URLs
                 <img
                   src={photoUrl}
-                  alt={`${profile.fullName} profile photo`}
+                  alt={`${displayName} profile photo`}
                   width={112}
                   height={112}
                   className="h-full w-full object-cover"
@@ -341,7 +365,12 @@ export default function CnaProfileEditor({ profile }: { profile: CnaProfile }) {
             </div>
           </div>
           <div>
-            <p className="text-lg font-bold text-[#0D2B4D]">{profile.fullName}</p>
+            <p className="text-lg font-bold text-[#0D2B4D]">{displayName}</p>
+            {professionalRole ? (
+              <p className="mt-1 text-sm font-semibold text-[#0FA3A3]">
+                {professionalRole}
+              </p>
+            ) : null}
             <div className="mt-2 flex justify-center">
               <StatusBadge
                 label={profile.status}

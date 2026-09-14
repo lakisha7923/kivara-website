@@ -162,6 +162,12 @@ export function registerDemoAccount(input: {
 
   const { password: _password, ...publicSession } = session;
   setDemoSession(publicSession);
+  if (typeof window !== "undefined" && publicSession.professionalRole) {
+    window.localStorage.setItem(
+      "kivara.cna.professionalRole",
+      publicSession.professionalRole
+    );
+  }
   return publicSession;
 }
 
@@ -177,6 +183,12 @@ export function loginDemoAccount(email: string, password: string): DemoSession {
   if (seeded) {
     const { password: _password, note: _note, ...session } = seeded;
     setDemoSession(session);
+    if (typeof window !== "undefined" && session.professionalRole) {
+      window.localStorage.setItem(
+        "kivara.cna.professionalRole",
+        session.professionalRole
+      );
+    }
     return session;
   }
 
@@ -192,6 +204,12 @@ export function loginDemoAccount(email: string, password: string): DemoSession {
 
   const { password: _password, ...session } = local;
   setDemoSession(session);
+  if (typeof window !== "undefined" && session.professionalRole) {
+    window.localStorage.setItem(
+      "kivara.cna.professionalRole",
+      session.professionalRole
+    );
+  }
   return session;
 }
 

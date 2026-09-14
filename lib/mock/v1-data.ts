@@ -27,6 +27,7 @@ export const mockCna: CnaProfile = {
   dateOfBirth: "1994-06-18",
   socialSecurityNumber: "***-**-0142",
   paymentMethod: "Direct deposit",
+  professionalRole: "Certified Nurse Aide",
   emrExperience: ["Epic", "PointClickCare", "Cerner"],
   emergencyContacts: [
     {
