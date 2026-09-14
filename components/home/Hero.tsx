@@ -17,15 +17,6 @@ export default function Hero() {
             credential tracking, GPS timekeeping, timesheets, payroll-ready
             hours, and facility billing — in one branded system.
           </p>
-
-          <div className="mt-8">
-            <Link
-              href="/#services"
-              className="inline-flex rounded-full bg-[var(--kivara-teal)] px-8 py-4 text-center text-base font-semibold text-white transition hover:brightness-110"
-            >
-              Explore services
-            </Link>
-          </div>
         </div>
       </div>
     </section>
