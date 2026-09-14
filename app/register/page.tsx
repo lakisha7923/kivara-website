@@ -182,10 +182,10 @@ export default function RegisterPage() {
             >
               <option value="">Select Account Type</option>
               <option value="Healthcare Professional">
-                Healthcare Professional (CNA app)
+                Healthcare Professional
               </option>
               <option value="Healthcare Facility">
-                Healthcare Facility (Facility app)
+                Healthcare Facility
               </option>
             </select>
 
