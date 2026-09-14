@@ -14,45 +14,29 @@ export default function Services() {
         </p>
 
         <div className="grid gap-10 md:grid-cols-3">
-          <div className="flex flex-col rounded-2xl bg-slate-50 p-8 shadow-lg transition hover:shadow-xl">
+          <div className="rounded-2xl bg-slate-50 p-8 shadow-lg transition hover:shadow-xl">
             <div className="mb-6 text-5xl">🏥</div>
             <h3 className="mb-4 text-2xl font-bold text-[#0D2B4D]">
               Facilities
             </h3>
-            <p className="mb-6 text-gray-600">
+            <p className="text-gray-600">
               Find qualified nurses, CNAs, therapists, and healthcare
               professionals quickly when your facility needs them most. Request
               coverage, track live attendance, and manage timesheets in one
               place.
             </p>
-            <div className="mt-auto border-t border-slate-200 pt-6">
-              <Link
-                href="/facility"
-                className="inline-flex w-full items-center justify-center rounded-full bg-[var(--kivara-teal)] px-6 py-3 text-center font-semibold text-white hover:brightness-110"
-              >
-                Open Facility App
-              </Link>
-            </div>
           </div>
 
-          <div className="flex flex-col rounded-2xl bg-slate-50 p-8 shadow-lg transition hover:shadow-xl">
+          <div className="rounded-2xl bg-slate-50 p-8 shadow-lg transition hover:shadow-xl">
             <div className="mb-6 text-5xl">👩‍⚕️</div>
             <h3 className="mb-4 text-2xl font-bold text-[#0D2B4D]">
               Professionals
             </h3>
-            <p className="mb-6 text-gray-600">
+            <p className="text-gray-600">
               Browse shifts, manage your schedule, and build your healthcare
               career with flexible opportunities. Stay Work Ready, clock in with
               GPS, and track pay from your phone.
             </p>
-            <div className="mt-auto border-t border-slate-200 pt-6">
-              <Link
-                href="/cna"
-                className="inline-flex w-full items-center justify-center rounded-full bg-[var(--kivara-teal)] px-6 py-3 text-center font-semibold text-white hover:brightness-110"
-              >
-                Open CNA App
-              </Link>
-            </div>
           </div>
 
           <div className="flex flex-col rounded-2xl bg-slate-50 p-8 shadow-lg transition hover:shadow-xl">
