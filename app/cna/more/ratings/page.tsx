@@ -6,30 +6,13 @@ import { useId, useState } from "react";
 import CnaShell from "@/components/cna/CnaShell";
 import { PageHeader, ScreenCard } from "@/components/ui/primitives";
 import {
-  mockReliabilityScore,
-  reliabilityFaqItems,
-  reliabilityFaqRemember,
-  type ReliabilityFaqItem,
-} from "@/lib/reliability/faq";
+  mockProfessionalRating,
+  professionalRatingFaqItems,
+  professionalRatingFaqRemember,
+  type RatingFaqItem,
+} from "@/lib/ratings/faq";
 
-function FaqAnswer({ item }: { item: ReliabilityFaqItem }) {
-  // Place factor bullets between the intro and closing sentence.
-  if (item.id === "how-calculated" && item.bullets) {
-    return (
-      <div className="space-y-3 text-sm leading-relaxed text-slate-700">
-        <p>{item.paragraphs[0]}</p>
-        <ul className="list-disc space-y-1.5 pl-5">
-          {item.bullets.map((bullet) => (
-            <li key={bullet}>{bullet}</li>
-          ))}
-        </ul>
-        {item.paragraphs.slice(1).map((paragraph) => (
-          <p key={paragraph}>{paragraph}</p>
-        ))}
-      </div>
-    );
-  }
-
+function FaqAnswer({ item }: { item: RatingFaqItem }) {
   return (
     <div className="space-y-3 text-sm leading-relaxed text-slate-700">
       {item.paragraphs.map((paragraph) => (
@@ -58,7 +41,7 @@ function FaqAccordionItem({
   item,
   defaultOpen = false,
 }: {
-  item: ReliabilityFaqItem;
+  item: RatingFaqItem;
   defaultOpen?: boolean;
 }) {
   const panelId = useId();
@@ -92,50 +75,48 @@ function FaqAccordionItem({
   );
 }
 
-export default function CnaReliabilityFaqPage() {
+export default function CnaRatingsFaqPage() {
+  const rating = mockProfessionalRating;
+
   return (
     <CnaShell>
       <PageHeader
         eyebrow="More"
-        title="Reliability Score"
-        subtitle="Frequently asked questions about your 0–100 Kivara reliability history"
+        title="Professional Rating"
+        subtitle="Frequently asked questions about facility feedback after completed assignments"
       />
 
       <ScreenCard className="mb-4 bg-gradient-to-br from-[#0D2B4D] to-[#164872] text-white">
         <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#D6F1F1]">
-          Your score
+          Your rating
         </p>
-        {mockReliabilityScore.status === "ready" ? (
+        {rating.status === "ready" ? (
           <>
             <div className="mt-2 flex items-end gap-3">
               <p className="font-[family-name:var(--font-playfair)] text-5xl font-bold leading-none">
-                {mockReliabilityScore.value}
+                {rating.average.toFixed(1)}
               </p>
               <div className="pb-1">
                 <p className="text-sm font-semibold text-[#0FA3A3]">
-                  {mockReliabilityScore.label} · /{mockReliabilityScore.max}
+                  / {rating.maxStars.toFixed(1)} ⭐
                 </p>
                 <p className="text-xs text-white/75">
-                  {mockReliabilityScore.completedShifts} completed ·{" "}
-                  {mockReliabilityScore.onTimeShifts} on time ·{" "}
-                  {mockReliabilityScore.noShows} no-shows
+                  Based on {rating.ratingCount} ratings
                 </p>
               </div>
             </div>
             <p className="mt-3 text-xs leading-relaxed text-white/80">
-              Calculated by Kivara from verified shift activity — not entered by
-              you, not edited by facilities, and separate from your Professional
-              Rating.
+              Facility feedback after completed Kivara assignments — separate
+              from your Reliability Score, and not editable by you or as an
+              overall score by facilities.
             </p>
           </>
         ) : (
           <>
-            <p className="mt-3 text-2xl font-bold">
-              {mockReliabilityScore.message}
-            </p>
+            <p className="mt-3 text-2xl font-bold">{rating.message}</p>
             <p className="mt-2 text-xs leading-relaxed text-white/80">
-              This is not the same as a low score. Complete more verified shifts
-              to establish a Reliability Score.
+              This is different from a low rating. Ratings appear after
+              facilities rate completed assignments.
             </p>
           </>
         )}
@@ -146,7 +127,7 @@ export default function CnaReliabilityFaqPage() {
           FAQ
         </h2>
         <div className="mt-1">
-          {reliabilityFaqItems.map((item, index) => (
+          {professionalRatingFaqItems.map((item, index) => (
             <FaqAccordionItem
               key={item.id}
               item={item}
@@ -158,24 +139,24 @@ export default function CnaReliabilityFaqPage() {
 
       <ScreenCard className="mt-4 border-[#0FA3A3]/40 bg-[#E8F6F6]">
         <h2 className="text-sm font-bold text-[#0D2B4D]">
-          {reliabilityFaqRemember.title}
+          {professionalRatingFaqRemember.title}
         </h2>
         <div className="mt-2 space-y-2 text-sm text-slate-700">
-          {reliabilityFaqRemember.paragraphs.map((paragraph) => (
-            <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+          {professionalRatingFaqRemember.paragraphs.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
           ))}
         </div>
         <p className="mt-3 text-sm font-semibold text-[#0D2B4D]">
-          {reliabilityFaqRemember.tagline}
+          {professionalRatingFaqRemember.tagline}
         </p>
       </ScreenCard>
 
       <div className="mt-4 flex flex-col gap-2">
         <Link
-          href="/cna/more/ratings"
+          href="/cna/more/reliability"
           className="inline-flex justify-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-[#0D2B4D]"
         >
-          Read Professional Rating FAQ
+          Read Reliability Score FAQ
         </Link>
         <Link
           href="/cna/more/help"

@@ -36,6 +36,19 @@ export default function CnaHelpPage() {
           Read Reliability Score FAQ →
         </Link>
       </ScreenCard>
+      <ScreenCard className="mt-4">
+        <h2 className="text-sm font-bold text-[#0D2B4D]">Professional Rating</h2>
+        <p className="mt-2 text-sm text-slate-700">
+          Learn how facility star ratings work after completed assignments, and
+          how they stay separate from your Reliability Score.
+        </p>
+        <Link
+          href="/cna/more/ratings"
+          className="mt-4 inline-flex rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-[#0D2B4D]"
+        >
+          Read Professional Rating FAQ →
+        </Link>
+      </ScreenCard>
       <Link
         href="/cna/more"
         className="mt-4 inline-block text-sm font-semibold text-teal-700"

@@ -215,13 +215,42 @@ export const reliabilityFaqRemember = {
   paragraphs: [
     "Your Reliability Score is one part of your Kivara professional profile.",
     "Your certifications, experience, skills, professionalism, availability, and work history are also important.",
+    "Your Professional Rating is separate and is based on facility feedback after completed assignments.",
   ],
   tagline: "Show up. Communicate. Complete your shifts. Build your reputation.",
 };
 
-/** Demo score for the sample CNA profile until live calculation exists. */
-export const mockReliabilityScore = {
-  value: 92,
-  completedShifts: 18,
+export type ReliabilityScoreSummary =
+  | {
+      status: "ready";
+      value: number;
+      max: 100;
+      label: string;
+      completedShifts: number;
+      onTimeShifts: number;
+      noShows: number;
+    }
+  | {
+      status: "insufficient";
+      message: "Not enough shift history";
+    };
+
+/**
+ * Demo Reliability Score for the sample CNA.
+ * Based only on verified shift activity — never derived from star ratings.
+ */
+export const mockReliabilityScore: ReliabilityScoreSummary = {
+  status: "ready",
+  value: 95,
+  max: 100,
   label: "Strong",
-} as const;
+  completedShifts: 24,
+  onTimeShifts: 23,
+  noShows: 0,
+};
+
+/** Example empty state when shift history is too limited to score. */
+export const mockReliabilityScoreEmpty: ReliabilityScoreSummary = {
+  status: "insufficient",
+  message: "Not enough shift history",
+};

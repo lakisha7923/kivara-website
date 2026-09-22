@@ -9,6 +9,7 @@ const sections = [
     links: [
       { href: "/cna/more/profile", label: "Profile" },
       { href: "/cna/more/reliability", label: "Reliability Score" },
+      { href: "/cna/more/ratings", label: "Professional Rating" },
       { href: "/cna/credentials", label: "Credentials" },
       { href: "/cna/more/work-areas", label: "Work Areas" },
       { href: "/cna/more/settings", label: "Settings" },
@@ -47,7 +48,7 @@ export default function CnaMorePage() {
       <PageHeader
         eyebrow="More"
         title="Profile & support"
-        subtitle="Profile · Reliability Score · Timesheets · Pay · Messages · Notifications · Work Areas · Forms · Help · Settings"
+        subtitle="Profile · Reliability Score · Professional Rating · Timesheets · Pay · Messages · Notifications · Work Areas · Forms · Help · Settings"
       />
       <div className="space-y-4">
         {sections.map((section) => (
