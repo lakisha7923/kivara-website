@@ -5,6 +5,7 @@ import { useEffect, useId, useRef, useState } from "react";
 
 import { ScreenCard, StatusBadge } from "@/components/ui/primitives";
 import { getDemoSession } from "@/lib/auth/demoAuth";
+import { mockReliabilityScore } from "@/lib/reliability/faq";
 import type {
   CnaEmergencyContact,
   CnaEmrSystem,
@@ -414,6 +415,33 @@ export default function CnaProfileEditor({ profile }: { profile: CnaProfile }) {
             </p>
           )}
         </div>
+      </ScreenCard>
+
+      <ScreenCard>
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#0FA3A3]">
+              Reliability Score
+            </p>
+            <p className="mt-1 text-xs text-slate-500">
+              Based on verified Kivara shift activity
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="font-[family-name:var(--font-playfair)] text-3xl font-bold leading-none text-[#0D2B4D]">
+              {mockReliabilityScore.value}
+            </p>
+            <p className="mt-1 text-xs font-semibold text-emerald-700">
+              {mockReliabilityScore.label}
+            </p>
+          </div>
+        </div>
+        <Link
+          href="/cna/more/reliability"
+          className="mt-3 inline-flex text-sm font-semibold text-teal-700"
+        >
+          How your score works →
+        </Link>
       </ScreenCard>
 
       <ScreenCard>
